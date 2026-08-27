@@ -1,0 +1,11 @@
+services:
+  iland:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - iland-data:/data
+    restart: unless-stopped
+
+volumes:
+  iland-data:

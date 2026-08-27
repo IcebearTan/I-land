@@ -1,0 +1,19 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node
+node_modules/
+frontend/dist/
+
+# 运行时数据（两人世界的记忆，注意备份！）
+backend/iland.db
+backend/iland.db-shm
+backend/iland.db-wal
+backend/uploads/
+
+# 杂项
+.DS_Store
+*.log
