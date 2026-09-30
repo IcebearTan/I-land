@@ -291,8 +291,9 @@ WebGL 上下文丢失/恢复交给 Phaser 自身生命周期，只在 restored �
 
 ## 十二、每日记忆卡与可靠性地基（2026-09-29）
 
-本节记录 M3 后半段（每日记忆卡）与基础可靠性工作的实际实现，开发计划见
-`DEVELOPMENT_PLAN.md`，运维细节见 `docs/OPERATIONS.md`。
+本节记录 M3 后半段（每日记忆卡）与基础可靠性工作的实际实现，历史开发计划见
+[记忆卡阶段记录](docs/planning/archive/2026-09-28-memory-plan.md)，
+当前规划见 [开发规划中心](docs/planning/README.md)，运维细节见 `docs/OPERATIONS.md`。
 
 ### 私人内容访问控制
 

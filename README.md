@@ -4,6 +4,7 @@ Icebear 的「去你的岛」——星露谷式 2.5D 像素小岛网页小游戏
 属于两个人的爱情空间：信箱、记忆日历、漂流瓶留言，以后还有农场。
 
 设计与架构规范见 [DESIGN.md](./DESIGN.md)（v2 游戏化架构，色板/里程碑/风险都在里面）。
+开发规划、当前状态、任务交接与历史评估统一见 [开发规划中心](./docs/planning/README.md)。
 
 ## 技术栈
 
@@ -73,6 +74,7 @@ docker compose up --build -d   # http://localhost:8000
 I-land/
 ├── DESIGN.md            设计与架构规范（v2）
 ├── AGENTS.md            AI 协作约定
+├── docs/planning/       开发规划中心（状态/路线/任务/验收/历史）
 ├── docs/OPERATIONS.md   运维手册（部署/改密/备份恢复）
 ├── backend/             FastAPI + SQLite
 │   ├── app/
@@ -93,8 +95,9 @@ I-land/
 
 ## 当前进度（M0 完成 · M1/M2/M3 推进中）
 
-截至 2026-09-30 的功能盘点、验证结果与下一阶段建议见
-[docs/PROGRESS_AND_NEXT_STAGE.md](./docs/PROGRESS_AND_NEXT_STAGE.md)。
+当前功能与验证边界见 [当前状态](./docs/planning/CURRENT_STATE.md)，
+下一阶段执行 [M2 写信回信计划](./docs/planning/NEXT_STAGE_M2.md)。
+用户已确认服务器部署完成；备份恢复与真机等专项验收按实际证据单独记录。
 
 - [x] 岛内视觉重绘：原创像素小屋/灯塔/树木、花圃与海岸布局、前后遮挡、行走碰撞及昼夜暖灯。
 

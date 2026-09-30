@@ -11,6 +11,7 @@
 
 import io
 import os
+import re
 import secrets
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -20,7 +21,7 @@ from PIL import Image, ImageOps
 from sqlmodel import Session, select
 
 from .config import MAX_IMAGE_PIXELS, MAX_UPLOAD_BYTES, UPLOADS_DIR
-from .models import Attachment, Memory, jload
+from .models import Attachment, Letter, Memory, jload
 
 VARIANTS = ("original", "display", "thumb")
 # 各档最长边；原图超过 4096 时等比收进（手机全景等超大图）
@@ -158,6 +159,13 @@ def list_orphan_attachments(db: Session, older_than_days: int = 2) -> List[dict]
     referenced = set()
     for memory in db.exec(select(Memory)).all():
         referenced.update(jload(memory.attachments_json, []))
+    # 迁入信件通过既有 pages 字段保存附件 URL，也属于正式引用。
+    for letter in db.exec(select(Letter)).all():
+        for page in jload(letter.pages_json, []):
+            if isinstance(page, str):
+                match = re.fullmatch(r"/api/files/([A-Za-z0-9_-]+)/(?:original|display|thumb)", page)
+                if match:
+                    referenced.add(match[1])
     cutoff = datetime.utcnow() - timedelta(days=older_than_days)
     orphans: List[dict] = []
     for attachment in db.exec(select(Attachment)).all():

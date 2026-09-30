@@ -38,6 +38,7 @@ cd frontend && npm run dev
 - SQLite 在 `backend/iland.db`，上传在 `backend/uploads/`，都已 gitignore（是真实记忆，勿删勿提交）。
 - 昼夜 tint、DAY_TICK 逻辑在 `IslandScene.updateDayNight()`；交互物在 `placeInteractables()`。
 - 里程碑状态见 README「当前进度」小节，做完一项勾一项。
+- 开发规划与评估统一在 `docs/planning/`；开新功能前读其 README、CURRENT_STATE 与对应阶段计划，历史归档不作为当前待办。
 
 ## 代码风格
 
