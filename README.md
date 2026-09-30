@@ -44,13 +44,19 @@ cd ../backend && .venv/bin/python -m uvicorn app.main:app --port 8000
 ## 默认账号
 
 种子用户 `bear` / `her`，初始密码 `123456`（环境变量 `ILAND_SEED_USERS` 可改，
-格式 `name:password:display,...`）。**上线给她用之前务必改密码。**
+格式 `name:password:display,...`）。**上线给她用之前务必改密码**——已有账号
+在岛上「设置 → 登录暗号」改（HUD 右上角），首次部署直接用 `ILAND_SEED_USERS` 设置强密码。
+部署、HTTPS Cookie、备份与恢复见 [docs/OPERATIONS.md](./docs/OPERATIONS.md)。
 
 ## 测试
 
 ```bash
 cd backend && .venv/bin/python -m pytest tests/ -q
+cd ../frontend && npm run test:calendar && npm run build
 ```
+
+后端覆盖：登录/改密、私人内容访问控制、图片上传与派生图、记忆 CRUD 与
+版本冲突、软删除恢复、备份恢复演练、旧库迁移。
 
 ## Docker（可选，一步起完整服务）
 
@@ -58,7 +64,8 @@ cd backend && .venv/bin/python -m pytest tests/ -q
 docker compose up --build -d   # http://localhost:8000
 ```
 
-数据持久化在 named volume `iland-data`（SQLite + uploads）。
+数据持久化在 named volume `iland-data`（SQLite + uploads）。反向代理 HTTPS 时
+给服务加 `ILAND_COOKIE_SECURE=1`。
 
 ## 目录结构
 
@@ -66,26 +73,44 @@ docker compose up --build -d   # http://localhost:8000
 I-land/
 ├── DESIGN.md            设计与架构规范（v2）
 ├── AGENTS.md            AI 协作约定
+├── docs/OPERATIONS.md   运维手册（部署/改密/备份恢复）
 ├── backend/             FastAPI + SQLite
 │   ├── app/
-│   │   ├── main.py      入口（lifespan 建表/种子、静态托管）
+│   │   ├── main.py      入口（lifespan 建表/种子、前端托管）
 │   │   ├── models.py    全部数据表
-│   │   └── routers/     auth / letters / world / misc
+│   │   ├── attachments.py  图片处理（三档派生、EXIF 去敏）
+│   │   ├── backup.py    备份/恢复（python -m app.backup）
+│   │   └── routers/     auth / letters / anniversaries / memories / uploads / settings / world / misc
 │   └── tests/           pytest（TestClient 全链路）
 └── frontend/            React + Phaser
     └── src/
         ├── game/        Phaser（scenes/ + EventBus 事件总线）
-        ├── components/  React（GameShell / Hud / Login / panels）
-        ├── api/         fetch 封装
+        ├── calendar/    日历与记忆卡（节日 + 每日记忆）
+        ├── components/  React（GameShell / Hud / Login / Settings / panels）
+        ├── api/         fetch / multipart 上传封装
         └── styles/      木牌 UI 样式
 ```
 
-## 当前进度（M0 ✅）
+## 当前进度（M0 完成 · M1/M2/M3 推进中）
+
+截至 2026-09-30 的功能盘点、验证结果与下一阶段建议见
+[docs/PROGRESS_AND_NEXT_STAGE.md](./docs/PROGRESS_AND_NEXT_STAGE.md)。
+
+- [x] 岛内视觉重绘：原创像素小屋/灯塔/树木、花圃与海岸布局、前后遮挡、行走碰撞及昼夜暖灯。
 
 - [x] M0 地基：登录（cookie session）、岛屿占位场景、昼夜 tint、
       角色移动（WASD/方向键 + 点地行走）、交互系统、信箱面板、事件总线全链路
-- [ ] M1 走岛：Tiled 地图、正式美术资产、移动端摇杆
-- [ ] M2 信箱：拆信仪式、扫描件上传、IcebearMailbox 数据迁移、她可回信
-- [ ] M3 灯塔日历：纪念日 CRUD、记忆卡（照片/天气/描述）
+- [x] M1 角色区分：男生围巾小熊、女生长发裙装，按账号恢复身份，共用四方向两帧步态与像素头像。
+- [x] M1 移动端：虚拟摇杆、靠近互动按钮、点击落点提示、面板打开时暂停操控。
+- [x] 异步足迹：显示对方最近登岛时间（读取 presence API，不代表实时在线）。
+- [ ] M1 正式资产管线：Tiled 地图、正式美术图集
+- [x] M2 阅读前端：信件卡片 → 火漆拆信 → 图片信纸翻页，加载/失败/空状态、键盘焦点和手机布局。
+- [ ] M2 写信与数据：扫描件上传、IcebearMailbox 数据迁移、她可回信
+- [x] M3 自定义节日：共享 CRUD、月历、每年/每月/单次重复、8 配色 × 18 图标 × 4 倒数卡样式、实时预览及岛上置顶倒数。
+- [x] M3 每日记忆卡：照片上传（WebP 三档、EXIF 去敏转正）、描述/心情/天气/地点、
+      版本冲突保护、软删除 30 天恢复、月历照片缩略图与日视图大图、最近删除。
+- [x] 可靠性地基：私人内容统一登录校验（照片与信纸不再公开可访问）、已有账号改密、
+      SQLite 一致性备份与恢复演练（见 docs/OPERATIONS.md）。
+- [x] 小岛设置：共享修改两位岛民名字，登录页、足迹、信件和记忆卡署名同步更新；设置内改密。
 - [ ] M4 漂流瓶：留言系统
 - [ ] M5 农场：种花送她

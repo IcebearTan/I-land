@@ -52,18 +52,43 @@ class Anniversary(SQLModel, table=True):
     repeat: str = "yearly"  # yearly | monthly | once
     icon: str = "heart"
     note: str = ""
+    color: str = "rose"
+    style: str = "letter"
+    pinned: bool = False
 
 
 class Memory(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    date: str  # YYYY-MM-DD
+    date: str  # YYYY-MM-DD（用户选择的日历日，不做时区偏移）
     title: str
     description: str = ""
     mood: str = ""
     weather_json: str = "{}"  # {type, note}
     location: str = ""
-    photos_json: str = "[]"
+    photos_json: str = "[]"  # 旧数据：uploads 路径列表（只读兼容）
+    attachments_json: str = "[]"  # 有序 Attachment id 列表（新体系）
     created_by: str = ""
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    version: int = 1  # 乐观锁：每次修改 +1
+    updated_by: str = ""
+    updated_at: Optional[datetime] = None
+    deleted_at: Optional[datetime] = None  # 软删除时间；空 = 正常
+    deleted_by: str = ""
+    client_id: str = Field(default="", index=True)  # 创建幂等标识，防超时重试重复建卡
+
+
+class Attachment(SQLModel, table=True):
+    """上传文件元数据；实际字节存 UPLOADS_DIR，通过 /api/files/{id}/{variant} 访问"""
+
+    id: str = Field(primary_key=True)  # 服务端生成的随机标识（token_urlsafe）
+    owner: str = ""  # 上传者账号名
+    original_name: str = ""  # 用户原始文件名（仅记录）
+    content_type: str = "image/webp"  # 统一转 webp 后的类型
+    size: int = 0  # 原件字节大小
+    width: int = 0
+    height: int = 0
+    file_stem: str = ""  # UPLOADS_DIR 内的相对路径主干，三档图按后缀推导
+    linked: bool = False  # 是否已被记忆等正式记录引用（未引用 = 待清理候选）
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 

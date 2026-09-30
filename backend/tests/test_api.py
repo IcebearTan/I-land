@@ -1,26 +1,15 @@
-"""M0 验收：登录 → API 数据面（letters / world / heartbeat）全链路"""
+"""M0 验收：登录 → API 数据面（letters / world / heartbeat）全链路。
 
-import os
-import tempfile
-from pathlib import Path
+数据库与种子用户由 conftest.py 统一配置（测试间共享同一实例，注意用例间状态）。
+"""
 
 import pytest
 
-# 必须在 import app 之前改环境：测试用独立的临时数据库
-_tmp = tempfile.mkdtemp(prefix="iland-test-")
-os.environ["ILAND_DB_PATH"] = str(Path(_tmp) / "test.db")
-os.environ["ILAND_UPLOADS_DIR"] = str(Path(_tmp) / "uploads")
 
-from fastapi.testclient import TestClient  # noqa: E402
-
-from app.main import app  # noqa: E402
-
-
-@pytest.fixture(scope="module")
-def client():
-    # with 上下文才会触发 lifespan（建表 + 种子用户）
-    with TestClient(app) as c:
-        yield c
+def login(client, name="bear", password="123456"):
+    r = client.post("/api/auth/login", json={"name": name, "password": password})
+    assert r.status_code == 200, r.text
+    return r.json()["user"]
 
 
 def login(client, name="bear", password="123456"):
@@ -108,3 +97,61 @@ def test_heartbeat_and_presence(client):
     r = client.get("/api/presence")
     visit = r.json()["visit"]
     assert visit is not None and visit["action_note"] == "浇了花"
+
+
+def test_anniversary_shared_crud_and_design(client):
+    client.post('/api/auth/logout')
+    assert client.get('/api/anniversaries').status_code == 401
+    assert client.post('/api/anniversaries', json={}).status_code == 401
+    login(client, 'bear')
+    body = dict(name='  第一次旅行  ', date='2026-10-01', repeat='yearly', icon='plane',
+                color='sea', style='ticket', note='一起看海', pinned=True)
+    response = client.post('/api/anniversaries', json=body)
+    assert response.status_code == 201
+    created = response.json()['anniversary']
+    assert created['name'] == '第一次旅行'
+    item_id = created['id']
+    login(client, 'her')
+    assert client.get(f'/api/anniversaries/{item_id}').json()['anniversary']['note'] == '一起看海'
+    body.update(name='每月的小约定', repeat='monthly', icon='coffee', color='cocoa', style='garden')
+    changed = client.put(f'/api/anniversaries/{item_id}', json=body)
+    assert changed.status_code == 200
+    assert changed.json()['anniversary']['style'] == 'garden'
+    other = client.post('/api/anniversaries', json={**body, 'name': '另一个置顶日子'}).json()['anniversary']
+    records = client.get('/api/anniversaries').json()['anniversaries']
+    assert [x['id'] for x in records if x['pinned']] == [other['id']]
+    client.put(f'/api/anniversaries/{item_id}', json=body)
+    records = client.get('/api/anniversaries').json()['anniversaries']
+    assert [x['id'] for x in records if x['pinned']] == [item_id]
+    for record in records:
+        assert client.delete(f"/api/anniversaries/{record['id']}").status_code == 200
+    assert client.get(f'/api/anniversaries/{item_id}').status_code == 404
+    assert client.put(f'/api/anniversaries/{item_id}', json=body).status_code == 404
+    assert client.delete(f'/api/anniversaries/{item_id}').status_code == 404
+
+
+@pytest.mark.parametrize('change', [
+    {'name': '  '}, {'name': 'a' * 61}, {'date': '2025-02-29'}, {'date': '2200-01-01'},
+    {'repeat': 'weekly'}, {'icon': 'unknown'}, {'color': 'invalid'}, {'style': 'unknown'}, {'note': 'x' * 1001},
+])
+def test_anniversary_validation(client, change):
+    login(client)
+    body = {'name': '生日', 'date': '2024-02-29', **change}
+    assert client.post('/api/anniversaries', json=body).status_code == 422
+
+
+def test_calendar_migration_preserves_old_rows():
+    from sqlalchemy import text
+    from sqlmodel import create_engine
+    from app.db import migrate_anniversary_columns
+    old = create_engine('sqlite://')
+    with old.begin() as conn:
+        conn.execute(text("CREATE TABLE anniversary (id INTEGER PRIMARY KEY, name VARCHAR, date VARCHAR, repeat VARCHAR, icon VARCHAR, note VARCHAR)"))
+        conn.execute(text("INSERT INTO anniversary VALUES (1, '原来的纪念日', '2024-02-29', 'yearly', 'heart', '不能丢的记忆')"))
+    migrate_anniversary_columns(old)
+    migrate_anniversary_columns(old)
+    with old.connect() as conn:
+        row = conn.execute(text('SELECT * FROM anniversary')).mappings().one()
+        assert row['note'] == '不能丢的记忆' and row['date'] == '2024-02-29'
+        assert row['color'] == 'rose' and row['style'] == 'letter' and row['pinned'] == 0
+    old.dispose()

@@ -1,10 +1,13 @@
 import mitt from 'mitt'
+import type { CharacterId } from '../characters'
+
+export interface IslandIdentity { character: CharacterId; display: string }
 
 /**
  * 游戏层（Phaser）与 UI 层（React）之间唯一允许的通信通道。
  * 规则：Phaser 不知道 React 存在，React 不碰 canvas。
  */
-export type PanelName = 'mailbox' | 'calendar' | 'bottle'
+export type PanelName = 'mailbox' | 'calendar' | 'bottle' | 'settings'
 
 export interface DayTick {
   time: string
@@ -17,12 +20,16 @@ export type GameEvents = {
   /** Phaser 场景就绪（App 收到后按登录态决定停在哪） */
   GAME_READY: Record<string, never>
   /** React → 游戏：登录成功/已登录，上岛 */
-  ENTER_ISLAND: Record<string, never>
+  ENTER_ISLAND: IslandIdentity
   /** React → 游戏：下岛回登录 */
   EXIT_TO_LOGIN: Record<string, never>
+  MOVE_INPUT: { x: number; y: number }
+  INTERACT: Record<string, never>
+  INTERACTION_CHANGED: { label: string | null }
   OPEN_MAILBOX: { unread: number }
   OPEN_CALENDAR: Record<string, never>
   OPEN_BOTTLE: { id: string }
+  OPEN_SETTINGS: Record<string, never>
   PANEL_OPENED: { panel: PanelName }
   PANEL_CLOSED: { panel: PanelName }
 }

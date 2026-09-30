@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlmodel import Session, select
 
@@ -8,14 +8,13 @@ from ..db import get_db
 from ..deps import get_current_user
 from ..models import Letter, User, jdump, jload
 
-router = APIRouter(prefix="/api/letters", tags=["letters"])
+router = APIRouter(prefix="/api/letters", tags=["letters"], dependencies=[Depends(get_current_user)])
 
 
 class LetterIn(BaseModel):
     date: str
     title: str
     excerpt: str = ""
-    author: str = "bear"
     theme: str = ""
     pages: List[str] = []
 
@@ -53,11 +52,12 @@ def create_letter(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
+    # 发件人 = 当前登录账号，客户端不能替对方署名
     letter = Letter(
         date=body.date,
         title=body.title,
         excerpt=body.excerpt,
-        author=body.author if body.author in ("bear", "her") else user.name,
+        author=user.name,
         theme=body.theme,
         pages_json=jdump(body.pages),
     )
@@ -76,6 +76,8 @@ def delete_letter(
     letter = db.get(Letter, letter_id)
     if not letter:
         raise HTTPException(404, "信不存在")
+    if letter.author != user.name:
+        raise HTTPException(403, "这封信是对方写的，舍不得删就留着吧")
     db.delete(letter)
     db.commit()
     return {"ok": True}

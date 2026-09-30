@@ -18,13 +18,16 @@ def ping():
 
 @router.get("/meta")
 def meta(db: Session = Depends(get_db)):
-    from ..models import WorldState
+    from ..models import User, WorldState
 
     world = db.get(WorldState, 1)
     data = jload(world.data_json, {}) if world else {}
+    displays = {row.name: row.display for row in db.query(User).filter(User.name.in_(["bear", "her"]))}
     return {
         "site_title": data.get("site_title", "I-land"),
         "start_date": data.get("start_date", ""),
+        # 岛民昵称（登录页与各面板共用；改名字走 PUT /api/settings/names）
+        "names": {"bear": displays.get("bear") or "小熊", "her": displays.get("her") or "她"},
     }
 
 

@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { characterId } from './characters'
+import { CalendarFeature } from './calendar/CalendarFeature'
+import { IslandControls } from './components/IslandControls'
 import { api } from './api/client'
 import { eventBus } from './game/EventBus'
 import type { User } from './types'
@@ -7,14 +10,17 @@ import { Hud } from './components/Hud'
 import { LoginPanel } from './components/LoginPanel'
 import { MailboxPanel } from './components/panels/MailboxPanel'
 import { ComingSoonPanel } from './components/panels/ComingSoonPanel'
+import { SettingsPanel } from './components/SettingsPanel'
 
 export default function App() {
   // undefined = 还在检查登录态；null = 未登录
   const [user, setUser] = useState<User | null | undefined>(undefined)
   const userRef = useRef<User | null | undefined>(undefined)
+  const gameReady = useRef(false)
 
   useEffect(() => {
     userRef.current = user
+    if (user && gameReady.current) eventBus.emit('ENTER_ISLAND', { character: characterId(user.sprite, user.name), display: user.display })
   }, [user])
 
   useEffect(() => {
@@ -26,7 +32,9 @@ export default function App() {
   // Phaser 场景就绪后，按登录态决定停在登录页还是直接上岛
   useEffect(() => {
     const onReady = () => {
-      if (userRef.current) eventBus.emit('ENTER_ISLAND', {})
+      gameReady.current = true
+      const current = userRef.current
+      if (current) eventBus.emit('ENTER_ISLAND', { character: characterId(current.sprite, current.name), display: current.display })
     }
     eventBus.on('GAME_READY', onReady)
     return () => eventBus.off('GAME_READY', onReady)
@@ -58,18 +66,24 @@ export default function App() {
           <Hud
             user={user}
             onLogout={() => {
+              gameReady.current = false
               setUser(null)
               eventBus.emit('EXIT_TO_LOGIN', {})
             }}
           />
+          <IslandControls />
           <MailboxPanel />
           <ComingSoonPanel />
+          <CalendarFeature />
+          <SettingsPanel
+            user={user}
+            onDisplayChange={display => setUser(current => current ? { ...current, display } : current)}
+          />
         </>
       ) : (
         <LoginPanel
           onLogin={(u) => {
             setUser(u)
-            eventBus.emit('ENTER_ISLAND', {})
           }}
         />
       )}

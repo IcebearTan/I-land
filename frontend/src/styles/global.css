@@ -25,7 +25,7 @@ body,
 body {
   margin: 0;
   font-family:
-    'Kaiti SC', 'STKaiti', 'KaiTi', 'FZKai-Z03S', 'AR PL UKai CN', serif;
+    -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   color: var(--ink);
   background: var(--night);
   -webkit-font-smoothing: antialiased;
@@ -64,193 +64,134 @@ body {
 /* ── 木牌面板 ──────────────────────────────────────── */
 .wood-panel {
   background: var(--cream);
-  border: 3px solid var(--beam);
-  border-radius: 8px;
+  border: 2px solid var(--beam);
+  border-radius: 4px;
   box-shadow:
     0 4px 0 var(--beam-dark),
     inset 0 0 0 2px var(--wood);
 }
 
-/* ── 登录（泰拉瑞亚粗石板风，浮在像素场景上）───────── */
+/* ── 登录 · 奶油信笺与像素风景 ──────────────────────── */
 .login-wrap {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 40px 20px;
+  overflow-y: auto;
+  background: linear-gradient(180deg, transparent 60%, rgba(43, 27, 69, .12));
 }
 
-.login-float {
-  animation: login-float 4.5s ease-in-out infinite;
-}
-
-@keyframes login-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
+.login-float { width: min(100%, 376px); }
 
 .login-panel {
-  width: min(92vw, 380px);
-  padding: 30px 28px 24px;
-  text-align: center;
-  background:
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.028) 0 2px, transparent 2px 6px),
-    #2a2440;
-  border: 4px solid #14101f;
-  border-radius: 0;
-  box-shadow:
-    inset 0 4px 0 rgba(255, 255, 255, 0.12),
-    inset 4px 0 0 rgba(255, 255, 255, 0.05),
-    inset 0 -5px 0 rgba(0, 0, 0, 0.42),
-    inset -4px 0 0 rgba(0, 0, 0, 0.26),
-    0 9px 0 rgba(10, 8, 20, 0.5);
-  animation: login-drop 0.5s cubic-bezier(0.3, 1.25, 0.4, 1);
   position: relative;
+  padding: 34px 32px 26px;
+  background: var(--cream);
+  border: 2px solid var(--beam);
+  border-radius: 3px;
+  box-shadow: 0 5px 0 var(--beam-dark), 0 18px 50px #2b1b4526, inset 0 0 0 5px #f0d9a8;
+  text-align: center;
 }
 
-/* 四角铆钉 */
 .login-panel::before,
 .login-panel::after {
   content: '';
   position: absolute;
-  width: 6px;
-  height: 6px;
-  background: #ffe9a8;
-  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.4);
+  width: 4px;
+  height: 4px;
+  background: var(--beam);
 }
+.login-panel::before { top: max(20px, env(safe-area-inset-top)); left: max(20px, env(safe-area-inset-left)); }
+.login-panel::after { bottom: 12px; right: max(20px, env(safe-area-inset-right)); }
 
-.login-panel::before {
-  top: 8px;
-  left: 8px;
+.login-eyebrow {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font: 10px ui-monospace, monospace;
+  letter-spacing: .24em;
 }
-
-.login-panel::after {
-  bottom: 8px;
-  right: 8px;
-}
-
-@keyframes login-drop {
-  from {
-    transform: translateY(-26px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
 .site-title {
   margin: 0;
-  font-size: 42px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: #ffe9a8;
-  text-shadow:
-    2px 0 0 #14101f,
-    -2px 0 0 #14101f,
-    0 2px 0 #14101f,
-    0 -2px 0 #14101f,
-    2px 2px 0 #14101f,
-    -2px 2px 0 #14101f,
-    2px -2px 0 #14101f,
-    -2px -2px 0 #14101f,
-    0 6px 0 #7c2f44,
-    0 9px 0 rgba(0, 0, 0, 0.35);
+  font: 54px Georgia, serif;
+  letter-spacing: -.04em;
+  color: var(--ink);
 }
-
 .site-sub {
-  margin: 10px 0 22px;
+  margin: 12px 0 24px;
   font-size: 13px;
-  letter-spacing: 0.3em;
-  color: #cfc6ea;
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+  letter-spacing: .16em;
+  color: var(--ink);
 }
-
-.login-panel form {
+.login-divider {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  color: #a54860;
+  font-size: 12px;
 }
-
+.login-divider::before, .login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--wood);
+}
+.login-panel form { display: flex; flex-direction: column; gap: 16px; }
 .login-panel label {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 8px;
   text-align: left;
   font-size: 12px;
-  letter-spacing: 0.28em;
-  color: #a99ed0;
+  color: var(--ink);
 }
-
 .login-panel input {
-  border: 3px solid #14101f;
-  border-radius: 0;
-  background: #1b1730;
-  box-shadow:
-    inset 0 3px 0 rgba(0, 0, 0, 0.5),
-    inset 0 -2px 0 rgba(255, 255, 255, 0.06);
-  padding: 11px 12px;
-  font-size: 16px;
-  font-family: inherit;
-  color: #f5eee2;
-  caret-color: #ffd98a;
-}
-
-.login-panel input::placeholder {
-  color: #6f6598;
-}
-
-.login-panel input:focus {
-  outline: none;
-  border-color: #ffd98a;
-  box-shadow:
-    inset 0 3px 0 rgba(0, 0, 0, 0.5),
-    0 0 0 2px rgba(255, 217, 138, 0.35);
-}
-
-.login-hint {
-  margin: 16px 0 0;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  color: #b9b0d8;
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
-}
-
-.btn-login {
   width: 100%;
-  padding: 13px 16px;
-  font-size: 17px;
-  letter-spacing: 0.28em;
-  margin-top: 4px;
+  min-height: 46px;
+  border: 1px solid #bba184;
+  border-radius: 3px;
+  background: #fffcf5;
+  box-shadow: inset 0 2px 0 #4a3b5508;
+  padding: 11px 12px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  caret-color: var(--ink);
 }
-
-.btn-login:disabled {
-  filter: saturate(0.5) brightness(0.85);
-  cursor: wait;
+.login-panel input::placeholder { color: #796978; font-size: 13px; }
+.login-panel input:focus-visible { outline: 2px solid #5a944a; outline-offset: 3px; }
+.login-hint { margin: 22px 0 0; font-size: 11px; color: var(--ink); letter-spacing: .08em; }
+.login-caption { margin: 22px 0 0; text-align: center; color: #f5eee2; font-size: 12px; letter-spacing: .18em; text-shadow: 0 1px 4px #2b1b45; }
+.btn.btn-login {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 6px;
+  background: #5a944a;
+  color: #f5eee2;
+  border: 1px solid #3f6539;
+  border-radius: 3px;
+  box-shadow: 0 3px 0 #3f6539, inset 0 1px 0 #7cb860;
+  font-size: 14px;
+  letter-spacing: .18em;
 }
-
+.btn-login:disabled { opacity: .7; cursor: wait; }
 @media (max-width: 480px) {
-  .site-title {
-    font-size: 34px;
-  }
-
-  .login-panel {
-    padding: 24px 20px 20px;
-  }
+  .login-wrap { padding: 24px; }
+  .login-panel { padding: 28px 26px 24px; }
+  .site-title { font-size: 48px; }
+}
+@media (max-height: 580px) {
+  .login-wrap { place-items: start center; padding: 18px; }
+  .login-panel { padding-top: 22px; padding-bottom: 22px; }
+  .login-caption { display: none; }
 }
 
 /* ── 按钮 ──────────────────────────────────────────── */
 .form-error {
   margin: 0;
   font-size: 13px;
-  color: #ff9aa8;
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+  color: #a03450;
 }
 
 .btn {
@@ -298,8 +239,8 @@ body {
 
 .hud-sign {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: max(20px, env(safe-area-inset-top));
+  left: max(20px, env(safe-area-inset-left));
   padding: 10px 14px;
   min-width: 130px;
 }
@@ -313,14 +254,14 @@ body {
 .hud-days {
   margin-top: 4px;
   font-size: 13px;
-  color: var(--heart);
-  letter-spacing: 0.15em;
+  color: #a54860;
+  letter-spacing: 0.1em;
 }
 
 .hud-right {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: max(20px, env(safe-area-inset-top));
+  right: max(20px, env(safe-area-inset-right));
   display: flex;
   align-items: center;
   gap: 10px;
@@ -328,8 +269,8 @@ body {
 }
 
 .hud-clock {
-  background: rgba(14, 16, 48, 0.55);
-  border-radius: 8px;
+  background: rgba(43, 27, 69, 0.85);
+  border-radius: 4px;
   padding: 8px 12px;
   display: flex;
   flex-direction: column;
@@ -349,8 +290,8 @@ body {
 }
 
 .hud-user {
-  background: rgba(14, 16, 48, 0.55);
-  border-radius: 8px;
+  background: rgba(43, 27, 69, 0.85);
+  border-radius: 4px;
   padding: 6px 8px 6px 12px;
   color: var(--cream);
   font-size: 13px;
@@ -438,7 +379,7 @@ body {
 
 .letter-item {
   border: 2px solid var(--wood);
-  border-radius: 8px;
+  border-radius: 4px;
   background: #fffdf7;
   padding: 10px 12px;
 }
@@ -500,3 +441,153 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* 键盘焦点与小屏 HUD */
+.btn:focus-visible { outline: 3px solid #3f6f9e; outline-offset: 4px; }
+.hud-help {
+  position: absolute;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  border: 1px solid #f0d9a8;
+  background: var(--cream);
+  color: var(--ink);
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.hud-help-touch { display: none; }
+@media (pointer: coarse), (max-width: 480px) {
+  .hud-help-keys { display: none; }
+  .hud-help-touch { display: inline; }
+}
+@media (max-width: 480px) {
+  .hud-sign { left: 12px; top: max(12px, env(safe-area-inset-top)); min-width: 100px; padding: 9px 11px; }
+  .hud-right { right: 12px; top: max(12px, env(safe-area-inset-top)); flex-direction: column; align-items: flex-end; gap: 8px; }
+  .hud-clock { flex-direction: row; gap: 8px; }
+  .hud-help { font-size: 11px; padding: 9px 12px; }
+}
+
+/* 岛内信笺：与场景的奶油纸张、细木边保持一致。 */
+.modal-mask { background: #2b1b4566; }
+.modal-panel { padding: 26px; border-radius: 3px; box-shadow: 0 5px 0 #6e4529, inset 0 0 0 4px #f0d9a8, 0 18px 50px #2b1b4533; }
+.modal-head { padding-bottom: 16px; border-bottom: 1px solid #e8c48f; margin-bottom: 20px; }
+.modal-head h2 { color: #4a3b55; font-size: 18px; letter-spacing: .08em; }
+.letter-empty { padding: 22px 0 32px; text-align: center; }
+.letter-empty p { margin: 24px 0 8px; color: #4a3b55; font-size: 15px; }
+.letter-empty span { color: #6d5e7a; font-size: 12px; }
+.paper-envelope { position: relative; isolation: isolate; width: 80px; height: 52px; margin: 0 auto; display: grid; place-items: center; background: #f0d9a8; border: 2px solid #b99168; box-shadow: 3px 4px 0 #e8c48f; color: #a54860; font-size: 17px; }
+.paper-envelope::before { content: ''; position: absolute; z-index: -1; inset: 0; background: #fffaf0; clip-path: polygon(0 0,100% 0,50% 63%); }
+.hud-help { background: #fdf6e9ed; border-color: #d5b78e; font-size: 11px; box-shadow: 0 2px 0 #8a5a3866; }
+.hud-sign { min-width: 120px; }
+.hud-title { font-size: 13px; }
+.hud-days { font-size: 12px; }
+@media (max-width: 480px) {
+  .hud-sign { min-width: 0; max-width: 174px; }
+  .hud-title { font-size: 11px; }
+  .hud-user { font-size: 11px; padding: 5px 7px; }
+  .hud-help { width: max-content; max-width: calc(100% - 24px); white-space: normal; text-align: center; }
+}
+
+/* 两位岛民：共享像素头像、账号卡片与岛上身份。 */
+.character-portrait { display: block; flex-shrink: 0; image-rendering: pixelated; }
+.islander-select { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: -4px 0 20px; }
+.islander-option { display: flex; align-items: center; flex-direction: column; gap: 8px; padding: 12px 4px 10px; cursor: pointer; border: 1px solid #c8ad8b; border-radius: 4px; background: #fffbf2; color: #4a3b55; font: inherit; font-size: 12px; }
+.islander-option small { display: block; margin-top: 5px; color: #6d5e7a; font-size: 9px; }
+.islander-option[aria-pressed="true"] { border-color: #5a944a; background: #edf0db; box-shadow: inset 0 0 0 1px #5a944a; }
+.islander-option:hover { background: #f3ead7; }
+.islander-option:focus-visible, .text-button:focus-visible, .letter-card:focus-visible, .wax-seal:focus-visible { outline: 3px solid #3f6f9e; outline-offset: 3px; }
+.hud-presence { position: absolute; bottom: 76px; left: 20px; display: flex; align-items: center; gap: 10px; max-width: 220px; padding: 11px 14px; background: #fdf6e9ed; border: 1px solid #c8ad8b; border-radius: 4px; color: #4a3b55; }
+.hud-presence strong { display: block; font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+.hud-presence span { display: block; font-size: 11px; line-height: 1.5; }
+.presence-note { margin-top: 4px; overflow-wrap: anywhere; max-height: 3em; overflow: hidden; }
+
+/* 移动端输入为 DOM 控件，所有移动意图经 EventBus 传给游戏。 */
+.island-controls { position: absolute; inset: 0; pointer-events: none; }
+.joystick-wrap { display: none; position: absolute; left: max(22px, env(safe-area-inset-left)); bottom: max(26px, env(safe-area-inset-bottom)); text-align: center; color: #4a3b55; font-size: 10px; }
+.joystick-wrap > span { display: inline-block; margin-top: 8px; padding: 3px 7px; background: #fdf6e9e8; border-radius: 3px; }
+.joystick { display: grid; place-items: center; position: relative; width: 96px; height: 96px; border: 2px solid #b99b73; border-radius: 50%; background: #fdf6e9cc; box-shadow: inset 0 0 0 6px #f0d9a877, 0 3px 0 #6e452955; pointer-events: auto; touch-action: none; cursor: grab; user-select: none; }
+.joystick:focus-visible { outline: 3px solid #3f6f9e; outline-offset: 3px; }
+.joystick-cross { font-size: 68px; line-height: 1; color: #c3ab87; font-weight: 200; }
+.joystick-thumb { position: absolute; width: 38px; height: 38px; border: 2px solid #9a7956; border-radius: 50%; background: #e8c48f; box-shadow: inset 0 2px 0 #fdf6e9, 0 2px 0 #8a5a3888; }
+.island-interact { display: none; position: absolute; right: max(22px, env(safe-area-inset-right)); bottom: max(50px, env(safe-area-inset-bottom)); min-width: 108px; min-height: 60px; padding: 10px 14px; border: 2px solid #8a5a38; border-radius: 6px; background: #fdf6e9; color: #4a3b55; font: inherit; font-size: 12px; box-shadow: 0 4px 0 #6e4529; pointer-events: auto; touch-action: manipulation; }
+.island-interact span { display: block; font-size: 22px; margin-bottom: 3px; color: #a54860; }
+.island-interact:disabled { opacity: .8; box-shadow: none; }
+@media (pointer: coarse), (max-width: 600px) {
+  .joystick-wrap, .island-interact { display: block; }
+  .hud-help { display: none; }
+  .hud-presence { top: 88px; bottom: auto; left: 12px; gap: 6px; padding: 7px 9px; max-width: 172px; }
+  .hud-presence strong { font-size: 10px; }
+  .hud-presence span { font-size: 10px; }
+  .presence-note { display: none !important; }
+}
+@media (max-height: 500px) and (pointer: coarse) {
+  .hud-presence { display: none; }
+  .joystick { width: 78px; height: 78px; }
+  .joystick-wrap { bottom: 12px; }
+  .island-interact { bottom: 25px; }
+}
+
+/* M2 阅读：纸信封、火漆与逐页信纸。 */
+.mailbox-panel { width: min(92vw, 520px); max-height: min(88dvh, 760px); }
+.mailbox-panel--reading { width: min(94vw, 680px); }
+.panel-eyebrow { margin: 0 0 6px; color: #6d5e7a; font: 9px ui-monospace, monospace; letter-spacing: .14em; }
+.mailbox-intro { font-size: 12px; color: #6d5e7a; line-height: 1.7; margin: 0 0 20px; }
+.text-button { appearance: none; background: none; border: none; color: #6e4529; font: inherit; font-size: 12px; padding: 8px 2px; cursor: pointer; }
+.letter-card { display: flex; align-items: center; width: 100%; gap: 12px; text-align: left; padding: 16px 12px; font: inherit; border: 1px solid #d7bea0; border-radius: 3px; color: #4a3b55; background: #fffcf5; cursor: pointer; box-shadow: 0 2px 0 #e8c48f; }
+.letter-card:hover { border-color: #8a5a38; background: #f7efdE; }
+.letter-card-copy { flex: 1; min-width: 0; }
+.letter-card strong { display: block; font-size: 14px; margin: 8px 0; overflow-wrap: anywhere; }
+.letter-card .letter-meta { gap: 8px; font-size: 10px; color: #6d5e7a; flex-wrap: wrap; }
+.letter-card .letter-excerpt { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+.letter-card-arrow { color: #a54860; font-size: 19px; }
+.sealed-letter { position: relative; isolation: isolate; margin: 22px 0 12px; padding: 22px 24px 26px; min-height: 280px; text-align: center; border: 1px solid #c2a17a; background: #f0d9a8; box-shadow: 4px 5px 0 #e8c48f; }
+.sealed-letter::before { content: ''; position: absolute; inset: 0; z-index: -1; background: #fff8e9; clip-path: polygon(0 0, 100% 0, 50% 62%); }
+.sealed-letter-address { display: flex; align-items: center; justify-content: space-between; font: 11px ui-monospace, monospace; color: #6e4529; }
+.sealed-letter p { font-size: 12px; margin-top: 16px; }
+.sealed-letter h3 { font-size: 20px; font-weight: 500; margin: 10px 0 22px; overflow-wrap: anywhere; }
+.wax-seal { width: 52px; height: 52px; border-radius: 50%; border: 3px double #e9a393; background: #ad5260; color: #f5eee2; box-shadow: 0 3px 0 #7c394a; cursor: pointer; font-size: 24px; }
+.wax-seal:hover { transform: rotate(-8deg); }
+.seal-instruction { display: block; font-size: 11px; margin-top: 16px; color: #4a3b55; }
+.reading-meta { padding: 12px 0 8px; }
+.reading-meta > span { color: #6d5e7a; font-size: 11px; }
+.reading-meta h3 { font-size: 20px; font-weight: 500; margin: 10px 0; overflow-wrap: anywhere; }
+.letter-paper { min-height: 180px; max-height: 48dvh; overflow: auto; background: #fffdf7; border: 1px solid #e5d5b8; padding: 14px; animation: paper-unfold .35s ease-out; }
+.letter-paper img { display: block; width: 100%; height: auto; }
+.letter-text { white-space: pre-wrap; font-size: 15px; line-height: 2; overflow-wrap: anywhere; }
+.paper-signature { display: block; text-align: right; font-size: 13px; padding: 20px 4px; }
+.page-turner { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 18px; }
+.page-turner > span { font-size: 12px; }
+.btn:disabled { opacity: .55; cursor: default; transform: none; }
+@keyframes paper-unfold { from { opacity: .7; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 480px) {
+  .mailbox-panel { padding: 20px 18px; }
+  .sealed-letter { padding: 16px; }
+  .letter-card { padding: 12px 9px; gap: 8px; }
+  .login-panel { padding-top: 24px; padding-bottom: 20px; }
+  .login-divider { margin-bottom: 20px; }
+  .islander-select { gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wax-seal:hover { transform: none; }
+}
+
+/* ── 设置控制台（岛民名字 + 登录暗号） ─────────────── */
+.settings-panel { width: min(92vw, 500px); }
+.settings-section { display: grid; gap: 12px; padding: 16px 0 6px; border-top: 1px dashed #e5d4b6; }
+.settings-section:first-of-type { border-top: 0; padding-top: 4px; }
+.settings-section h3 { margin: 0; font-size: 15px; font-weight: 500; }
+.settings-note { margin: 0; font-size: 12px; line-height: 1.8; color: #6d5e7a; }
+.settings-section label { display: grid; gap: 6px; font-size: 12px; }
+.settings-section label span { color: #6d5e7a; }
+.settings-section label small { color: #8a7b83; margin-left: 6px; }
+.settings-section input { border: 1px solid #c8ad8b; border-radius: 4px; background: #fffdf7; color: #4a3b55; padding: 11px; font: inherit; font-size: 16px; }
+.settings-section input:focus-visible { outline: 2px solid #5a944a; outline-offset: 2px; }
+.settings-name-row { display: flex; align-items: center; gap: 12px; }
+.settings-name-row > label { flex: 1; }
+.settings-notice { margin: 0; padding: 8px 12px; border-radius: 4px; background: #e8efdb; color: #46683b; font-size: 12px; line-height: 1.7; }
+.settings-section .btn-primary { justify-self: start; }
+.account-done { display: grid; justify-items: center; gap: 10px; text-align: center; padding: 12px 6px 2px; }
+.account-done h3 { margin: 4px 0 0; font-size: 17px; font-weight: 500; }
+.account-done p { margin: 0 0 10px; font-size: 12px; line-height: 1.8; color: #6d5e7a; }

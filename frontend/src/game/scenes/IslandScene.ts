@@ -1,62 +1,23 @@
 import Phaser from 'phaser'
-import { eventBus, type Phase } from '../EventBus'
-import { BEAR_PALETTE, BEAR_ROWS, makeTexture } from '../pixels'
+import { eventBus, type Phase, type IslandIdentity } from '../EventBus'
+import { makeTexture } from '../pixels'
+import { hash2 } from '../art'
+import { createIslandArt, WORLD, HOME, TOWER, MAIL, DOCK, SPAWN, BOTTLE, TREES, LAMPS, OBSTACLES, landDistance } from '../art/island'
 
-/** ─── 世界规格（M1 换 Tiled 地图后此处常量仅作占位）────────────────── */
-const TILE = 16
-const MAP_W = 64
-const MAP_H = 48
-const WORLD_W = MAP_W * TILE
-const WORLD_H = MAP_H * TILE
-
-// 岛屿椭圆（椭圆内的草地/沙滩可以走，海不可走）
-const ISLAND = { cx: 512, cy: 380, rx: 330, ry: 225 }
-// 南侧码头（矩形例外区）
-const DOCK = { x1: 486, x2: 538, y2: ISLAND.cy + ISLAND.ry + 92 }
-const SPAWN = { x: 512, y: DOCK.y2 - 24 }
-
-const SPEED = 85 // world px / s
-
-/** ─── 调色板（与 DESIGN.md 锁定值一致）────────────────────────────── */
-const C = {
-  sea: 0x3f6f9e,
-  seaLight: 0x7fb6d9,
-  seaDark: 0x2c5478,
-  sand: 0xf0d9a8,
-  sandWet: 0xd9b97f,
-  grass: 0x7cb860,
-  grassDark: 0x5a944a,
-  grassLight: 0x9ed177,
-  dirt: 0x8a5a38,
-  dirtDark: 0x6e4529,
-  wood: 0xe8c48f,
-  roof: 0xc96f5a,
-  beam: 0x8a5a38,
-  warm: 0xffd98a,
-  ink: 0x2b1b45,
-  heart: 0xe8637c,
-}
-
-interface Interactable {
-  x: number
-  y: number
-  r: number
-  label: string
-  event: 'OPEN_MAILBOX' | 'OPEN_CALENDAR'
-}
-
-/** 昼夜 tint 关键帧：小时 → 乘法混合色 */
 const TINT_KEYS: Array<{ h: number; c: number }> = [
-  { h: 0, c: 0x6a6f9e }, // 深夜
-  { h: 5, c: 0x6a6f9e },
-  { h: 6.5, c: 0xe8b4c8 }, // 黎明粉
-  { h: 8, c: 0xffffff }, // 白天（不染色）
+  { h: 0, c: 0x8a92c8 },
+  { h: 5, c: 0x8a92c8 },
+  { h: 6.5, c: 0xe8c4d4 },
+  { h: 8, c: 0xffffff },
   { h: 16, c: 0xffffff },
-  { h: 18, c: 0xe8a577 }, // 黄昏橙（品牌基调）
-  { h: 20, c: 0x6a6f9e },
-  { h: 24, c: 0x6a6f9e },
+  { h: 18, c: 0xf0c098 },
+  { h: 19.5, c: 0xa8aecf },
+  { h: 20.5, c: 0x8a92c8 },
+  { h: 24, c: 0x8a92c8 },
 ]
 
+
+const PHASE_OVERRIDE = new URLSearchParams(window.location.search).get('phase')
 function lerpColor(a: number, b: number, t: number): number {
   const ar = (a >> 16) & 0xff
   const ag = (a >> 8) & 0xff
@@ -64,10 +25,7 @@ function lerpColor(a: number, b: number, t: number): number {
   const br = (b >> 16) & 0xff
   const bg = (b >> 8) & 0xff
   const bb = b & 0xff
-  const r = Math.round(ar + (br - ar) * t)
-  const g = Math.round(ag + (bg - ag) * t)
-  const bl = Math.round(ab + (bb - ab) * t)
-  return (r << 16) | (g << 8) | bl
+  return ((Math.round(ar + (br - ar) * t) << 16) | (Math.round(ag + (bg - ag) * t) << 8)) | Math.round(ab + (bb - ab) * t)
 }
 
 function tintAtHour(h: number): number {
@@ -83,426 +41,249 @@ function tintAtHour(h: number): number {
 }
 
 function phaseAtHour(h: number): Phase {
-  if (h < 5 || h >= 20) return 'night'
+  if (PHASE_OVERRIDE === 'day' || PHASE_OVERRIDE === 'dusk' || PHASE_OVERRIDE === 'night' || PHASE_OVERRIDE === 'dawn') {
+    return PHASE_OVERRIDE
+  }
+  if (h < 5.5 || h >= 20) return 'night'
   if (h < 8) return 'dawn'
-  if (h < 16) return 'day'
+  if (h < 16.5) return 'day'
   return 'dusk'
 }
 
-// 8×10 漂流瓶
-const BOTTLE_ROWS = [
-  '...cc...',
-  '...cc...',
-  '..gggg..',
-  '.gGGGGg.',
-  '.gGGGGg.',
-  '.gGGGGg.',
-  '.gGGGGg.',
-  '..gggg..',
-]
-const BOTTLE_PALETTE: Record<string, string> = {
-  c: '#d9b97f', // 软木塞
-  g: '#5f93a8', // 玻璃深
-  G: '#a8d4e0', // 玻璃亮
-}
+interface Interactable { x: number; y: number; label: string; event: 'mailbox' | 'calendar' | 'bottle' }
 
 export class IslandScene extends Phaser.Scene {
+  private identity: IslandIdentity = { character: 'bear', display: '小熊' }
+  private moveInput = { x: 0, y: 0 }
+  private destination!: Phaser.GameObjects.Graphics
+  private interactionLabel: string | null = null
   private player!: Phaser.Physics.Arcade.Sprite
-  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
-  private keyE!: Phaser.Input.Keyboard.Key
-  private keyW!: Phaser.Input.Keyboard.Key
-  private keyA!: Phaser.Input.Keyboard.Key
-  private keyD!: Phaser.Input.Keyboard.Key
-  private keyS!: Phaser.Input.Keyboard.Key
+  private shadow!: Phaser.GameObjects.Ellipse
+  private keys!: Record<string, Phaser.Input.Keyboard.Key>
   private tapTarget: Phaser.Math.Vector2 | null = null
   private panelOpen = false
-  private tintOverlay!: Phaser.GameObjects.Rectangle
+  private secondTimer = 0
+  private facing = 'front'
   private prompt!: Phaser.GameObjects.Container
   private promptText!: Phaser.GameObjects.Text
-  private promptZone!: Phaser.GameObjects.Zone
+  private promptBg!: Phaser.GameObjects.Graphics
   private promptTarget: Interactable | null = null
-  private interactables: Interactable[] = []
-  private consumedTap = false
-  private secondTimer = 0
+  private tintOverlay!: Phaser.GameObjects.Rectangle
+  private nightLights!: Phaser.GameObjects.Container
+  private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+  private decorations: Phaser.GameObjects.Image[] = []
+  private previous = { x: SPAWN.x, y: SPAWN.y }
+  private interactables: Interactable[] = [
+    { ...MAIL, label: '小屋信箱', event: 'mailbox' },
+    { x: TOWER.x, y: TOWER.y + 8, label: '灯塔 · 记忆日历', event: 'calendar' },
+    { ...BOTTLE, label: '海边漂流瓶', event: 'bottle' },
+  ]
 
-  constructor() {
-    super('Island')
+  constructor() { super('Island') }
+
+  init(identity?: IslandIdentity): void {
+    this.identity = identity ?? { character: 'bear', display: '小熊' }
+    this.facing = 'front'
+    this.moveInput = { x: 0, y: 0 }
+    this.interactionLabel = null
   }
 
   create(): void {
-    this.cameras.main.setBounds(0, 0, WORLD_W, WORLD_H)
-    this.physics.world.setBounds(0, 0, WORLD_W, WORLD_H)
-
-    makeTexture(this, 'bear', BEAR_ROWS, BEAR_PALETTE)
-    makeTexture(this, 'bottle', BOTTLE_ROWS, BOTTLE_PALETTE)
-
-    this.paintTerrain()
-    this.paintBuildings()
-    this.placeInteractables()
-    this.spawnBottles()
-
-    // ── 玩家 ────────────────────────────────────────────────
-    this.player = this.physics.add.sprite(SPAWN.x, SPAWN.y, 'bear')
-    this.player.setCollideWorldBounds(true)
-    this.player.setSize(12, 6).setOffset(2, 10) // 脚底碰撞盒，视觉是全身
-    this.player.setDepth(1000)
-    // 待机呼吸：只 tween scaleY（位置 y 归物理引擎管，别的写入者会和它打架）
-    this.tweens.add({
-      targets: this.player,
-      scaleY: 0.94,
-      duration: 550,
-      yoyo: true,
-      repeat: -1,
-      ease: 'sine.inout',
-    })
-
-    this.cameras.main.startFollow(this.player, true, 0.12, 0.12)
+    this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.decorations = []; this.previous = { ...SPAWN }
+    this.cameras.main.setBounds(0, 0, WORLD.width, WORLD.height)
+    this.physics.world.setBounds(0, 0, WORLD.width, WORLD.height)
+    createIslandArt(this)
+    this.add.image(0, 0, 'island-ground-v3').setOrigin(0).setDepth(0)
+    this.placeScenery()
+    this.setupLights()
+    this.shadow = this.add.ellipse(SPAWN.x, SPAWN.y + 6, 13, 5, 0x345b40, .24).setDepth(1)
+    this.player = this.physics.add.sprite(SPAWN.x, SPAWN.y, `islander-${this.identity.character}-front`)
+    this.player.setSize(10, 5).setOffset(3, 10).setCollideWorldBounds(true)
+    this.cameras.main.startFollow(this.player, true, 1, 1, 0, 65)
     this.fitZoom()
-
-    // ── 输入 ────────────────────────────────────────────────
-    this.cursors = this.input.keyboard!.createCursorKeys()
-    const kb = this.input.keyboard!
-    this.keyE = kb.addKey('E')
-    this.keyW = kb.addKey('W')
-    this.keyA = kb.addKey('A')
-    this.keyD = kb.addKey('D')
-    this.keyS = kb.addKey('S')
-    kb.on('keydown', () => {
-      this.tapTarget = null // 键盘一按就取消点地目标
-    })
-
-    // 点地行走（移动端 tap-first）
-    this.input.on('pointerdown', (ptr: Phaser.Input.Pointer) => {
-      if (this.panelOpen) return
-      if (this.consumedTap) {
-        this.consumedTap = false
-        return
-      }
-      const world = this.cameras.main.getWorldPoint(ptr.x, ptr.y)
+    this.destination = this.add.graphics().setDepth(2).setVisible(false)
+    this.destination.lineStyle(1, 0xfdf6e9).strokeEllipse(0, 0, 14, 7).lineStyle(1, 0x8a5a38).strokeEllipse(0, 0, 18, 11)
+    this.keys = this.input.keyboard!.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,E,SPACE') as Record<string, Phaser.Input.Keyboard.Key>
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer, objects: Phaser.GameObjects.GameObject[]) => {
+      if (this.panelOpen || objects.length) return
+      const world = this.cameras.main.getWorldPoint(pointer.x, pointer.y)
+      if (!this.walkable(world.x, world.y)) return
       this.tapTarget = new Phaser.Math.Vector2(world.x, world.y)
+      this.destination.setPosition(world.x, world.y + 5).setVisible(true)
     })
-
-    // 交互气泡（既是提示也是移动端点击热区）
-    this.prompt = this.add.container(0, 0).setDepth(2000).setVisible(false)
-    const bg = this.add.graphics()
-    this.promptText = this.add
-      .text(0, 0, '', { fontSize: '6px', color: '#fdf6e9', resolution: 3 })
-      .setOrigin(0.5, 0.5)
-    this.promptZone = this.add
-      .zone(0, 0, 60, 26)
-      .setOrigin(0.5, 0.5)
-      .setInteractive({ useHandCursor: true })
-    this.promptZone.on('pointerdown', () => {
-      this.consumedTap = true
-      this.tryInteract()
-    })
-    this.prompt.add([bg, this.promptText, this.promptZone])
-
-    // ── 昼夜 tint 层 ────────────────────────────────────────
-    this.tintOverlay = this.add
-      .rectangle(0, 0, WORLD_W, WORLD_H, 0xffffff, 1)
-      .setOrigin(0, 0)
-      .setDepth(5000)
-      .setBlendMode(Phaser.BlendModes.MULTIPLY)
-      .setScrollFactor(0)
-
-    // ── UI 面板开合 ────────────────────────────────────────
-    eventBus.on('PANEL_OPENED', () => {
-      this.panelOpen = true
-      this.tapTarget = null
-      this.player.setVelocity(0, 0)
-    })
-    eventBus.on('PANEL_CLOSED', () => {
-      this.panelOpen = false
-    })
-
-    this.scale.on('resize', this.fitZoom, this)
-    this.updateDayNight()
-    this.cameras.main.fadeIn(400, 0, 0, 0)
-
+    this.promptBg = this.add.graphics()
+    this.promptText = this.add.text(0, 0, '', {
+      fontFamily: 'system-ui, sans-serif', fontSize: '8px', color: '#4a3b55', resolution: 3,
+    }).setOrigin(.5)
+    const zone = this.add.zone(0, 0, 125, 26).setInteractive({ useHandCursor: true })
+    zone.on('pointerdown', () => this.tryInteract())
+    this.prompt = this.add.container(0, 0, [this.promptBg, this.promptText, zone]).setDepth(9000).setVisible(false)
+    this.tintOverlay = this.add.rectangle(0, 0, WORLD.width, WORLD.height, 0xffffff)
+      .setOrigin(0).setDepth(5000).setBlendMode(Phaser.BlendModes.MULTIPLY)
+    const onMove = (input: { x: number; y: number }) => {
+      this.moveInput = this.panelOpen ? { x: 0, y: 0 } : input
+      if (input.x || input.y) this.tapTarget = null
+    }
+    const onInteract = () => this.tryInteract()
+    const onOpen = () => {
+      this.panelOpen = true; this.tapTarget = null; this.moveInput = { x: 0, y: 0 }; this.player.setVelocity(0, 0)
+      this.input.keyboard!.resetKeys(); this.input.keyboard!.enabled = false
+    }
+    const onClose = () => { this.panelOpen = false; this.input.keyboard!.enabled = true }
+    const onBlur = () => { this.moveInput = { x: 0, y: 0 }; this.tapTarget = null; this.input.keyboard!.resetKeys() }
+    this.game.events.on('blur', onBlur)
+    eventBus.on('MOVE_INPUT', onMove); eventBus.on('INTERACT', onInteract)
     let leaving = false
     const onExit = () => {
       if (leaving) return
       leaving = true
-      this.cameras.main.fadeOut(480, 0, 0, 0)
-      this.cameras.main.once('camerafadeoutcomplete', () => {
-        this.time.delayedCall(60, () => this.scene.start('Login'))
-      })
+      this.cameras.main.once('camerafadeoutcomplete', () => this.time.delayedCall(16, () => this.scene.start('Login')))
+      this.cameras.main.fadeOut(this.reducedMotion.matches ? 0 : 280)
     }
-    eventBus.on('EXIT_TO_LOGIN', onExit)
-
+    eventBus.on('PANEL_OPENED', onOpen); eventBus.on('PANEL_CLOSED', onClose); eventBus.on('EXIT_TO_LOGIN', onExit)
+    this.scale.on('resize', this.fitZoom, this)
     this.events.once('shutdown', () => {
-      eventBus.off('PANEL_OPENED')
-      eventBus.off('PANEL_CLOSED')
-      eventBus.off('EXIT_TO_LOGIN', onExit)
+      eventBus.off('PANEL_OPENED', onOpen); eventBus.off('PANEL_CLOSED', onClose); eventBus.off('EXIT_TO_LOGIN', onExit)
       this.scale.off('resize', this.fitZoom, this)
+      this.game.events.off('blur', onBlur)
+      eventBus.off('MOVE_INPUT', onMove); eventBus.off('INTERACT', onInteract)
+      eventBus.emit('INTERACTION_CHANGED', { label: null })
     })
+    this.updateDayNight()
+    if (!this.reducedMotion.matches) this.cameras.main.fadeIn(280)
   }
-
-  update(_time: number, delta: number): void {
-    if (!this.player.active) return
-
-    if (this.panelOpen) {
-      this.player.setVelocity(0, 0)
-    } else {
-      this.movePlayer(delta)
-    }
-
-    this.clampToIsland()
-    this.updatePrompt()
-
-    // 每秒：昼夜 tint + DAY_TICK 事件
-    this.secondTimer += delta
-    if (this.secondTimer >= 1000) {
-      this.secondTimer -= 1000
-      this.updateDayNight()
-    }
-  }
-
-  // ─── 移动 ───────────────────────────────────────────────────
-
-  private movePlayer(_delta: number): void {
-    const body = this.player.body as Phaser.Physics.Arcade.Body
-    let vx = 0
-    let vy = 0
-    if (this.cursors.left.isDown || this.keyA.isDown) vx = -1
-    else if (this.cursors.right.isDown || this.keyD.isDown) vx = 1
-    if (this.cursors.up.isDown || this.keyW.isDown) vy = -1
-    else if (this.cursors.down.isDown || this.keyS.isDown) vy = 1
-
-    if (vx !== 0 || vy !== 0) {
-      this.tapTarget = null
-      const norm = Math.hypot(vx, vy) || 1
-      body.setVelocity((vx / norm) * SPEED, (vy / norm) * SPEED)
-    } else if (this.tapTarget) {
-      const dx = this.tapTarget.x - this.player.x
-      const dy = this.tapTarget.y - this.player.y
-      const dist = Math.hypot(dx, dy)
-      if (dist < 4) {
-        this.tapTarget = null
-        body.setVelocity(0, 0)
-      } else {
-        body.setVelocity((dx / dist) * SPEED, (dy / dist) * SPEED)
-      }
-    } else {
-      body.setVelocity(0, 0)
-    }
-
-    if (Phaser.Input.Keyboard.JustDown(this.keyE)) this.tryInteract()
-  }
-
-  /** 椭圆岛界 + 码头例外：把玩家钳回可走区域 */
-  private clampToIsland(): void {
-    const p = this.player
-    const dx = (p.x - ISLAND.cx) / ISLAND.rx
-    const dy = (p.y - ISLAND.cy) / ISLAND.ry
-    const d = dx * dx + dy * dy
-    const onDock = p.x > DOCK.x1 && p.x < DOCK.x2 && p.y > ISLAND.cy + ISLAND.ry * 0.55
-    if (d > 1 && !onDock) {
-      const scale = 1 / Math.sqrt(d)
-      p.x = ISLAND.cx + (p.x - ISLAND.cx) * scale
-      p.y = ISLAND.cy + (p.y - ISLAND.cy) * scale
-    }
-    if (onDock) {
-      p.y = Math.min(p.y, DOCK.y2)
-    }
-  }
-
-  // ─── 交互 ───────────────────────────────────────────────────
-
-  private updatePrompt(): void {
-    let nearest: Interactable | null = null
-    let best = Infinity
-    for (const it of this.interactables) {
-      const dist = Math.hypot(it.x - this.player.x, it.y - this.player.y)
-      if (dist < it.r && dist < best) {
-        best = dist
-        nearest = it
-      }
-    }
-    this.promptTarget = nearest
-    if (!nearest) {
-      this.prompt.setVisible(false)
-      return
-    }
-    const label = `${nearest.label} · 按 E 或点这里`
-    this.promptText.setText(label)
-    const tw = this.promptText.width
-    const g = this.prompt.list[0] as Phaser.GameObjects.Graphics
-    g.clear()
-    g.fillStyle(C.ink, 0.82)
-    g.fillRoundedRect(-tw / 2 - 5, -10, tw + 10, 20, 4)
-    g.fillStyle(C.warm, 1)
-    g.fillTriangle(-3, -16, 3, -16, 0, -10)
-    this.prompt.setPosition(nearest.x, nearest.y - 26)
-    this.promptZone.setSize(Math.max(tw + 10, 50), 22, true)
-    this.prompt.setVisible(true)
-  }
-
-  private tryInteract(): void {
-    if (this.panelOpen || !this.promptTarget) return
-    const it = this.promptTarget
-    if (it.event === 'OPEN_MAILBOX') {
-      eventBus.emit('OPEN_MAILBOX', { unread: 0 })
-    } else if (it.event === 'OPEN_CALENDAR') {
-      eventBus.emit('OPEN_CALENDAR', {})
-    }
-  }
-
-  // ─── 昼夜 ───────────────────────────────────────────────────
-
-  private updateDayNight(): void {
-    const now = new Date()
-    const h = now.getHours() + now.getMinutes() / 60
-    this.tintOverlay.fillColor = tintAtHour(h)
-    const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-    eventBus.emit('DAY_TICK', { time, phase: phaseAtHour(h) })
-  }
-
-  // ─── 占位美术 ───────────────────────────────────────────────
 
   private fitZoom(): void {
-    const w = this.scale.gameSize.width
-    const zoom = Phaser.Math.Clamp(w / 460, 2, 3)
-    this.cameras.main.setZoom(zoom)
+    // 整数倍清晰像素；手机保持人物可读，桌面多露出一圈生活空间。
+    const width = this.scale.gameSize.width
+    this.cameras.main.setZoom(width >= 1500 ? 3 : 2)
   }
 
-  private paintTerrain(): void {
-    const { cx, cy, rx, ry } = ISLAND
-    const g = this.add.graphics().setDepth(0)
+  private placeScenery(): void {
+    const object = (x: number, y: number, key: string, width: number, ox = .5, oy = 1) => {
+      this.add.ellipse(x + 5, y + 1, width, 9, 0x345b40, .20).setDepth(1)
+      return this.add.image(x, y, key).setOrigin(ox, oy).setDepth(y)
+    }
+    object(HOME.x, HOME.y, 'cottage-v3', 106, .5, 100 / 112)
+    object(TOWER.x, TOWER.y, 'lighthouse-v3', 46, .5, 105 / 113)
+    TREES.forEach(([x, y], i) => object(x, y, i % 5 === 0 ? 'olive-v3' : 'oak-v3', 38))
+    object(MAIL.x, MAIL.y, 'mailbox-v3', 17)
+    object(398, 241, 'bench-v3', 38)
+    LAMPS.forEach(([x, y]) => object(x, y, 'lantern-v3', 10))
+    makeTexture(this, 'bottle-v3', ['..cc..', '..cc..', '.swws.', '.swgs.', '.sggs.', '.sggs.', '.swws.', '..ss..'], {
+      c: '#c79a65', s: '#547e7d', w: '#f5eee2', g: '#9fcdb8',
+    })
+    object(BOTTLE.x, BOTTLE.y, 'bottle-v3', 8)
+    // 位置标识在场景中使用清晰的小字，不烘焙进像素素材。
+    for (const [x, y, text] of [[HOME.x, 254, '我们的家'], [164, 324, '慢慢开花'], [TOWER.x, 277, '记忆灯塔']] as const) {
+      this.add.text(x, y, text, { fontFamily: 'system-ui, sans-serif', fontSize: '7px', color: '#4a3b55',
+        backgroundColor: '#f0d9a8', padding: { x: 4, y: 2 }, resolution: 3 }).setOrigin(.5).setDepth(2)
+    }
+    makeTexture(this, 'ripple-v3', ['....ww......', '..ww..ww....', 'ww......wwww'], { w: '#b4d7df' })
+    for (let i = 0; i < 38; i++) {
+      const x = Math.floor(hash2(i, 31) * WORLD.width), y = Math.floor(hash2(i, 34) * WORLD.height)
+      if (landDistance(x, y) < 1.07) continue
+      this.decorations.push(this.add.image(x, y, 'ripple-v3').setAlpha(.8).setDepth(1))
+    }
+  }
 
-    // 海
-    g.fillStyle(C.sea, 1)
-    g.fillRect(0, 0, WORLD_W, WORLD_H)
+  private setupLights(): void {
+    this.nightLights = this.add.container(0, 0).setDepth(5100)
+    // 方形像素光晕，暖窗保持窗棂；避免纯色方块盖住建筑。
+    const glow = (x: number, y: number, radius: number) => {
+      for (let r = radius; r > 4; r -= 5) this.nightLights.add(this.add.ellipse(x, y, r * 2, r, 0xffd98a, .045))
+    }
+    for (const [x, y] of LAMPS) {
+      glow(x, y - 27, 20)
+      this.nightLights.add(this.add.rectangle(x + .5, y - 30.5, 5, 7, 0xffd98a))
+    }
+    for (const x of [HOME.x - 33, HOME.x + 16]) {
+      glow(x + 5, HOME.y - 21, 19)
+      this.nightLights.add(this.add.rectangle(x + 5.5, HOME.y - 23, 11, 12, 0xffd98a))
+      this.nightLights.add(this.add.rectangle(x + 5.5, HOME.y - 23, 1, 12, 0x8a5a38))
+      this.nightLights.add(this.add.rectangle(x + 5.5, HOME.y - 23, 11, 1, 0x8a5a38))
+    }
+    glow(TOWER.x, TOWER.y - 81, 30)
+    this.nightLights.add(this.add.rectangle(TOWER.x, TOWER.y - 81, 14, 14, 0xffd98a))
+    this.nightLights.add(this.add.rectangle(TOWER.x, TOWER.y - 81, 1, 14, 0x8a5a38))
+  }
 
-    // 岛：泥土切面 → 湿沙 → 沙滩 → 草地（2.5D 分层）
-    g.fillStyle(C.dirtDark, 1)
-    g.fillEllipse(cx, cy + 14, rx * 2, ry * 2)
-    g.fillStyle(C.dirt, 1)
-    g.fillEllipse(cx, cy + 8, rx * 2, ry * 2)
-    g.fillStyle(C.sandWet, 1)
-    g.fillEllipse(cx, cy + 4, rx * 1.94, ry * 1.94)
-    g.fillStyle(C.sand, 1)
-    g.fillEllipse(cx, cy, rx * 1.86, ry * 1.86)
-    g.fillStyle(C.grassDark, 1)
-    g.fillEllipse(cx, cy - 4, rx * 1.7, ry * 1.7)
-    g.fillStyle(C.grass, 1)
-    g.fillEllipse(cx, cy - 7, rx * 1.64, ry * 1.64)
-    g.fillStyle(C.grassLight, 1)
-    g.fillEllipse(cx - rx * 0.2, cy - ry * 0.22, rx * 1.1, ry * 1.05)
-
-    // 波光（两组虚线交替 = 帧动画）
-    const waves = this.add.graphics().setDepth(1)
-    const paint = (flip: boolean) => {
-      waves.clear()
-      waves.lineStyle(1.5, C.seaLight, 0.5)
-      for (let i = 0; i < 46; i++) {
-        const seed = i * 97.13
-        const wy = 40 + ((seed * 7.3) % (WORLD_H - 80))
-        const wx = ((seed * 13.7) % (WORLD_W - 120)) + 40
-        if ((i % 2 === 0) !== flip) continue
-        waves.lineBetween(wx, wy, wx + 10, wy)
+  update(time: number, delta: number): void {
+    if (!this.player?.active) return
+    // 在前一帧位置上执行轴向滑动，树干、房屋墙体不再可以直接穿过。
+    this.resolveMovement()
+    this.previous = { x: this.player.x, y: this.player.y }
+    let dx = 0, dy = 0
+    if (!this.panelOpen) {
+      dx = Number(this.keys.D.isDown || this.keys.RIGHT.isDown) - Number(this.keys.A.isDown || this.keys.LEFT.isDown)
+      dy = Number(this.keys.S.isDown || this.keys.DOWN.isDown) - Number(this.keys.W.isDown || this.keys.UP.isDown)
+      if (!dx && !dy) { dx = this.moveInput.x; dy = this.moveInput.y }
+      if (dx || dy) this.tapTarget = null
+      else if (this.tapTarget) {
+        dx = this.tapTarget.x - this.player.x; dy = this.tapTarget.y - this.player.y
+        if (Math.hypot(dx, dy) < 3) { this.tapTarget = null; dx = 0; dy = 0 }
       }
     }
-    let flip = false
-    paint(flip)
-    this.time.addEvent({
-      delay: 450,
-      loop: true,
-      callback: () => {
-        flip = !flip
-        paint(flip)
-      },
-    })
-
-    // 码头（木板）
-    const dockY1 = ISLAND.cy + ISLAND.ry * 0.8
-    g.fillStyle(C.beam, 1)
-    g.fillRect(DOCK.x1, dockY1, DOCK.x2 - DOCK.x1, DOCK.y2 - dockY1)
-    g.fillStyle(C.wood, 1)
-    for (let y = dockY1; y < DOCK.y2; y += 6) {
-      g.fillRect(DOCK.x1 + 1, y + 1, DOCK.x2 - DOCK.x1 - 2, 4)
+    const norm = Math.hypot(dx, dy)
+    this.player.setVelocity(norm ? dx / norm * 72 : 0, norm ? dy / norm * 72 : 0)
+    this.player.setDepth(this.player.y + 7)
+    if (norm) {
+      this.facing = Math.abs(dx) > Math.abs(dy) ? 'side' : dy < 0 ? 'back' : 'front'
+      this.player.setFlipX(this.facing === 'side' && dx < 0)
     }
+    // 四方向、两帧走路节奏，不拉伸角色；减少动态时保持静态。
+    const step = !this.reducedMotion.matches && norm && Math.floor(time / 160) % 2 ? '-step' : ''
+    this.player.setTexture(`islander-${this.identity.character}-${this.facing}${step}`)
+    this.destination.setVisible(!!this.tapTarget && !this.panelOpen)
+    this.shadow.setPosition(this.player.x, this.player.y + 6)
+    for (let i = 0; i < this.decorations.length; i++) {
+      const water = this.decorations[i]
+      water.setAlpha(this.reducedMotion.matches ? .8 : .8 + Math.floor((time + i * 173) / 800) % 2 * .15)
+    }
+    this.updatePrompt()
+    if (Phaser.Input.Keyboard.JustDown(this.keys.E) || Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) this.tryInteract()
+    this.secondTimer += delta
+    if (this.secondTimer > 1000) { this.secondTimer = 0; this.updateDayNight() }
   }
 
-  private paintBuildings(): void {
-    const g = this.add.graphics()
-
-    // 小屋（330,300 附近）
-    const hx = 330
-    const hy = 300
-    g.fillStyle(C.beam, 1)
-    g.fillRect(hx - 34, hy - 26, 68, 46) // 墙阴影底
-    g.fillStyle(C.wood, 1)
-    g.fillRect(hx - 32, hy - 28, 64, 44) // 木墙
-    g.fillStyle(C.beam, 1)
-    g.fillRect(hx - 32, hy - 28, 64, 3) // 墙顶梁
-    g.fillStyle(C.beam, 1)
-    g.fillRect(hx - 6, hy - 10, 12, 26) // 门
-    g.fillStyle(C.warm, 1)
-    g.fillRect(hx - 26, hy - 18, 10, 10) // 窗（夜里会亮）
-    g.fillRect(hx + 16, hy - 18, 10, 10)
-    g.fillStyle(C.roof, 1)
-    g.fillTriangle(hx - 44, hy - 26, hx + 44, hy - 26, hx, hy - 58) // 屋顶
-    g.fillStyle(0xa85544, 1)
-    g.fillTriangle(hx - 44, hy - 26, hx, hy - 26, hx, hy - 58)
-
-    // 灯塔（680,320）
-    const lx = 680
-    const ly = 340
-    for (let i = 0; i < 5; i++) {
-      g.fillStyle(i % 2 === 0 ? C.wood : C.roof, 1)
-      const w = 18 - i * 2
-      g.fillRect(lx - w / 2, ly - i * 14, w, 14)
-    }
-    g.fillStyle(C.ink, 1)
-    g.fillRect(lx - 7, ly - 76, 14, 10) // 灯室
-    g.fillStyle(C.warm, 1)
-    g.fillRect(lx - 5, ly - 74, 10, 6)
-    g.fillStyle(C.roof, 1)
-    g.fillTriangle(lx - 9, ly - 76, lx + 9, ly - 76, lx, ly - 88) // 顶
-
-    // 木牌（码头旁）
-    const sx = 560
-    const sy = ISLAND.cy + ISLAND.ry * 0.72
-    g.fillStyle(C.beam, 1)
-    g.fillRect(sx - 1, sy, 3, 14)
-    g.fillStyle(C.wood, 1)
-    g.fillRoundedRect(sx - 22, sy - 12, 44, 14, 3)
-
-    this.add
-      .text(hx, hy - 40, '家', { fontFamily: 'serif', fontSize: '10px', color: '#fdf6e9', resolution: 3 })
-      .setOrigin(0.5)
-      .setDepth(2)
-    this.add
-      .text(lx, ly - 96, '灯塔 · 记忆日历', { fontFamily: 'serif', fontSize: '7px', color: '#fdf6e9', resolution: 3 })
-      .setOrigin(0.5)
-      .setDepth(2)
+  private walkable(x: number, y: number): boolean {
+    const onDock = x > DOCK.left + 4 && x < DOCK.right - 4 && y >= DOCK.top - 8 && y < DOCK.bottom - 6
+    if (!onDock && landDistance(x, y + 5) > .967) return false
+    return !OBSTACLES.some(o => x + 4 > o.x && x - 4 < o.x + o.w && y + 6 > o.y && y + 2 < o.y + o.h)
   }
-
-  private placeInteractables(): void {
-    this.interactables = [
-      { x: 330, y: 336, r: 40, label: '📮 读信', event: 'OPEN_MAILBOX' },
-      { x: 680, y: 356, r: 44, label: '🗓 灯塔日历', event: 'OPEN_CALENDAR' },
-    ]
+  private resolveMovement(): void {
+    const { x, y } = this.player
+    if (this.walkable(x, y)) return
+    if (this.walkable(x, this.previous.y)) this.player.y = this.previous.y
+    else if (this.walkable(this.previous.x, y)) this.player.x = this.previous.x
+    else { this.player.setPosition(this.previous.x, this.previous.y); this.tapTarget = null }
   }
-
-  private spawnBottles(): void {
-    const spots = [
-      { x: 420, y: 560 },
-      { x: 620, y: 540 },
-      { x: 260, y: 130 },
-    ]
-    for (const s of spots) {
-      const bottle = this.add.sprite(s.x, s.y, 'bottle').setDepth(s.y)
-      this.tweens.add({
-        targets: bottle,
-        y: s.y - 2,
-        duration: 900 + s.x % 400,
-        yoyo: true,
-        repeat: -1,
-        ease: 'sine.inout',
-      })
+  private updatePrompt(): void {
+    this.promptTarget = this.interactables.find(it => Math.hypot(it.x - this.player.x, it.y - this.player.y) < 34) ?? null
+    const label = this.panelOpen ? null : this.promptTarget?.label ?? null
+    if (label !== this.interactionLabel) {
+      this.interactionLabel = label
+      eventBus.emit('INTERACTION_CHANGED', { label })
     }
+    this.prompt.setVisible(!!this.promptTarget && !this.panelOpen)
+    if (!this.promptTarget) return
+    this.promptText.setText(`${this.promptTarget.label}  ·  E / 轻点`)
+    const width = this.promptText.width + 14
+    this.promptBg.clear().fillStyle(0x8a5a38).fillRoundedRect(-width / 2 - 1, -11, width + 2, 22, 2)
+      .fillStyle(0xfdf6e9).fillRoundedRect(-width / 2, -10, width, 19, 2)
+      .fillTriangle(-3, 9, 3, 9, 0, 13)
+    this.prompt.setPosition(this.promptTarget.x, this.promptTarget.y - 44)
+  }
+  private tryInteract(): void {
+    if (this.panelOpen || !this.promptTarget) return
+    if (this.promptTarget.event === 'mailbox') eventBus.emit('OPEN_MAILBOX', { unread: 0 })
+    else if (this.promptTarget.event === 'calendar') eventBus.emit('OPEN_CALENDAR', {})
+    else eventBus.emit('OPEN_BOTTLE', { id: 'shore' })
+  }
+  private updateDayNight(): void {
+    const now = new Date(), h = now.getHours() + now.getMinutes() / 60, phase = phaseAtHour(h)
+    this.tintOverlay.fillColor = tintAtHour(PHASE_OVERRIDE ? ({ day: 12, dusk: 18, dawn: 6.5, night: 22 }[phase]) : h)
+    this.nightLights.setVisible(phase !== 'day')
+    eventBus.emit('DAY_TICK', { time: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`, phase })
   }
 }

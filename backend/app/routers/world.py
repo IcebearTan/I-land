@@ -4,9 +4,9 @@ from sqlmodel import Session
 
 from ..db import get_db
 from ..deps import get_current_user
-from ..models import User, WorldState, jdump, jload
+from ..models import WorldState, jdump, jload
 
-router = APIRouter(prefix="/api/world", tags=["world"])
+router = APIRouter(prefix="/api/world", tags=["world"], dependencies=[Depends(get_current_user)])
 
 
 @router.get("")
@@ -23,11 +23,7 @@ class WorldPut(BaseModel):
 
 
 @router.put("")
-def put_world(
-    body: WorldPut,
-    db: Session = Depends(get_db),
-    user: User = Depends(get_current_user),
-):
+def put_world(body: WorldPut, db: Session = Depends(get_db)):
     world = db.get(WorldState, 1)
     if world is None:
         world = WorldState(id=1)

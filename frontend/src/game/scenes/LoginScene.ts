@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
-import { eventBus } from '../EventBus'
+import { eventBus, type IslandIdentity } from '../EventBus'
+import { bayer, colorAt, ditherMix, hash2, lerpRGB, type RGB } from '../art'
 import {
   BEAR_PALETTE,
   BEAR_ROWS,
@@ -34,15 +35,13 @@ const VW = 480
 const VH_MAX = 560
 const LAYER_W = 560 // 比视口宽，留出视差余量
 
-type RGB = [number, number, number]
-
 /** 天空渐变关键色（t → RGB） */
 const SKY_STOPS: Array<[number, RGB]> = [
-  [0, [0x3f, 0x92, 0xe8]],
-  [0.3, [0x5f, 0xb0, 0xf0]],
-  [0.55, [0x82, 0xcb, 0xf5]],
-  [0.78, [0xae, 0xe2, 0xfb]],
-  [1, [0xd8, 0xf3, 0xfe]],
+  [0, [0x7f, 0xb6, 0xd9]],
+  [0.3, [0xa1, 0xcb, 0xde]],
+  [0.55, [0xc3, 0xdd, 0xe1]],
+  [0.78, [0xe2, 0xe8, 0xd8]],
+  [1, [0xfd, 0xf6, 0xe9]],
 ]
 
 const FAR_CREST = 50
@@ -58,29 +57,22 @@ interface HillConf {
 }
 
 const HILL_FAR: HillConf = {
-  base: [0x8f, 0xc7, 0xae],
-  dark: [0x74, 0xb2, 0x98],
-  edge: [0xc4, 0xe8, 0xd3],
+  base: [0xad, 0xc5, 0x94],
+  dark: [0x8e, 0xad, 0x7d],
+  edge: [0xd3, 0xde, 0xb9],
   crest: FAR_CREST,
   levels: 6,
   strata: false,
 }
 
 const HILL_NEAR: HillConf = {
-  base: [0x4f, 0x96, 0x63],
-  dark: [0x2e, 0x63, 0x40],
-  edge: [0x8c, 0xc7, 0x9a],
+  base: [0x7c, 0xb8, 0x60],
+  dark: [0x5a, 0x94, 0x4a],
+  edge: [0xad, 0xcb, 0x83],
   crest: NEAR_CREST,
   levels: 10,
-  strata: true,
+  strata: false,
 }
-
-const BAYER: number[][] = [
-  [0, 8, 2, 10],
-  [12, 4, 14, 6],
-  [3, 11, 1, 9],
-  [15, 7, 13, 5],
-]
 
 interface ParallaxLayer {
   container: Phaser.GameObjects.Container
@@ -91,52 +83,6 @@ interface Cloud {
   sprite: Phaser.GameObjects.Image
   speed: number
   w: number
-}
-
-function bayer(x: number, y: number): number {
-  return BAYER[((y % 4) + 4) % 4][((x % 4) + 4) % 4] / 16
-}
-
-function lerpRGB(a: RGB, b: RGB, t: number): RGB {
-  return [
-    Math.round(a[0] + (b[0] - a[0]) * t),
-    Math.round(a[1] + (b[1] - a[1]) * t),
-    Math.round(a[2] + (b[2] - a[2]) * t),
-  ]
-}
-
-function colorAt(stops: Array<[number, RGB]>, t: number): RGB {
-  t = Phaser.Math.Clamp(t, 0, 1)
-  for (let i = 0; i < stops.length - 1; i++) {
-    const [t0, c0] = stops[i]
-    const [t1, c1] = stops[i + 1]
-    if (t >= t0 && t <= t1) {
-      const k = t1 === t0 ? 0 : (t - t0) / (t1 - t0)
-      return lerpRGB(c0, c1, k)
-    }
-  }
-  return stops[stops.length - 1][1]
-}
-
-/** 量化 + Bayer 抖动取色：两个颜色之间的平滑像素过渡 */
-function ditherMix(a: RGB, b: RGB, t: number, x: number, y: number, levels: number): RGB {
-  const q = Phaser.Math.Clamp(t, 0, 1) * levels
-  const qi = Math.floor(q)
-  const up = q - qi > bayer(x, y) ? 1 : 0
-  return colorAt(
-    [
-      [0, a],
-      [1, b],
-    ],
-    (qi + up) / levels,
-  )
-}
-
-/** 确定性伪随机（装饰颗粒用，重启/重绘不闪烁） */
-function hash2(x: number, y: number): number {
-  let h = (x * 374761393 + y * 668265263) | 0
-  h = (h ^ (h >>> 13)) * 1274126177
-  return ((h ^ (h >>> 16)) >>> 0) / 4294967295
 }
 
 export class LoginScene extends Phaser.Scene {
@@ -206,7 +152,7 @@ export class LoginScene extends Phaser.Scene {
       this.pointerNorm = Phaser.Math.Clamp((p.x / this.scale.gameSize.width - 0.5) * 2, -1, 1)
     })
 
-    const onEnter = () => this.leave()
+    const onEnter = (identity: IslandIdentity) => this.leave(identity)
     eventBus.on('ENTER_ISLAND', onEnter)
     this.events.once('shutdown', () => {
       eventBus.off('ENTER_ISLAND', onEnter)
@@ -350,8 +296,8 @@ export class LoginScene extends Phaser.Scene {
             c = lerpRGB(c, conf.dark, 0.5)
           }
           // 稀疏颗粒斑点
-          if (hash2(x, y) < 0.018) {
-            c = lerpRGB(c, conf.dark, 0.6)
+          if (hash2(x, y) < 0.004) {
+            c = lerpRGB(c, conf.dark, 0.2)
           }
           data[idx] = c[0]
           data[idx + 1] = c[1]
@@ -510,12 +456,12 @@ export class LoginScene extends Phaser.Scene {
     }
   }
 
-  private leave(): void {
+  private leave(identity: IslandIdentity): void {
     if (this.leaving) return
     this.leaving = true
     this.cameras.main.fadeOut(520, 0, 0, 0)
     this.cameras.main.once('camerafadeoutcomplete', () => {
-      this.time.delayedCall(60, () => this.scene.start('Island'))
+      this.time.delayedCall(60, () => this.scene.start('Island', identity))
     })
   }
 }

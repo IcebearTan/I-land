@@ -15,7 +15,8 @@ COPY backend/tests ./tests
 COPY --from=frontend-build /build/dist ./frontend/dist
 
 ENV ILAND_DB_PATH=/data/iland.db \
-    ILAND_UPLOADS_DIR=/data/uploads
+    ILAND_UPLOADS_DIR=/data/uploads \
+    ILAND_FRONTEND_DIST=/app/frontend/dist
 
 EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
