@@ -20,8 +20,8 @@ def seed(db: Session) -> None:
             continue
         parts = entry.split(":")
         name, password = parts[0], parts[1]
-        display = parts[2] if len(parts) > 2 else name
+        display = (parts[2] if len(parts) > 2 else name).strip() or name
         existing = db.query(User).filter(User.name == name).one_or_none()
         if existing is None:
-            db.add(User(name=name, display=display, pass_hash=hash_password(password), sprite=name))
+            db.add(User(name=name, login_name=display, display=display, pass_hash=hash_password(password), sprite=name))
     db.commit()

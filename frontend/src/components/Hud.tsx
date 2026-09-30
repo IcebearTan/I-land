@@ -39,7 +39,7 @@ export function Hud({ user, onLogout }: { user: User; onLogout: () => void }) {
   const [meta, setMeta] = useState<Meta | null>(null)
   const [presence, setPresence] = useState<Visit | null | undefined>(undefined)
   const [presenceError, setPresenceError] = useState(false)
-  const character = characterId(user.sprite, user.name)
+  const character = characterId(user.sprite, user.account)
   const companion = character === 'bear' ? 'her' : 'bear'
   const islanders = useIslanders()
   const [tick, setTick] = useState<DayTick | null>(null)
@@ -92,7 +92,7 @@ export function Hud({ user, onLogout }: { user: User; onLogout: () => void }) {
         )}
         <div className="hud-user">
           <CharacterPortrait character={character} size={28} />
-          {user.display}
+          {user.account === 'bear' || user.account === 'her' ? islanders[user.account] : user.display}
           <button className="btn btn-mini" onClick={() => eventBus.emit('OPEN_SETTINGS', {})} aria-label="打开小岛设置">
             设置
           </button>

@@ -1,4 +1,5 @@
 import type Phaser from 'phaser'
+import { CHARACTERS } from '../characters'
 
 /**
  * 字符画 → CanvasTexture：全站占位/装饰像素美术的统一生成入口。
@@ -34,32 +35,9 @@ export function makeTexture(
   tex.refresh()
 }
 
-// ─── 小熊（16×16，Island 与 Login 共用）────────────────────────
-export const BEAR_ROWS = [
-  '..bb........bb..',
-  '..bbb......bbb..',
-  '..bbbbbbbbbbbb..',
-  '.bbbbbbbbbbbbbb.',
-  '.bbDDbbbbbbDDbb.',
-  '.bbbbbbbbbbbbbb.',
-  '.bbbbLLLLLLbbbb.',
-  '.bbbbLLnnLLbbbb.',
-  '..bbbLLLLLLbbb..',
-  '..bbbbbbbbbbbb..',
-  '.bbbLLLLLLLLbbb.',
-  '.bbbLLLLLLLLbbb.',
-  '.bbbLLLLLLLLbbb.',
-  '.bbbLLLLLLLLbbb.',
-  '..b.bbbbbbbb.b..',
-  '..b..bbbbbb..b..',
-]
-
-export const BEAR_PALETTE: Record<string, string> = {
-  b: '#8a5a38', // 毛色
-  L: '#e8c48f', // 口鼻/肚皮
-  D: '#2b1b45', // 眼睛
-  n: '#3a2418', // 鼻头
-}
+// 登录山脊与岛上/头像共用同一白熊，不另留一套棕熊素材。
+export const BEAR_ROWS = CHARACTERS.bear.frames.front
+export const BEAR_PALETTE = CHARACTERS.bear.palette
 
 // ─── 爱心（5×4）──────────────────────────────────────────────
 export const HEART_ROWS = ['.H.H.', 'HHHHH', '.HHH.', '..H..']

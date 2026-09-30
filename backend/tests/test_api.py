@@ -3,17 +3,13 @@
 数据库与种子用户由 conftest.py 统一配置（测试间共享同一实例，注意用例间状态）。
 """
 
+from .conftest import current_login
+
 import pytest
 
 
 def login(client, name="bear", password="123456"):
-    r = client.post("/api/auth/login", json={"name": name, "password": password})
-    assert r.status_code == 200, r.text
-    return r.json()["user"]
-
-
-def login(client, name="bear", password="123456"):
-    r = client.post("/api/auth/login", json={"name": name, "password": password})
+    r = client.post("/api/auth/login", json={"name": current_login(client, name), "password": password})
     assert r.status_code == 200, r.text
     return r.json()["user"]
 
@@ -24,7 +20,7 @@ def test_ping(client):
 
 
 def test_login_wrong_password(client):
-    r = client.post("/api/auth/login", json={"name": "bear", "password": "nope"})
+    r = client.post("/api/auth/login", json={"name": current_login(client, "bear"), "password": "nope"})
     assert r.status_code == 401
 
 
@@ -36,9 +32,10 @@ def test_me_requires_login(client):
 
 def test_login_and_me(client):
     user = login(client)
-    assert user["name"] == "bear"
+    assert user["name"] == user["display"] == "小熊"
+    assert user["account"] == "bear"
     r = client.get("/api/auth/me")
-    assert r.status_code == 200 and r.json()["user"]["name"] == "bear"
+    assert r.status_code == 200 and r.json()["user"]["account"] == "bear"
 
 
 def test_meta(client):

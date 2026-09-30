@@ -20,7 +20,8 @@ def jload(s: Optional[str], default=None):
 
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str = Field(unique=True, index=True)
+    name: str = Field(unique=True, index=True)  # 不变的身份键，信件/附件仍关联 bear/her
+    login_name: Optional[str] = Field(default=None, unique=True, index=True)
     display: str = ""
     pass_hash: str
     sprite: str = "bear"  # bear | her

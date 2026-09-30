@@ -20,7 +20,7 @@ export default function App() {
 
   useEffect(() => {
     userRef.current = user
-    if (user && gameReady.current) eventBus.emit('ENTER_ISLAND', { character: characterId(user.sprite, user.name), display: user.display })
+    if (user && gameReady.current) eventBus.emit('ENTER_ISLAND', { character: characterId(user.sprite, user.account), display: user.display })
   }, [user])
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function App() {
     const onReady = () => {
       gameReady.current = true
       const current = userRef.current
-      if (current) eventBus.emit('ENTER_ISLAND', { character: characterId(current.sprite, current.name), display: current.display })
+      if (current) eventBus.emit('ENTER_ISLAND', { character: characterId(current.sprite, current.account), display: current.display })
     }
     eventBus.on('GAME_READY', onReady)
     return () => eventBus.off('GAME_READY', onReady)
@@ -77,7 +77,7 @@ export default function App() {
           <CalendarFeature />
           <SettingsPanel
             user={user}
-            onDisplayChange={display => setUser(current => current ? { ...current, display } : current)}
+            onUserChange={setUser}
           />
         </>
       ) : (

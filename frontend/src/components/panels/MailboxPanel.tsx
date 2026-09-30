@@ -75,10 +75,10 @@ export function MailboxPanel() {
   function turnPage(next: number) {
     setPage(next)
   }
-  return <div className="modal-mask" onClick={close}>
+  return <div className="modal-mask mailbox-mask" onClick={close}>
     <div ref={dialog} className={`wood-panel modal-panel mailbox-panel ${unsealed ? 'mailbox-panel--reading' : ''} ${selected?.theme === 'qixi' ? 'mailbox-panel--qixi' : ''}`} role="dialog" aria-modal="true" aria-labelledby="mailbox-title" onClick={e => e.stopPropagation()}>
       <div className="modal-head">
-        <div><p className="panel-eyebrow">LETTERS BETWEEN US</p><h2 id="mailbox-title">{selected ? '一封给你的信' : '小屋信箱'}</h2></div>
+        <div><p className="panel-eyebrow">LETTERS BETWEEN US</p><h2 id="mailbox-title">{selected ? (unsealed ? selected.title : '一封给你的信') : '小屋信箱'}</h2></div>
         <button className="btn btn-mini" onClick={close}>合上 ✕</button>
       </div>
       {selected ? <>
@@ -91,7 +91,7 @@ export function MailboxPanel() {
           <button className="wax-seal" onClick={() => setUnsealed(true)} aria-label={`拆开信件：${selected.title}`}>♥</button>
           <span className="seal-instruction">轻轻拆开，慢慢读</span>
         </div> : <div className="letter-reading">
-          <div className="reading-meta"><span>{author}写给{recipient} · {selected.date}</span><h3>{selected.title}</h3></div>
+          <div className="reading-meta"><span>{author}写给{recipient} · {selected.date}</span></div>
           {selected.pages.length > 0 && <div className="reading-toolbar">
             <nav className="letter-page-tabs" aria-label="选择信纸页码">
               {selected.pages.map((_, index) => <button key={index} className="letter-page-tab" aria-label={`第 ${index + 1} 页信纸`} aria-current={page === index ? 'page' : undefined} onClick={() => turnPage(index)}>{String(index + 1).padStart(2, '0')}</button>)}

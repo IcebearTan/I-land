@@ -17,8 +17,8 @@ docker compose up --build -d    # http://<host>:8000，建议再套 Caddy/Nginx 
 
 ### 首次部署：设置初始密码
 
-种子账号 `bear` / `her` 初始密码 `123456`，来自环境变量 `ILAND_SEED_USERS`
-（格式 `name:password:display,...`）。两种做法：
+默认用名字 `小熊` / `她` 登录，初始密码 `123456`，来自环境变量 `ILAND_SEED_USERS`
+（格式 `身份键:password:名字,...`，两位岛民的身份键仍用 `bear` / `her`）。两种做法：
 
 1. **部署前**：在 `docker-compose.yml` 的 `iland` 服务里加
    `environment: ILAND_SEED_USERS: "bear:你的强密码:小熊,her:她的强密码:她"`，
@@ -27,6 +27,16 @@ docker compose up --build -d    # http://<host>:8000，建议再套 Caddy/Nginx 
 
 种子逻辑只创建**不存在**的账号：改 `ILAND_SEED_USERS` 不会覆盖已有账号的密码。
 已有账号改密码走面板（见下），这是两者的区别。
+
+### 名字即登录账号
+
+HUD「设置 → 岛民名字」同时更新显示名字与登录账号（去首尾空格、1–20 字、不能重名）。保存后用新名字和原暗号登录，旧名字不再作为别名；已有会话继续有效。
+两人可以互换名字。固定身份键和用户 ID 保留，因此旧信、附件、记忆、足迹的归属不变。
+另一台设备回到页面或每分钟刷新共享名字；登录页点头像会填入当前名字。
+
+升级前先备份数据库与 uploads；新版本首次启动自动补 `user.login_name`，从已有显示名字迁入，不改密码或重建账号。
+历史名字为空、超长、含控制字符或发生冲突时，该账号回退为原身份键（显示名字一起对齐）；启动后可以在设置中改成所需名字。
+发布应同时更新前后端。旧代码登录仍查询身份键，回退后的账号行为不同；若需要恢复升级前备份，先保留当前备份并核对升级后新增内容，再按恢复流程处理，不直接覆盖现有数据。
 
 ### 已有账号改密
 
@@ -103,8 +113,8 @@ ILAND_DB_PATH=/tmp/iland-rehearsal/iland.db ILAND_UPLOADS_DIR=/tmp/iland-rehears
 
 ## 6. 附件清理（暂不自动执行）
 
-上传后未保存进任何记忆的附件（比如编辑到一半放弃）会留在 `uploads/` 与
-`attachment` 表里，`linked=false`。当前阶段**不自动删除**任何文件，只提供登记：
+上传后未保存进任何记忆或信件的附件（比如编辑到一半放弃）会留在 `uploads/` 与
+`attachment` 表里。维护工具结合 `linked` 标记与实际记忆/信件引用，当前阶段**不自动删除**任何文件，只提供登记：
 
 ```bash
 docker compose exec iland python -m app.maintenance orphans --days 2
@@ -112,3 +122,25 @@ docker compose exec iland python -m app.maintenance orphans --days 2
 
 确认列表无误后再人工删除对应文件与表记录。已删除记忆的附件在 30 天恢复窗口内
 必须保留；过期清理流程待后续阶段明确后另行启用。
+
+## 7. 旧信扫描件迁入
+
+工具只处理真实扫描件（JPEG/PNG/WebP），默认跳过 guide/demo；旧项目保持只读。
+先把来源目录放到目标服务器可读取的位置，并备份目标数据。下面命令在 backend 目录运行：
+
+```bash
+.venv/bin/python -m app.backup backup backups
+# 默认只预览，可使用 --id 指定源信件：
+.venv/bin/python -m app.import_letters /路径/IcebearMailbox --id qixi-2026
+# 确认预览后执行，会在终端交互询问已有登录暗号：
+.venv/bin/python -m app.import_letters /路径/IcebearMailbox --id qixi-2026 --apply --url http://127.0.0.1:8000
+```
+
+工具通过当前服务 API 上传并创建信，不直接写数据库。省略 `--user` 会获取白熊的当前名字；`--user '对方当前名字'` 切换作者。参数填登录名字，不能继续填旧身份键作为别名。
+容器环境使用 `python` 代替 `.venv/bin/python`，来源目录需以只读方式挂载，目标 URL 按容器实际地址设置。
+不将暗号写入命令参数或提交仓库。
+
+重跑须保留同一账号、同一目标 URL 和 `uploads/.imports/` 日志。它记录上传结果、来源哈希与已建信 ID；
+相同来源重跑跳过，源内容改变/已建信消失则要求人工核对。换 URL、丢日志或更换数据目录可能失去重跑保护。
+只实现本机工具锁与现有 API 精确比对，不宣称公共写信已支持数据库级并发幂等。
+图片响应丢失时可能留下未关联上传，当前继续只登记，不自动清理。迁入后核对数量、署名、页序与每页可读性。

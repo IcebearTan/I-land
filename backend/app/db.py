@@ -27,8 +27,32 @@ def init_db():
     import app.models  # noqa: F401  确保表定义先注册
 
     SQLModel.metadata.create_all(engine)
+    migrate_user_login_names(engine)
     migrate_anniversary_columns(engine)
     migrate_memory_columns(engine)
+
+
+def migrate_user_login_names(target_engine):
+    """登录名与显示名统一；只补字段，保留身份、密码、会话与所有内容关联。"""
+    with target_engine.begin() as conn:
+        columns = {col["name"] for col in inspect(conn).get_columns("user")}
+        if "login_name" not in columns:
+            conn.execute(text("ALTER TABLE user ADD COLUMN login_name VARCHAR"))
+        rows = conn.execute(text("SELECT id, name, display, login_name FROM user ORDER BY id")).mappings().all()
+        used = {row["login_name"] for row in rows if row["login_name"]}
+        # 保留内部身份键作为旧昵称冲突时的安全退路。
+        reserved = {row["name"] for row in rows}
+        for row in rows:
+            if row["login_name"]:
+                continue
+            candidate = (row["display"] or row["name"]).strip()
+            if (not candidate or len(candidate) > 20 or any(ord(ch) < 32 or ord(ch) == 127 for ch in candidate)
+                    or candidate in used or candidate in reserved - {row["name"]}):
+                candidate = row["name"]
+            used.add(candidate)
+            conn.execute(text("UPDATE user SET login_name=:login, display=:login WHERE id=:id"),
+                         {"login": candidate, "id": row["id"]})
+        conn.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS ix_user_login_name ON user (login_name)"))
 
 
 def migrate_anniversary_columns(target_engine):

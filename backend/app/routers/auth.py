@@ -25,7 +25,8 @@ class PasswordChangeIn(BaseModel):
 
 
 def user_public(user: User) -> dict:
-    return {"id": user.id, "name": user.name, "display": user.display, "sprite": user.sprite}
+    return {"id": user.id, "account": user.name, "name": user.login_name,
+            "display": user.display, "sprite": user.sprite}
 
 
 def _set_session_cookie(response: Response, token: str) -> None:
@@ -41,7 +42,7 @@ def _set_session_cookie(response: Response, token: str) -> None:
 
 @router.post("/login")
 def login(body: LoginIn, response: Response, db: Session = Depends(get_db)):
-    user = db.exec(select(User).where(User.name == body.name)).first()
+    user = db.exec(select(User).where(User.login_name == body.name.strip())).first()
     if not user or not verify_password(body.password, user.pass_hash):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "名字或密码不对哦")
     token = create_session(db, user.id)

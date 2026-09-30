@@ -34,7 +34,7 @@ cd frontend && npm run dev
 ## 环境事实
 
 - 后端 venv：`backend/.venv`（Python 3.11，uv 管理）。依赖装完别动 requirements 之外的包。
-- 种子账号 bear/her 密码 123456（`ILAND_SEED_USERS` 覆盖）。
+- 固定身份键 bear/her；登录用当前显示名字（默认小熊/她），初始密码 123456（`ILAND_SEED_USERS` 覆盖）。改名同步登录账号，不改身份键。
 - SQLite 在 `backend/iland.db`，上传在 `backend/uploads/`，都已 gitignore（是真实记忆，勿删勿提交）。
 - 昼夜 tint、DAY_TICK 逻辑在 `IslandScene.updateDayNight()`；交互物在 `placeInteractables()`。
 - 里程碑状态见 README「当前进度」小节，做完一项勾一项。

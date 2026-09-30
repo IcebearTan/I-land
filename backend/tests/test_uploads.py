@@ -1,12 +1,14 @@
 """P1-A：共用图片上传——格式校验、EXIF 处理、三档派生图与受保护访问。"""
 
+from .conftest import current_login
+
 import io
 
 from PIL import Image
 
 
 def login(client, name="bear", password="123456"):
-    r = client.post("/api/auth/login", json={"name": name, "password": password})
+    r = client.post("/api/auth/login", json={"name": current_login(client, name), "password": password})
     assert r.status_code == 200, r.text
 
 

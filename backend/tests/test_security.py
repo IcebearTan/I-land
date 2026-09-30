@@ -1,12 +1,14 @@
 """P0-A：私人内容与身份校验——未登录拦截、身份冒用、越权与路径穿越。"""
 
+from .conftest import current_login
+
 from fastapi.testclient import TestClient
 
 from app.main import app
 
 
 def login(client, name="bear", password="123456"):
-    r = client.post("/api/auth/login", json={"name": name, "password": password})
+    r = client.post("/api/auth/login", json={"name": current_login(client, name), "password": password})
     assert r.status_code == 200, r.text
 
 

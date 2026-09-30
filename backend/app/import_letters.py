@@ -155,7 +155,8 @@ def import_records(client, records: list[dict], journal_path: Path) -> list[dict
         fcntl.flock(lock, fcntl.LOCK_EX)
         response = client.get("/api/auth/me")
         response.raise_for_status()
-        author = response.json()["user"]["name"]
+        identity = response.json()["user"]
+        author = identity.get("account", identity["name"])
         endpoint = str(client.base_url)
         journal = json.loads(journal_path.read_text()) if journal_path.exists() else {"author": author, "endpoint": endpoint, "entries": {}}
         if journal["author"] != author or journal["endpoint"] != endpoint:
@@ -199,7 +200,7 @@ def main():
     parser.add_argument("--id", action="append", dest="ids")
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--url", default="http://127.0.0.1:8000")
-    parser.add_argument("--user", default="bear", choices=("bear", "her"))
+    parser.add_argument("--user", required=False, help="当前登录名字；省略则使用白熊的名字")
     args = parser.parse_args()
     try:
         records = source_records(args.source, args.ids)
@@ -208,9 +209,19 @@ def main():
             return
         password = os.environ.get("ILAND_IMPORT_PASSWORD") or getpass.getpass("登录暗号：")
         target = hashlib.sha256(args.url.encode()).hexdigest()[:12]
-        journal_path = UPLOADS_DIR / ".imports" / f"mailbox-{args.user}-{target}.json"
         with httpx.Client(base_url=args.url, timeout=120, follow_redirects=False) as client:
-            client.post("/api/auth/login", json={"name": args.user, "password": password}).raise_for_status()
+            login_name = args.user
+            if login_name is None:
+                response = client.get("/api/meta")
+                response.raise_for_status()
+                login_name = response.json()["names"]["bear"]
+            response = client.post("/api/auth/login", json={"name": login_name, "password": password})
+            response.raise_for_status()
+            identity = response.json()["user"]
+            account = identity.get("account", identity["name"])
+            if account not in ("bear", "her"):
+                raise ValueError("只能以两位岛民的账号迁入旧信")
+            journal_path = UPLOADS_DIR / ".imports" / f"mailbox-{account}-{target}.json"
             try:
                 print(json.dumps(import_records(client, records, journal_path), ensure_ascii=False, indent=2))
             finally:

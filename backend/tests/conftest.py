@@ -35,6 +35,13 @@ def second_client():
         yield c
 
 
+def current_login(client, account):
+    """测试用稳定身份 → 当前登录名字，不给产品保留旧账号别名。"""
+    if account in ("bear", "her"):
+        return client.get("/api/meta").json()["names"][account]
+    return "测试者" if account == "tester" else account
+
+
 def make_png(width=80, height=60, color=(200, 120, 140), fmt="PNG") -> bytes:
     """构造真实图片字节；fmt 也可传 JPEG/WEBP 测格式白名单。"""
     import io

@@ -12,6 +12,8 @@
 | [NEXT_STAGE_M2.md](NEXT_STAGE_M2.md) | 本阶段产品规则、接口约定、任务包与交接指令 | 执行 M2 时 |
 | [ACCEPTANCE.md](ACCEPTANCE.md) | 可靠性与 M2 验收清单、发布条件、结果模板 | 测试与发布时 |
 | [evaluations/2026-09-30-progress-review.md](evaluations/2026-09-30-progress-review.md) | 整理前的功能评估与建议快照 | 查历史结论时 |
+| [evaluations/2026-09-30-mailbox-import-preview.md](evaluations/2026-09-30-mailbox-import-preview.md) | 真实旧信本地迁入与阅读预览记录 | 查看迁入范围与展示方案时 |
+| [evaluations/2026-10-01-characters-and-login-names.md](evaluations/2026-10-01-characters-and-login-names.md) | 双人角色重绘与名字同步登录账号 | 查看角色来源与改名兼容策略时 |
 | [archive/2026-09-28-memory-plan.md](archive/2026-09-28-memory-plan.md) | 上一阶段记忆卡方案及实施记录 | 查设计缘由和旧验收时 |
 
 项目规范仍见根目录 [AGENTS.md](../../AGENTS.md) 与 [DESIGN.md](../../DESIGN.md)。

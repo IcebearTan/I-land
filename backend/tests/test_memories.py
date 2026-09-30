@@ -4,11 +4,11 @@ import io
 
 from PIL import Image
 
-from .conftest import make_png
+from .conftest import current_login, make_png
 
 
 def login(client, name="bear", password="123456"):
-    r = client.post("/api/auth/login", json={"name": name, "password": password})
+    r = client.post("/api/auth/login", json={"name": current_login(client, name), "password": password})
     assert r.status_code == 200, r.text
 
 

@@ -1,5 +1,6 @@
 export interface User {
   id: number
+  account: string // 不变的身份键；name 是与显示名字同步的登录账号
   name: string
   display: string
   sprite: string

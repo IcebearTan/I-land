@@ -9,7 +9,7 @@ from app.attachments import list_orphan_attachments
 from app.db import engine
 from app.import_letters import import_records, parse_mailbox, source_records
 
-from .conftest import make_png
+from .conftest import current_login, make_png
 
 
 def source(tmp_path):
@@ -60,7 +60,7 @@ def test_import_retry_keeps_source_and_letter_reference(client, tmp_path):
     records = source_records(root)
     journal = tmp_path / "private" / "journal.json"
     client.cookies.clear()
-    client.post("/api/auth/login", json={"name": "bear", "password": "123456"})
+    client.post("/api/auth/login", json={"name": current_login(client, "bear"), "password": "123456"})
     first = import_records(client, records, journal)
     second = import_records(client, records, journal)
     assert first[0]["letter_id"] == second[0]["letter_id"]
@@ -81,7 +81,7 @@ def test_create_response_lost_does_not_duplicate_letter(client, tmp_path):
     records = source_records(source(tmp_path))
     journal = tmp_path / "journal.json"
     client.cookies.clear()
-    client.post("/api/auth/login", json={"name": "bear", "password": "123456"})
+    client.post("/api/auth/login", json={"name": current_login(client, "bear"), "password": "123456"})
 
     class LostResponse:
         base_url = client.base_url
@@ -101,3 +101,19 @@ def test_create_response_lost_does_not_duplicate_letter(client, tmp_path):
     assert recovered[0]["status"] == "已有，跳过"
     pages = json.loads(journal.read_text())["entries"]["real"]["pages"]
     assert sum(row["pages"] == pages for row in client.get("/api/letters").json()["letters"]) == 1
+
+
+def test_import_journal_survives_display_and_login_rename(client, tmp_path):
+    records = source_records(source(tmp_path))
+    journal = tmp_path / 'rename-journal.json'
+    client.post('/api/auth/login', json={'name': current_login(client, 'bear'), 'password': '123456'})
+    first = import_records(client, records, journal)
+    try:
+        response = client.put('/api/settings/names', json={'bear': '迁入者新名字', 'her': '她'})
+        assert response.status_code == 200
+        second = import_records(client, records, journal)
+        assert second[0]['letter_id'] == first[0]['letter_id']
+        assert second[0]['status'] == '已有，跳过'
+        assert json.loads(journal.read_text())['author'] == 'bear'
+    finally:
+        client.put('/api/settings/names', json={'bear': '小熊', 'her': '她'})

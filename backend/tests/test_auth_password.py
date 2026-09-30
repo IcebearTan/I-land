@@ -1,8 +1,10 @@
 """P0-C：改密流程——旧密码校验、旧会话失效、新密码可登录。用 tester 账号避免影响共享登录态。"""
 
+from .conftest import current_login
+
 
 def login(client, name="tester", password="123456"):
-    r = client.post("/api/auth/login", json={"name": name, "password": password})
+    r = client.post("/api/auth/login", json={"name": current_login(client, name), "password": password})
     assert r.status_code == 200, r.text
 
 
@@ -33,7 +35,7 @@ def test_change_password_flow(client, second_client):
     # 旧密码不能再登录，新密码可以
     client.cookies.clear()
     assert (
-        client.post("/api/auth/login", json={"name": "tester", "password": "123456"}).status_code
+        client.post("/api/auth/login", json={"name": current_login(client, "tester"), "password": "123456"}).status_code
         == 401
     )
     login(client, "tester", "our-island-2026")

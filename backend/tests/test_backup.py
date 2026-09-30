@@ -10,13 +10,13 @@ from app.backup import create_backup, restore_backup
 from app.config import DB_PATH, UPLOADS_DIR
 from app.models import Memory
 
-from .conftest import make_png
+from .conftest import current_login, make_png
 
 
 def test_backup_and_restore_rehearsal(client, tmp_path):
     # 1) 造数据：一条带照片的记忆 + 磁盘上的附件文件
     client.cookies.clear()
-    client.post("/api/auth/login", json={"name": "bear", "password": "123456"})
+    client.post("/api/auth/login", json={"name": current_login(client, "bear"), "password": "123456"})
     upload = client.post(
         "/api/uploads", files={"file": ("sea.jpg", make_png(), "image/jpeg")}
     )

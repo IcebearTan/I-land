@@ -8,6 +8,11 @@ const FALLBACK: IslanderNames = { bear: '小熊', her: '她' }
 let names: IslanderNames = { ...FALLBACK }
 let pending: Promise<void> | null = null
 const listeners = new Set<() => void>()
+let refreshTimer: number | null = null
+
+function refreshVisible(): void {
+  if (document.visibilityState === 'visible') void refreshIslanders().catch(() => {})
+}
 
 export function refreshIslanders(): Promise<void> {
   pending = pending ?? api<{ names?: Partial<IslanderNames> }>('/api/meta')
@@ -32,8 +37,20 @@ export function useIslanders(): IslanderNames {
   useEffect(() => {
     const notify = () => setRevision(value => value + 1)
     listeners.add(notify)
-    void refreshIslanders()
-    return () => { listeners.delete(notify) }
+    if (refreshTimer === null) {
+      refreshTimer = window.setInterval(refreshVisible, 60_000)
+      window.addEventListener('focus', refreshVisible)
+      document.addEventListener('visibilitychange', refreshVisible)
+    }
+    void refreshIslanders().catch(() => {})
+    return () => {
+      listeners.delete(notify)
+      if (!listeners.size && refreshTimer !== null) {
+        window.clearInterval(refreshTimer); refreshTimer = null
+        window.removeEventListener('focus', refreshVisible)
+        document.removeEventListener('visibilitychange', refreshVisible)
+      }
+    }
   }, [])
   return names
 }
