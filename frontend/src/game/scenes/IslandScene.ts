@@ -154,9 +154,11 @@ export class IslandScene extends Phaser.Scene {
   }
 
   private fitZoom(): void {
-    // 整数倍清晰像素；手机保持人物可读，桌面多露出一圈生活空间。
-    const width = this.scale.gameSize.width
-    this.cameras.main.setZoom(width >= 1500 ? 3 : 2)
+    // 整数倍清晰像素；手机保持人物可读。
+    // 可视区域（视口÷zoom）任一轴超出 640×480 世界纹理，就会在超出侧露出
+    // 无波纹的平底背景色 #3f6f9e（看起来是一块突兀的蓝色空白）。
+    const { width, height } = this.scale.gameSize
+    this.cameras.main.setZoom(Math.max(2, Math.ceil(width / WORLD.width), Math.ceil(height / WORLD.height)))
   }
 
   private placeScenery(): void {
