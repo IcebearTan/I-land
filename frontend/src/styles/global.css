@@ -1,6 +1,8 @@
 /* I-land · 木牌 UI 基础样式（像素温馨风，DESIGN.md 色板） */
 
 :root {
+  /* 全站锁定亮色像素风，声明 only light 让暗色模式下的移动浏览器跳过强制反色算法 */
+  color-scheme: only light;
   --cream: #fdf6e9;
   --wood: #e8c48f;
   --beam: #8a5a38;
