@@ -1,5 +1,6 @@
 import mitt from 'mitt'
 import type { CharacterId } from '../characters'
+import type { AudioContextInfo, AudioSettings, AudioStatus } from '../audio/types'
 
 export interface IslandIdentity { character: CharacterId; display: string }
 
@@ -30,6 +31,15 @@ export type GameEvents = {
   OPEN_CALENDAR: Record<string, never>
   OPEN_BOTTLE: { id: string }
   OPEN_SETTINGS: Record<string, never>
+  /** 声音场景启动/重建后，UI 重发当前账号与偏好快照 */
+  AUDIO_READY: Record<string, never>
+  AUDIO_REQUEST_STATE: Record<string, never>
+  AUDIO_SESSION: { active: boolean }
+  AUDIO_SETTINGS: AudioSettings
+  /** 设置中的继续播放入口；同步发出，避免等待保存后错过交互授权 */
+  AUDIO_UNLOCK: Record<string, never>
+  AUDIO_CONTEXT: AudioContextInfo
+  AUDIO_STATUS: AudioStatus
   PANEL_OPENED: { panel: PanelName }
   PANEL_CLOSED: { panel: PanelName }
 }

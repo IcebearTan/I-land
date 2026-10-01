@@ -3,6 +3,7 @@ import { eventBus, type Phase, type IslandIdentity } from '../EventBus'
 import { makeTexture } from '../pixels'
 import { hash2 } from '../art'
 import { createIslandArt, WORLD, HOME, TOWER, MAIL, DOCK, SPAWN, BOTTLE, TREES, LAMPS, OBSTACLES, landDistance } from '../art/island'
+import { nightWeight } from '../../audio/types'
 
 const TINT_KEYS: Array<{ h: number; c: number }> = [
   { h: 0, c: 0x8a92c8 },
@@ -63,6 +64,7 @@ export class IslandScene extends Phaser.Scene {
   private tapTarget: Phaser.Math.Vector2 | null = null
   private panelOpen = false
   private secondTimer = 0
+  private audioTimer = 0
   private facing = 'front'
   private prompt!: Phaser.GameObjects.Container
   private promptText!: Phaser.GameObjects.Text
@@ -89,7 +91,7 @@ export class IslandScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.decorations = []; this.previous = { ...SPAWN }
+    this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.audioTimer = 0; this.decorations = []; this.previous = { ...SPAWN }
     this.cameras.main.setBounds(0, 0, WORLD.width, WORLD.height)
     this.physics.world.setBounds(0, 0, WORLD.width, WORLD.height)
     createIslandArt(this)
@@ -128,8 +130,9 @@ export class IslandScene extends Phaser.Scene {
     const onOpen = () => {
       this.panelOpen = true; this.tapTarget = null; this.moveInput = { x: 0, y: 0 }; this.player.setVelocity(0, 0)
       this.input.keyboard!.resetKeys(); this.input.keyboard!.enabled = false
+      this.input.keyboard!.disableGlobalCapture()
     }
-    const onClose = () => { this.panelOpen = false; this.input.keyboard!.enabled = true }
+    const onClose = () => { this.panelOpen = false; this.input.keyboard!.enabled = true; this.input.keyboard!.enableGlobalCapture() }
     const onBlur = () => { this.moveInput = { x: 0, y: 0 }; this.tapTarget = null; this.input.keyboard!.resetKeys() }
     this.game.events.on('blur', onBlur)
     eventBus.on('MOVE_INPUT', onMove); eventBus.on('INTERACT', onInteract)
@@ -148,8 +151,10 @@ export class IslandScene extends Phaser.Scene {
       this.game.events.off('blur', onBlur)
       eventBus.off('MOVE_INPUT', onMove); eventBus.off('INTERACT', onInteract)
       eventBus.emit('INTERACTION_CHANGED', { label: null })
+      this.input.keyboard!.disableGlobalCapture()
     })
     this.updateDayNight()
+    this.updateAudioContext()
     if (!this.reducedMotion.matches) this.cameras.main.fadeIn(280)
   }
 
@@ -246,6 +251,18 @@ export class IslandScene extends Phaser.Scene {
     if (Phaser.Input.Keyboard.JustDown(this.keys.E) || Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) this.tryInteract()
     this.secondTimer += delta
     if (this.secondTimer > 1000) { this.secondTimer = 0; this.updateDayNight() }
+    this.audioTimer += delta
+    if (this.audioTimer > 250) { this.audioTimer = 0; this.updateAudioContext() }
+  }
+
+  private updateAudioContext(): void {
+    const shore = Phaser.Math.Clamp((landDistance(this.player.x, this.player.y) - .62) / .34, 0, 1)
+    const nearestTree = Math.min(...TREES.map(([x, y]) => Math.hypot(this.player.x - x, this.player.y - y)))
+    const now = new Date(), hour = now.getHours() + now.getMinutes() / 60, phase = phaseAtHour(hour)
+    eventBus.emit('AUDIO_CONTEXT', {
+      scene: 'island', shore, grove: Phaser.Math.Clamp(1 - nearestTree / 80, 0, 1),
+      phase, night: PHASE_OVERRIDE ? ({ day: 0, dawn: .5, dusk: .4, night: 1 }[phase]) : nightWeight(hour),
+    })
   }
 
   private walkable(x: number, y: number): boolean {

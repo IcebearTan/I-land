@@ -7,12 +7,15 @@ import { CharacterPortrait } from './CharacterPortrait'
 import { characterId } from '../characters'
 import { applyIslanders, useIslanders } from '../islanders'
 import type { User } from '../types'
+import { AudioControls } from './AudioControls'
+import type { useIslandAudio } from '../audio/useIslandAudio'
 
 const MAX_NAME = 20
 
 /** 设置控制台：岛民名字 + 登录暗号。名字两人共享，任意一方可改。 */
-export function SettingsPanel({ user, onUserChange }: { user: User; onUserChange: (user: User) => void }) {
+export function SettingsPanel({ user, onUserChange, audio }: { user: User; onUserChange: (user: User) => void; audio: ReturnType<typeof useIslandAudio> }) {
   const [open, setOpen] = useState(false)
+  const [section, setSection] = useState<'sound' | 'account'>('sound')
   const islanders = useIslanders()
   const [bearName, setBearName] = useState(islanders.bear)
   const [herName, setHerName] = useState(islanders.her)
@@ -27,6 +30,7 @@ export function SettingsPanel({ user, onUserChange }: { user: User; onUserChange
   const [pwDone, setPwDone] = useState(false)
 
   function close() {
+    audio.saveNow()
     setOpen(false)
     setOldPassword(''); setNewPassword(''); setRepeat(''); setPwError(''); setPwDone(false)
     setBearName(islanders.bear); setHerName(islanders.her); setNameError(''); setNameNotice('')
@@ -89,6 +93,13 @@ export function SettingsPanel({ user, onUserChange }: { user: User; onUserChange
         <button className="btn btn-mini" onClick={close}>合上 ✕</button>
       </div>
 
+      <div className="settings-tabs" role="group" aria-label="设置分类">
+        <button type="button" className={`btn ${section === 'sound' ? 'is-current' : ''}`} aria-pressed={section === 'sound'} onClick={() => setSection('sound')}>声音与海风</button>
+        <button type="button" className={`btn ${section === 'account' ? 'is-current' : ''}`} aria-pressed={section === 'account'} onClick={() => { audio.saveNow(); setSection('account') }}>岛民与暗号</button>
+      </div>
+
+      {section === 'sound' ? <AudioControls audio={audio} /> : <>
+
       <form className="settings-section" onSubmit={saveNames}>
         <h3>岛民名字</h3>
         <p className="settings-note">名字也是登录账号，改名后用新名字上岛，暗号不变。信件和记忆里的署名也会同步，两个人都能改。</p>
@@ -129,6 +140,7 @@ export function SettingsPanel({ user, onUserChange }: { user: User; onUserChange
         {pwError && <p className="form-error" role="alert">{pwError}</p>}
         <button className="btn btn-primary" disabled={pwBusy}>{pwBusy ? '正在更换…' : '换新暗号'}</button>
       </form>}
+      </>}
     </div>
   </div>
 }

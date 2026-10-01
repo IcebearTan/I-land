@@ -105,6 +105,7 @@ export class LoginScene extends Phaser.Scene {
   }
 
   create(): void {
+    eventBus.emit('AUDIO_CONTEXT', { scene: 'login' })
     if (this.scale.gameSize.width <= 0 || this.scale.gameSize.height <= 0) {
       this.time.delayedCall(60, () => this.scene.restart())
       return

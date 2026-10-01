@@ -11,12 +11,20 @@ import { LoginPanel } from './components/LoginPanel'
 import { MailboxPanel } from './components/panels/MailboxPanel'
 import { ComingSoonPanel } from './components/panels/ComingSoonPanel'
 import { SettingsPanel } from './components/SettingsPanel'
+import { useIslandAudio } from './audio/useIslandAudio'
 
 export default function App() {
   // undefined = 还在检查登录态；null = 未登录
   const [user, setUser] = useState<User | null | undefined>(undefined)
   const userRef = useRef<User | null | undefined>(undefined)
   const gameReady = useRef(false)
+  const audio = useIslandAudio(user?.id ?? null)
+  const audioState = {
+    'data-audio-status': audio.playback.status,
+    'data-audio-period': audio.playback.period,
+    'data-audio-tracks': audio.playback.availableTracks,
+    'data-audio-playing-layers': audio.playback.playingLayers?.join(','),
+  }
 
   useEffect(() => {
     userRef.current = user
@@ -52,14 +60,14 @@ export default function App() {
   if (user === undefined) {
     // 登录态确认前不弹任何面板，让像素场景先亮相
     return (
-      <div className="game-app">
+      <div className="game-app" {...audioState}>
         <GameShell />
       </div>
     )
   }
 
   return (
-    <div className="game-app">
+    <div className="game-app" {...audioState}>
       <GameShell />
       {user ? (
         <>
@@ -78,6 +86,7 @@ export default function App() {
           <SettingsPanel
             user={user}
             onUserChange={setUser}
+            audio={audio}
           />
         </>
       ) : (

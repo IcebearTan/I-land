@@ -1,12 +1,13 @@
 import Phaser from 'phaser'
 
-/** M0 无外部资产；以后图片/图集/音频都在这里预加载 */
+/** 常驻声音场景先启动，音乐按需异步加载，不阻塞登录。 */
 export class BootScene extends Phaser.Scene {
   constructor() {
     super('Boot')
   }
 
   create(): void {
+    this.scene.launch('Audio')
     this.scene.start('Login')
   }
 }

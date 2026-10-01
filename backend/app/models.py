@@ -35,6 +35,17 @@ class AuthSession(SQLModel, table=True):
     expires_at: datetime
 
 
+class UserPreference(SQLModel, table=True):
+    """个人偏好按不变 user_id 保存；新增表不会改写旧信、记忆或账号。"""
+
+    user_id: int = Field(primary_key=True, foreign_key="user.id")
+    music_enabled: bool = True
+    ambience_enabled: bool = True
+    muted: bool = False  # 默认开启；浏览器仍遵守首次交互解锁
+    music_volume: float = 0.35
+    ambience_volume: float = 0.55
+
+
 class Letter(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     date: str  # YYYY-MM-DD 写信日期
