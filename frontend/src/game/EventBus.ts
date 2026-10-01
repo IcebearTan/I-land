@@ -1,8 +1,13 @@
 import mitt from 'mitt'
 import type { CharacterId } from '../characters'
 import type { AudioContextInfo, AudioSettings, AudioStatus } from '../audio/types'
+import type { SceneryRate, SceneryTime } from '../seaside/clock'
 
 export interface IslandIdentity { character: CharacterId; display: string }
+export type SceneId = 'login' | 'island' | 'seaside'
+export interface IslandEntry extends IslandIdentity { returnPoint?: { x: number; y: number } }
+export interface SceneState { scene: SceneId; transitioning: boolean }
+export interface SeasideState { pose: 'arriving' | 'seated' | 'standing'; clock: SceneryTime }
 
 /**
  * 游戏层（Phaser）与 UI 层（React）之间唯一允许的通信通道。
@@ -22,6 +27,17 @@ export type GameEvents = {
   GAME_READY: Record<string, never>
   /** React → 游戏：登录成功/已登录，上岛 */
   ENTER_ISLAND: IslandIdentity
+  /** 登录之后的改名/形象更新不承担导航。 */
+  IDENTITY_CHANGED: IslandIdentity
+  /** 场景就绪独立于登录 GAME_READY；常驻导航场景持有可重取快照。 */
+  SCENE_READY: { scene: SceneId; identity?: IslandIdentity }
+  SCENE_CHANGED: SceneState
+  SCENE_REQUEST_STATE: Record<string, never>
+  TRAVEL_REQUEST: { from: 'island' | 'seaside'; to: 'island' | 'seaside'; returnPoint?: { x: number; y: number } }
+  SEASIDE_STATE: SeasideState
+  SEASIDE_REQUEST_STATE: Record<string, never>
+  SEASIDE_ACTION: { action: 'sit' | 'stand' }
+  SEASIDE_CLOCK_REQUEST: { action: 'rate'; rate: SceneryRate } | { action: 'reset' }
   /** React → 游戏：下岛回登录 */
   EXIT_TO_LOGIN: Record<string, never>
   MOVE_INPUT: { x: number; y: number }

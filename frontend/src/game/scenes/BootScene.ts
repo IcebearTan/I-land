@@ -7,6 +7,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.scene.launch('Navigation')
     this.scene.launch('Audio')
     this.scene.start('Login')
   }

@@ -10,11 +10,13 @@ export const DOCK = { left: 302, right: 338, top: 361, bottom: 439 }
 export const SPAWN = { x: 320, y: 369 }
 export const MAIL = { x: 316, y: 244 }
 export const BOTTLE = { x: 432, y: 355 }
+export const SEASIDE_ENTRY = { x: 360, y: 376 }
+export const SEASIDE_RETURN = { x: 360, y: 338 }
 export type Obstacle = { x: number; y: number; w: number; h: number }
 
 // 原创占位像素资产：所有绘制先落到字符网格，再统一交给 makeTexture。
 // 禁止抗锯齿、随机噪点填充和运行中替换纹理对象。
-class PixelArt {
+export class PixelArt {
   private rows: string[][]
   private colors: Record<string, string> = {}
   private symbols = new Map<string, string>()
@@ -289,6 +291,32 @@ export const OBSTACLES: Obstacle[] = [
 ]
 export function createIslandArt(scene: Phaser.Scene): void {
   terrain(scene); cottage(scene); lighthouse(scene); tree(scene, 'oak-v3'); tree(scene, 'olive-v3', true); props(scene)
+  // 海边入口独立于漂流瓶：小木牌、青绿坐垫和奶油色贝壳。
+  makeTexture(scene, 'seaside-waymark', [
+    '..................',
+    '.ssssssssssssssss.',
+    '.sbbbbbbbbbbbbbbs.',
+    '.sbbbbbbbbbbbbbbs.',
+    '.sbbbbbbbbbbbbbbs.',
+    '.sbbbbbbbbbbbbbbs.',
+    '.sbbbbbbbbbbbbbbs.',
+    '.sbbbbbbbbbbbbbbs.',
+    '.sbbbbbbbbbbbbbbs.',
+    '.ssssssssssssssss.',
+    '.......wwww.......',
+    '.......wbbw.......',
+    '.......wbbw.......',
+    '.......wbbw.......',
+    '.......wbbw.......',
+    '.......ssss.......',
+  ], { s: '#6e4529', b: '#8a5a38', w: '#c79a65' })
+  makeTexture(scene, 'seaside-cushion', [
+    '..ssssssssssss..', '.stttttttttttts.', 'stTTTTTTTTTTTTts',
+    'stTTttTTTTttTTts', 'stTTTTTTTTTTTTts', '.stttttttttttts.', '..ssssssssssss..',
+  ], { s: '#467e79', t: '#62b2a2', T: '#a3d0b9' })
+  makeTexture(scene, 'seaside-shell', [
+    '..www..', '.wcwcw.', 'wcwcwcw', 'wwcccww', '.wwwww.', '..www..',
+  ], { w: '#f5eee2', c: '#d5ac90' })
   for (const id of ['bear', 'her'] as const) {
     const character = CHARACTERS[id]
     for (const direction of ['front', 'back', 'side'] as const) {

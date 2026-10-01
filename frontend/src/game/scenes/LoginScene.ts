@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { eventBus, type IslandIdentity } from '../EventBus'
+import { eventBus } from '../EventBus'
 import { bayer, colorAt, ditherMix, hash2, lerpRGB, type RGB } from '../art'
 import {
   BEAR_PALETTE,
@@ -149,19 +149,26 @@ export class LoginScene extends Phaser.Scene {
     })
     this.time.addEvent({ delay: 9000, loop: true, callback: () => this.spawnBird() })
 
-    this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
+    const onPointer = (p: Phaser.Input.Pointer) => {
       this.pointerNorm = Phaser.Math.Clamp((p.x / this.scale.gameSize.width - 0.5) * 2, -1, 1)
-    })
+    }
+    this.input.on('pointermove', onPointer)
 
-    const onEnter = (identity: IslandIdentity) => this.leave(identity)
-    eventBus.on('ENTER_ISLAND', onEnter)
-    this.events.once('shutdown', () => {
-      eventBus.off('ENTER_ISLAND', onEnter)
+    let disposed = false
+    const cleanup = () => {
+      if (disposed) return
+      disposed = true; this.leaving = true
+      this.input.off('pointermove', onPointer)
       this.scale.off('resize', this.relayout, this)
-    })
+      this.events.off(Phaser.Scenes.Events.SHUTDOWN, cleanup)
+      this.events.off(Phaser.Scenes.Events.DESTROY, cleanup)
+    }
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, cleanup)
+    this.events.once(Phaser.Scenes.Events.DESTROY, cleanup)
     this.scale.on('resize', this.relayout, this)
 
     this.cameras.main.fadeIn(420, 0, 0, 0)
+    eventBus.emit('SCENE_READY', { scene: 'login' })
     eventBus.emit('GAME_READY', {})
   }
 
@@ -457,12 +464,4 @@ export class LoginScene extends Phaser.Scene {
     }
   }
 
-  private leave(identity: IslandIdentity): void {
-    if (this.leaving) return
-    this.leaving = true
-    this.cameras.main.fadeOut(520, 0, 0, 0)
-    this.cameras.main.once('camerafadeoutcomplete', () => {
-      this.time.delayedCall(60, () => this.scene.start('Island', identity))
-    })
-  }
 }

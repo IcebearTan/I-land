@@ -35,7 +35,7 @@ function daysTogether(startDate: string): number {
 }
 
 /** 左上木牌（站名+天数）与右上时钟/账号，数据来自游戏 DAY_TICK 事件 */
-export function Hud({ user, onLogout }: { user: User; onLogout: () => void }) {
+export function Hud({ user, onLogout, quiet = false }: { user: User; onLogout: () => void; quiet?: boolean }) {
   const [meta, setMeta] = useState<Meta | null>(null)
   const [presence, setPresence] = useState<Visit | null | undefined>(undefined)
   const [presenceError, setPresenceError] = useState(false)
@@ -70,7 +70,8 @@ export function Hud({ user, onLogout }: { user: User; onLogout: () => void }) {
   }
 
   return (
-    <div className="hud">
+    <div className={`hud${quiet ? ' hud-quiet' : ''}`}>
+      {!quiet && <>
       <div className="hud-sign wood-panel">
         <div className="hud-title">{meta?.site_title ?? 'I-land'}</div>
         {meta?.start_date && <div className="hud-days">第 {daysTogether(meta.start_date)} 天</div>}
@@ -83,8 +84,9 @@ export function Hud({ user, onLogout }: { user: User; onLogout: () => void }) {
         </div>
       </div>
       <div className="hud-help"><span className="hud-help-keys">WASD / 方向键漫步 · E 互动 · 也可以点击地面</span><span className="hud-help-touch">轻点地面漫步 · 走近后轻点气泡互动</span></div>
+      </>}
       <div className="hud-right">
-        {tick && (
+        {tick && !quiet && (
           <div className="hud-clock">
             <span className="num">{tick.time}</span>
             <span className="hud-phase">{PHASE_LABEL[tick.phase]}</span>

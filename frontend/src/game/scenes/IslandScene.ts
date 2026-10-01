@@ -1,8 +1,8 @@
 import Phaser from 'phaser'
-import { eventBus, type Phase, type IslandIdentity } from '../EventBus'
+import { eventBus, type Phase, type IslandIdentity, type IslandEntry, type SceneState } from '../EventBus'
 import { makeTexture } from '../pixels'
 import { hash2 } from '../art'
-import { createIslandArt, WORLD, HOME, TOWER, MAIL, DOCK, SPAWN, BOTTLE, TREES, LAMPS, OBSTACLES, landDistance } from '../art/island'
+import { createIslandArt, WORLD, HOME, TOWER, MAIL, DOCK, SPAWN, BOTTLE, SEASIDE_ENTRY, SEASIDE_RETURN, TREES, LAMPS, OBSTACLES, landDistance } from '../art/island'
 import { nightWeight } from '../../audio/types'
 
 const TINT_KEYS: Array<{ h: number; c: number }> = [
@@ -51,7 +51,7 @@ function phaseAtHour(h: number): Phase {
   return 'dusk'
 }
 
-interface Interactable { x: number; y: number; label: string; event: 'mailbox' | 'calendar' | 'bottle' }
+interface Interactable { x: number; y: number; label: string; event: 'mailbox' | 'calendar' | 'bottle' | 'seaside' }
 
 export class IslandScene extends Phaser.Scene {
   private identity: IslandIdentity = { character: 'bear', display: '小熊' }
@@ -63,6 +63,8 @@ export class IslandScene extends Phaser.Scene {
   private keys!: Record<string, Phaser.Input.Keyboard.Key>
   private tapTarget: Phaser.Math.Vector2 | null = null
   private panelOpen = false
+  private leaving = false
+  private spawn = { ...SPAWN }
   private secondTimer = 0
   private audioTimer = 0
   private facing = 'front'
@@ -79,86 +81,120 @@ export class IslandScene extends Phaser.Scene {
     { ...MAIL, label: '小屋信箱', event: 'mailbox' },
     { x: TOWER.x, y: TOWER.y + 8, label: '灯塔 · 记忆日历', event: 'calendar' },
     { ...BOTTLE, label: '海边漂流瓶', event: 'bottle' },
+    { ...SEASIDE_ENTRY, label: '去海边坐一会儿', event: 'seaside' },
   ]
 
   constructor() { super('Island') }
 
-  init(identity?: IslandIdentity): void {
-    this.identity = identity ?? { character: 'bear', display: '小熊' }
+  init(entry?: IslandEntry): void {
+    this.identity = entry ? { character: entry.character, display: entry.display } : { character: 'bear', display: '小熊' }
+    this.spawn = entry?.returnPoint && Number.isFinite(entry.returnPoint.x) && Number.isFinite(entry.returnPoint.y)
+      && this.walkable(entry.returnPoint.x, entry.returnPoint.y) ? { ...entry.returnPoint } : { ...SPAWN }
     this.facing = 'front'
     this.moveInput = { x: 0, y: 0 }
     this.interactionLabel = null
+    this.promptTarget = null; this.leaving = false
   }
 
   create(): void {
-    this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.audioTimer = 0; this.decorations = []; this.previous = { ...SPAWN }
+    this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.audioTimer = 0; this.decorations = []; this.previous = { ...this.spawn }
     this.cameras.main.setBounds(0, 0, WORLD.width, WORLD.height)
     this.physics.world.setBounds(0, 0, WORLD.width, WORLD.height)
     createIslandArt(this)
     this.add.image(0, 0, 'island-ground-v3').setOrigin(0).setDepth(0)
     this.placeScenery()
     this.setupLights()
-    this.shadow = this.add.ellipse(SPAWN.x, SPAWN.y + 6, 13, 5, 0x345b40, .24).setDepth(1)
-    this.player = this.physics.add.sprite(SPAWN.x, SPAWN.y, `islander-${this.identity.character}-front`)
+    this.shadow = this.add.ellipse(this.spawn.x, this.spawn.y + 6, 13, 5, 0x345b40, .24).setDepth(1)
+    this.player = this.physics.add.sprite(this.spawn.x, this.spawn.y, `islander-${this.identity.character}-front`)
     this.player.setSize(10, 5).setOffset(3, 10).setCollideWorldBounds(true)
     this.cameras.main.startFollow(this.player, true, 1, 1, 0, 65)
     this.fitZoom()
     this.destination = this.add.graphics().setDepth(2).setVisible(false)
     this.destination.lineStyle(1, 0xfdf6e9).strokeEllipse(0, 0, 14, 7).lineStyle(1, 0x8a5a38).strokeEllipse(0, 0, 18, 11)
     this.keys = this.input.keyboard!.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,E,SPACE') as Record<string, Phaser.Input.Keyboard.Key>
-    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer, objects: Phaser.GameObjects.GameObject[]) => {
-      if (this.panelOpen || objects.length) return
+    this.input.keyboard!.enabled = true
+    this.input.keyboard!.enableGlobalCapture()
+    this.input.keyboard!.resetKeys()
+    const onPointer = (pointer: Phaser.Input.Pointer, objects: Phaser.GameObjects.GameObject[]) => {
+      if (this.panelOpen || this.leaving || objects.length) return
       const world = this.cameras.main.getWorldPoint(pointer.x, pointer.y)
       if (!this.walkable(world.x, world.y)) return
       this.tapTarget = new Phaser.Math.Vector2(world.x, world.y)
       this.destination.setPosition(world.x, world.y + 5).setVisible(true)
-    })
+    }
+    this.input.on('pointerdown', onPointer)
     this.promptBg = this.add.graphics()
     this.promptText = this.add.text(0, 0, '', {
       fontFamily: 'system-ui, sans-serif', fontSize: '8px', color: '#4a3b55', resolution: 3,
     }).setOrigin(.5)
     const zone = this.add.zone(0, 0, 125, 26).setInteractive({ useHandCursor: true })
-    zone.on('pointerdown', () => this.tryInteract())
+    const onPrompt = () => this.tryInteract()
+    zone.on('pointerdown', onPrompt)
     this.prompt = this.add.container(0, 0, [this.promptBg, this.promptText, zone]).setDepth(9000).setVisible(false)
     this.tintOverlay = this.add.rectangle(0, 0, WORLD.width, WORLD.height, 0xffffff)
       .setOrigin(0).setDepth(5000).setBlendMode(Phaser.BlendModes.MULTIPLY)
     const onMove = (input: { x: number; y: number }) => {
-      this.moveInput = this.panelOpen ? { x: 0, y: 0 } : input
+      this.moveInput = this.panelOpen || this.leaving ? { x: 0, y: 0 } : input
       if (input.x || input.y) this.tapTarget = null
     }
     const onInteract = () => this.tryInteract()
     const onOpen = () => {
-      this.panelOpen = true; this.tapTarget = null; this.moveInput = { x: 0, y: 0 }; this.player.setVelocity(0, 0)
-      this.input.keyboard!.resetKeys(); this.input.keyboard!.enabled = false
+      this.panelOpen = true; this.clearInput(); this.prompt.setVisible(false)
+      this.input.keyboard!.enabled = false
       this.input.keyboard!.disableGlobalCapture()
     }
-    const onClose = () => { this.panelOpen = false; this.input.keyboard!.enabled = true; this.input.keyboard!.enableGlobalCapture() }
-    const onBlur = () => { this.moveInput = { x: 0, y: 0 }; this.tapTarget = null; this.input.keyboard!.resetKeys() }
-    this.game.events.on('blur', onBlur)
-    eventBus.on('MOVE_INPUT', onMove); eventBus.on('INTERACT', onInteract)
-    let leaving = false
-    const onExit = () => {
-      if (leaving) return
-      leaving = true
-      this.cameras.main.once('camerafadeoutcomplete', () => this.time.delayedCall(16, () => this.scene.start('Login')))
-      this.cameras.main.fadeOut(this.reducedMotion.matches ? 0 : 280)
+    const onClose = () => {
+      this.panelOpen = false; this.clearInput()
+      if (!this.leaving) { this.input.keyboard!.enabled = true; this.input.keyboard!.enableGlobalCapture() }
     }
-    eventBus.on('PANEL_OPENED', onOpen); eventBus.on('PANEL_CLOSED', onClose); eventBus.on('EXIT_TO_LOGIN', onExit)
+    const onBlur = () => this.clearInput()
+    const onVisibility = () => { if (document.hidden) this.clearInput() }
+    const onIdentity = (identity: IslandIdentity) => { this.identity = { ...identity } }
+    const onScene = (state: SceneState) => {
+      if (state.scene !== 'island' || !state.transitioning) return
+      this.leaving = true; this.clearInput(); this.promptTarget = null; this.prompt.setVisible(false)
+      this.input.keyboard!.enabled = false; this.input.keyboard!.disableGlobalCapture()
+    }
+    this.game.events.on('blur', onBlur)
+    document.addEventListener('visibilitychange', onVisibility)
+    eventBus.on('MOVE_INPUT', onMove); eventBus.on('INTERACT', onInteract)
+    eventBus.on('PANEL_OPENED', onOpen); eventBus.on('PANEL_CLOSED', onClose)
+    eventBus.on('IDENTITY_CHANGED', onIdentity); eventBus.on('SCENE_CHANGED', onScene)
     this.scale.on('resize', this.fitZoom, this)
-    this.events.once('shutdown', () => {
-      eventBus.off('PANEL_OPENED', onOpen); eventBus.off('PANEL_CLOSED', onClose); eventBus.off('EXIT_TO_LOGIN', onExit)
+    let disposed = false
+    const cleanup = () => {
+      if (disposed) return
+      disposed = true; this.leaving = true; this.clearInput()
+      eventBus.off('PANEL_OPENED', onOpen); eventBus.off('PANEL_CLOSED', onClose)
+      eventBus.off('IDENTITY_CHANGED', onIdentity); eventBus.off('SCENE_CHANGED', onScene)
       this.scale.off('resize', this.fitZoom, this)
       this.game.events.off('blur', onBlur)
+      document.removeEventListener('visibilitychange', onVisibility)
       eventBus.off('MOVE_INPUT', onMove); eventBus.off('INTERACT', onInteract)
+      this.input.off('pointerdown', onPointer); zone.off('pointerdown', onPrompt)
       eventBus.emit('INTERACTION_CHANGED', { label: null })
+      this.input.keyboard!.removeCapture(Object.values(this.keys).map(key => key.keyCode))
       this.input.keyboard!.disableGlobalCapture()
-    })
+      this.events.off(Phaser.Scenes.Events.SHUTDOWN, cleanup)
+      this.events.off(Phaser.Scenes.Events.DESTROY, cleanup)
+    }
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, cleanup)
+    this.events.once(Phaser.Scenes.Events.DESTROY, cleanup)
     this.updateDayNight()
     this.updateAudioContext()
     if (!this.reducedMotion.matches) this.cameras.main.fadeIn(280)
+    eventBus.emit('SCENE_READY', { scene: 'island', identity: { ...this.identity } })
+  }
+
+  private clearInput(): void {
+    this.moveInput = { x: 0, y: 0 }; this.tapTarget = null
+    if (this.player?.active && this.player.body) this.player.setVelocity(0, 0)
+    this.destination?.setVisible(false)
+    this.input.keyboard?.resetKeys()
   }
 
   private fitZoom(): void {
+    this.clearInput()
     // 整数倍清晰像素；手机保持人物可读。
     // 可视区域（视口÷zoom）任一轴超出 640×480 世界纹理，就会在超出侧露出
     // 无波纹的平底背景色 #3f6f9e（看起来是一块突兀的蓝色空白）。
@@ -181,6 +217,12 @@ export class IslandScene extends Phaser.Scene {
       c: '#c79a65', s: '#547e7d', w: '#f5eee2', g: '#9fcdb8',
     })
     object(BOTTLE.x, BOTTLE.y, 'bottle-v3', 8)
+    object(SEASIDE_ENTRY.x, SEASIDE_ENTRY.y, 'seaside-waymark', 18)
+    this.add.image(SEASIDE_ENTRY.x + 17, SEASIDE_ENTRY.y + 2, 'seaside-cushion').setOrigin(.5, 1).setDepth(2)
+    this.add.image(SEASIDE_ENTRY.x + 28, SEASIDE_ENTRY.y - 7, 'seaside-shell').setDepth(2)
+    this.add.text(SEASIDE_ENTRY.x, SEASIDE_ENTRY.y - 11, '看海', {
+      fontFamily: 'system-ui, sans-serif', fontSize: '6px', color: '#f5eee2', resolution: 3,
+    }).setOrigin(.5).setDepth(SEASIDE_ENTRY.y + 1)
     // 位置标识在场景中使用清晰的小字，不烘焙进像素素材。
     for (const [x, y, text] of [[HOME.x, 254, '我们的家'], [164, 324, '慢慢开花'], [TOWER.x, 277, '记忆灯塔']] as const) {
       this.add.text(x, y, text, { fontFamily: 'system-ui, sans-serif', fontSize: '7px', color: '#4a3b55',
@@ -221,7 +263,7 @@ export class IslandScene extends Phaser.Scene {
     this.resolveMovement()
     this.previous = { x: this.player.x, y: this.player.y }
     let dx = 0, dy = 0
-    if (!this.panelOpen) {
+    if (!this.panelOpen && !this.leaving) {
       dx = Number(this.keys.D.isDown || this.keys.RIGHT.isDown) - Number(this.keys.A.isDown || this.keys.LEFT.isDown)
       dy = Number(this.keys.S.isDown || this.keys.DOWN.isDown) - Number(this.keys.W.isDown || this.keys.UP.isDown)
       if (!dx && !dy) { dx = this.moveInput.x; dy = this.moveInput.y }
@@ -241,7 +283,7 @@ export class IslandScene extends Phaser.Scene {
     // 四方向、两帧走路节奏，不拉伸角色；减少动态时保持静态。
     const step = !this.reducedMotion.matches && norm && Math.floor(time / 160) % 2 ? '-step' : ''
     this.player.setTexture(`islander-${this.identity.character}-${this.facing}${step}`)
-    this.destination.setVisible(!!this.tapTarget && !this.panelOpen)
+    this.destination.setVisible(!!this.tapTarget && !this.panelOpen && !this.leaving)
     this.shadow.setPosition(this.player.x, this.player.y + 6)
     for (let i = 0; i < this.decorations.length; i++) {
       const water = this.decorations[i]
@@ -278,7 +320,7 @@ export class IslandScene extends Phaser.Scene {
     else { this.player.setPosition(this.previous.x, this.previous.y); this.tapTarget = null }
   }
   private updatePrompt(): void {
-    this.promptTarget = this.interactables.find(it => Math.hypot(it.x - this.player.x, it.y - this.player.y) < 34) ?? null
+    this.promptTarget = this.leaving ? null : this.interactables.find(it => Math.hypot(it.x - this.player.x, it.y - this.player.y) < 34) ?? null
     const label = this.panelOpen ? null : this.promptTarget?.label ?? null
     if (label !== this.interactionLabel) {
       this.interactionLabel = label
@@ -294,10 +336,11 @@ export class IslandScene extends Phaser.Scene {
     this.prompt.setPosition(this.promptTarget.x, this.promptTarget.y - 44)
   }
   private tryInteract(): void {
-    if (this.panelOpen || !this.promptTarget) return
+    if (this.panelOpen || this.leaving || !this.promptTarget) return
     if (this.promptTarget.event === 'mailbox') eventBus.emit('OPEN_MAILBOX', { unread: 0 })
     else if (this.promptTarget.event === 'calendar') eventBus.emit('OPEN_CALENDAR', {})
-    else eventBus.emit('OPEN_BOTTLE', { id: 'shore' })
+    else if (this.promptTarget.event === 'bottle') eventBus.emit('OPEN_BOTTLE', { id: 'shore' })
+    else eventBus.emit('TRAVEL_REQUEST', { from: 'island', to: 'seaside', returnPoint: { ...SEASIDE_RETURN } })
   }
   private updateDayNight(): void {
     const now = new Date(), h = now.getHours() + now.getMinutes() / 60, phase = phaseAtHour(h)
