@@ -6,6 +6,7 @@ from .misc import router as misc_router
 from .settings import router as settings_router
 from .uploads import router as uploads_router
 from .world import router as world_router
+from .rooms import router as rooms_router
 
 __all__ = [
     "anniversaries_router",
@@ -16,4 +17,5 @@ __all__ = [
     "settings_router",
     "uploads_router",
     "world_router",
+    "rooms_router",
 ]

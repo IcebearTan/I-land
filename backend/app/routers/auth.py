@@ -10,6 +10,7 @@ from ..db import get_db
 from ..deps import create_session, get_current_user
 from ..models import AuthSession, User
 from ..security import hash_password, verify_password
+from ..room_runtime import room_runtime
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -76,6 +77,7 @@ def change_password(
         )
     )
     db.commit()
+    room_runtime.sweep()  # 其他设备被撤销的会话立即退出房间；当前会话保留
     return {"ok": True}
 
 
@@ -87,5 +89,6 @@ def logout(
 ):
     db.exec(sa_delete(AuthSession).where(AuthSession.user_id == user.id))  # type: ignore[arg-type]
     db.commit()
+    room_runtime.sweep()  # 退出撤销此账号所有会话，同时解除座位与依靠
     response.delete_cookie(SESSION_COOKIE, secure=COOKIE_SECURE)
     return {"ok": True}

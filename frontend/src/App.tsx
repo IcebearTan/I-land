@@ -3,7 +3,7 @@ import { characterId } from './characters'
 import { CalendarFeature } from './calendar/CalendarFeature'
 import { IslandControls } from './components/IslandControls'
 import { api } from './api/client'
-import { eventBus, type SceneState } from './game/EventBus'
+import { eventBus, type IslandIdentity, type SceneState } from './game/EventBus'
 import type { User } from './types'
 import { GameShell } from './components/GameShell'
 import { Hud } from './components/Hud'
@@ -13,6 +13,11 @@ import { ComingSoonPanel } from './components/panels/ComingSoonPanel'
 import { SettingsPanel } from './components/SettingsPanel'
 import { useIslandAudio } from './audio/useIslandAudio'
 import { SeasideControls } from './components/SeasideControls'
+
+function islandIdentity(user: User): IslandIdentity {
+  return { character: characterId(user.sprite, user.account), display: user.display,
+    ...(user.account === 'bear' || user.account === 'her' ? { account: user.account } : {}) }
+}
 
 export default function App() {
   // undefined = 还在检查登录态；null = 未登录
@@ -32,7 +37,7 @@ export default function App() {
   useEffect(() => {
     userRef.current = user
     if (user && gameReady.current) {
-      const identity = { character: characterId(user.sprite, user.account), display: user.display }
+      const identity = islandIdentity(user)
       eventBus.emit(enteredUser.current === user.id ? 'IDENTITY_CHANGED' : 'ENTER_ISLAND', identity)
     }
     enteredUser.current = user?.id ?? null
@@ -46,9 +51,14 @@ export default function App() {
 
   useEffect(() => {
     const onScene = (value: SceneState) => setScene(value)
+    const expired = () => {
+      gameReady.current = false; userRef.current = null; enteredUser.current = null
+      setUser(null); eventBus.emit('EXIT_TO_LOGIN', {})
+    }
     eventBus.on('SCENE_CHANGED', onScene)
+    eventBus.on('SESSION_EXPIRED', expired)
     eventBus.emit('SCENE_REQUEST_STATE', {})
-    return () => eventBus.off('SCENE_CHANGED', onScene)
+    return () => { eventBus.off('SCENE_CHANGED', onScene); eventBus.off('SESSION_EXPIRED', expired) }
   }, [])
 
   // Phaser 场景就绪后，按登录态决定停在登录页还是直接上岛
@@ -56,7 +66,7 @@ export default function App() {
     const onReady = () => {
       gameReady.current = true
       const current = userRef.current
-      if (current) eventBus.emit('ENTER_ISLAND', { character: characterId(current.sprite, current.account), display: current.display })
+      if (current) eventBus.emit('ENTER_ISLAND', islandIdentity(current))
     }
     eventBus.on('GAME_READY', onReady)
     return () => eventBus.off('GAME_READY', onReady)

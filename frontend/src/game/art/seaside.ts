@@ -6,6 +6,8 @@ import { PixelArt } from './island'
 
 export const SEASIDE_MAX = 640
 const BACKDROP = 'seaside-panorama-v1'
+export type SeasideOccupant = { character: CharacterId; seat: 0 | 1; pose: 'arriving' | 'seated' | 'standing' | 'leaning' }
+type SeasideSide = 'left' | 'right'
 type Mood = { sky: RGB; middle: RGB; horizon: RGB; sea: RGB; near: RGB; sand: RGB; shade: RGB; night: number; warmth: number }
 const rgb = (hex: string): RGB => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]
 const hex = (c: RGB) => '#' + c.map(v => Math.round(v).toString(16).padStart(2, '0')).join('')
@@ -35,7 +37,61 @@ export function seasideLayout(width: number, height: number) {
   const shore = Math.round(height * (portrait ? .59 : .66))
   const seatY = Math.round(height * (portrait ? .70 : .77))
   const center = Math.round(width * .5)
-  return { horizon, shore, seatY, center, seats: [center - 14, center + 14], standingY: seatY + 17 }
+  return {
+    horizon, shore, seatY, center, seats: [center - 14, center + 14], standingY: seatY + 17,
+    leaningSeats: [center - 10, center + 10], singleLeaningSeats: [center - 6, center + 6], leaningY: seatY + 2,
+  }
+}
+
+/** 座位由房间分配，与角色身份无关；依靠时身体稍稍靠近，头部形状由专用帧表达。 */
+export function seasideActorPosition(width: number, height: number, seat: 0 | 1, pose: SeasideOccupant['pose'], companionPose?: SeasideOccupant['pose']) {
+  const layout = seasideLayout(width, height)
+  const positions = pose === 'leaning'
+    ? companionPose && companionPose !== 'leaning' ? layout.singleLeaningSeats : layout.leaningSeats
+    : layout.seats
+  return {
+    x: positions[seat],
+    y: pose === 'seated' || pose === 'leaning' ? layout.seatY + 2 : layout.standingY,
+  }
+}
+
+/** 26×25 的专门背面依靠像素帧，耳朵、后脑、肩线与手臂分别重画，不旋转站姿。 */
+function leaningBear(side: SeasideSide, settling: boolean): PixelArt {
+  const p = new PixelArt(26, 25), direction = side === 'left' ? 1 : -1
+  const lean = settling ? 1 : 2, head = 13 + direction * lean
+  const leftEarY = 5 - direction, rightEarY = 5 + direction
+  p.ellipse(head - 5, leftEarY, 3, 3, '#8c999a'); p.ellipse(head + 5, rightEarY, 3, 3, '#8c999a')
+  p.ellipse(head - 5, leftEarY, 2, 2, '#e6e8e3'); p.ellipse(head + 5, rightEarY, 2, 2, '#fffaf2')
+  p.polygon([[head - 7, 12], [head + 7, 12], [21, 20], [19, 23], [7, 23], [5, 20]], '#8c999a')
+  p.polygon([[head - 6, 13], [head + 6, 13], [20, 20], [18, 22], [8, 22], [6, 20]], '#e6e8e3')
+  p.polygon([[head - 3, 13], [head + 6, 13], [19, 21], [10, 21]], '#fffaf2')
+  p.ellipse(head, 10, 8, 7, '#8c999a'); p.ellipse(head, 10, 7, 6, '#e6e8e3')
+  p.ellipse(head + 1, 9, 6, 5, '#fffaf2')
+  p.polygon([[head - 4, 14], [head + 6, 14], [18, 21], [10, 21]], '#fffaf2')
+  // 两只前爪安稳地落在坐垫上，保留白熊较长的背部而不是圆球。
+  p.polygon([[6, 15], [8, 16], [8, 21], [5, 21], [4, 19]], '#e6e8e3')
+  p.polygon([[19, 16], [21, 15], [22, 19], [21, 21], [18, 21]], '#fffaf2')
+  p.rect(6, 22, 6, 2, '#8c999a'); p.rect(15, 22, 6, 2, '#8c999a')
+  p.rect(6, 22, 6, 1, '#e6e8e3'); p.rect(15, 22, 6, 1, '#fffaf2')
+  return p
+}
+
+function leaningHer(side: SeasideSide, settling: boolean): PixelArt {
+  const p = new PixelArt(26, 25), direction = side === 'left' ? 1 : -1
+  const lean = settling ? 1 : 2, head = 13 + direction * lean
+  // 短袖与黑裤分别保留完整轮廓，长发顺着偏移后的肩线落下。
+  p.polygon([[head - 6, 14], [head + 6, 14], [20, 19], [19, 21], [7, 21], [6, 19]], '#3f887f')
+  p.polygon([[head - 4, 14], [head + 5, 14], [18, 20], [9, 20]], '#62b2a2')
+  p.polygon([[6, 16], [8, 16], [8, 21], [5, 21], [4, 19]], '#f0c6a0')
+  p.polygon([[19, 16], [21, 16], [22, 19], [21, 21], [18, 21]], '#f0c6a0')
+  p.rect(7, 21, 5, 3, '#242333'); p.rect(15, 21, 5, 3, '#242333')
+  p.rect(7, 23, 5, 1, '#393946'); p.rect(15, 23, 5, 1, '#393946')
+  p.ellipse(head, 9, 7, 7, '#20222e')
+  p.polygon([[head - 7, 8], [head + 7, 8], [head + 6, 15], [17, 19], [9, 19], [head - 6, 15]], '#20222e')
+  p.ellipse(head + 1, 8, 5, 5, '#393946')
+  p.polygon([[head - 4, 9], [head + 5, 9], [head + 4, 15], [16, 18], [11, 18], [head - 4, 15]], '#393946')
+  p.rect(head - 5, 15, 2, 2, '#20222e'); p.rect(head + 4, 15, 2, 2, '#20222e')
+  return p
 }
 
 /** 原创海边像素画。大场景只刷新原纹理，坐姿与小物件统一走字符画管线。 */
@@ -69,6 +125,11 @@ export function createSeasideArt(scene: Phaser.Scene): void {
   her.rect(5, 15, 3, 2, '#20222e'); her.rect(14, 15, 3, 2, '#20222e')
   her.rect(8, 16, 6, 1, '#20222e')
   her.texture(scene, 'seaside-her-seated')
+  for (const side of ['left', 'right'] as const) for (const settling of [false, true]) {
+    const suffix = settling ? '-settling' : ''
+    leaningBear(side, settling).texture(scene, `seaside-bear-leaning-${side}${suffix}`)
+    leaningHer(side, settling).texture(scene, `seaside-her-leaning-${side}${suffix}`)
+  }
   for (const step of [false, true]) {
     const bearStanding = new PixelArt(22, 32)
     bearStanding.ellipse(5, 5, 3, 3, '#8c999a'); bearStanding.ellipse(16, 5, 3, 3, '#8c999a')
@@ -92,9 +153,13 @@ export function createSeasideArt(scene: Phaser.Scene): void {
   }
 }
 
-export function paintSeaside(scene: Phaser.Scene, width: number, height: number, hour: number, motion: number, character: CharacterId): void {
+export function paintSeaside(scene: Phaser.Scene, width: number, height: number, hour: number, motion: number, participants: CharacterId | readonly SeasideOccupant[]): void {
   const p = new PixelArt(width, height), m = moodAt(hour)
   const { horizon, shore, seatY, center, seats } = seasideLayout(width, height)
+  // 旧版单人调用兼容；共享房间传入实际占座名单，离开后的脚印随重绘消失。
+  const occupants: readonly SeasideOccupant[] = typeof participants === 'string'
+    ? [{ character: participants, seat: participants === 'bear' ? 0 : 1, pose: 'seated' }]
+    : participants
   const skyStops: Array<[number, RGB]> = [[0, m.sky], [.55, m.middle], [1, m.horizon]]
   // 宽阔而安静的天空，低分辨率色阶而非满屏颗粒。
   for (let y = 0; y < horizon; y++) p.rect(0, y, width, 1, hex(colorAt(skyStops, Math.round(y / horizon * 48) / 48)))
@@ -178,7 +243,7 @@ export function paintSeaside(scene: Phaser.Scene, width: number, height: number,
     p.rect(x, y, 2, 1, mix(sand, shade, .35))
     if (i % 7 === 0) p.rect(x + 2, y - 1, 2, 1, mix(sand, '#f5eee2', .25))
   }
-  // 一小块并排的木台，两处坐席；另一处始终空着，不绘制假同伴。
+  // 一小块并排的木台与两处坐席；人物由真实房间名单在上层绘制。
   p.ellipse(center, seatY + 7, 46, 8, mix(sand, shade, .45))
   const wood = mix('#c79a65', shade, m.night * .4)
   p.polygon([[center - 46, seatY - 2], [center + 43, seatY - 2], [center + 48, seatY + 9], [center - 49, seatY + 9]], '#8a5a38')
@@ -198,11 +263,12 @@ export function paintSeaside(scene: Phaser.Scene, width: number, height: number,
   p.rect(lx, ly - 9, 1, 7, '#c79a65'); p.rect(lx - 2, ly - 13, 5, 2, '#8a5a38'); p.rect(lx - 3, ly - 1, 7, 2, '#8a5a38')
   const cupX = center + 35
   p.rect(cupX, seatY - 1, 5, 5, '#f5eee2'); p.rect(cupX + 5, seatY, 2, 3, '#d8c293'); p.rect(cupX + 1, seatY - 1, 3, 1, '#8a5a38')
-  // 脚印属于本次入场的角色，不代表对方在线。
-  const actorX = seats[character === 'bear' ? 0 : 1]
-  for (let i = 0; i < 4; i++) {
-    const x = actorX + 5 + i * 3, y = seatY + 20 + i * 9
-    p.rect(x, y, character === 'bear' ? 3 : 2, 2, mix(sand, shade, .42)); p.rect(x + 5, y + 4, 2, 2, mix(sand, shade, .42))
+  // 每位真实岛民各有一路脚印；按座位向外分开，不把两条足迹叠在一起。
+  for (const { character, seat } of occupants) for (let i = 0; i < 4; i++) {
+    const outward = seat === 0 ? -1 : 1
+    const x = seats[seat] + outward * (7 + i * 3), y = seatY + 20 + i * 9
+    p.rect(x, y, character === 'bear' ? 3 : 2, 2, mix(sand, shade, .42))
+    p.rect(x + outward * 5, y + 4, 2, 2, mix(sand, shade, .42))
   }
   // 低低的沙丘与草叶收住画面；中心留白给人和海。
   const green = mix('#5a944a', '#345b40', m.night * .7)

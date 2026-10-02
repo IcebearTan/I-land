@@ -2,12 +2,20 @@ import mitt from 'mitt'
 import type { CharacterId } from '../characters'
 import type { AudioContextInfo, AudioSettings, AudioStatus } from '../audio/types'
 import type { SceneryRate, SceneryTime } from '../seaside/clock'
+import type { RoomMember, RoomPose, RoomView } from '../seaside/types'
 
-export interface IslandIdentity { character: CharacterId; display: string }
+export interface IslandIdentity { character: CharacterId; display: string; account?: 'bear' | 'her' }
 export type SceneId = 'login' | 'island' | 'seaside'
 export interface IslandEntry extends IslandIdentity { returnPoint?: { x: number; y: number } }
 export interface SceneState { scene: SceneId; transitioning: boolean }
-export interface SeasideState { pose: 'arriving' | 'seated' | 'standing'; clock: SceneryTime }
+export interface SeasideState {
+  pose: 'arriving' | RoomPose
+  clock: SceneryTime
+  connection: Pick<RoomView, 'state' | 'pending' | 'message'>
+  members: RoomMember[]
+  companion?: RoomMember
+  notice?: string
+}
 
 /**
  * 游戏层（Phaser）与 UI 层（React）之间唯一允许的通信通道。
@@ -36,7 +44,9 @@ export type GameEvents = {
   TRAVEL_REQUEST: { from: 'island' | 'seaside'; to: 'island' | 'seaside'; returnPoint?: { x: number; y: number } }
   SEASIDE_STATE: SeasideState
   SEASIDE_REQUEST_STATE: Record<string, never>
-  SEASIDE_ACTION: { action: 'sit' | 'stand' }
+  SEASIDE_ACTION: { action: 'sit' | 'stand' | 'lean' | 'unlean' }
+  SEASIDE_RECONNECT: Record<string, never>
+  SESSION_EXPIRED: Record<string, never>
   SEASIDE_CLOCK_REQUEST: { action: 'rate'; rate: SceneryRate } | { action: 'reset' }
   /** React → 游戏：下岛回登录 */
   EXIT_TO_LOGIN: Record<string, never>

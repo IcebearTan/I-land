@@ -1,4 +1,5 @@
-from contextlib import asynccontextmanager
+import asyncio
+from contextlib import asynccontextmanager, suppress
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -15,7 +16,9 @@ from .routers import (
     settings_router,
     uploads_router,
     world_router,
+    rooms_router,
 )
+from .room_runtime import room_runtime
 from .seed import seed
 
 
@@ -25,7 +28,15 @@ async def lifespan(_: FastAPI):
     with Session(engine) as db:
         seed(db)
     UPLOADS_DIR.mkdir(parents=True, exist_ok=True)  # 全新数据卷首次启动即建目录
-    yield
+    room_runtime.start()
+    room_watch = asyncio.create_task(room_runtime.watch())
+    try:
+        yield
+    finally:
+        room_watch.cancel()
+        with suppress(asyncio.CancelledError):
+            await room_watch
+        room_runtime.stop()
 
 
 app = FastAPI(title="I-land API", version="0.2.0", lifespan=lifespan)
@@ -38,6 +49,7 @@ app.include_router(anniversaries_router)
 app.include_router(memories_router)
 app.include_router(uploads_router)
 app.include_router(settings_router)
+app.include_router(rooms_router)
 
 # 照片、信纸等私人内容一律走登录校验的 /api 接口（见 routers/uploads.py），
 # uploads 目录不做公开静态挂载。

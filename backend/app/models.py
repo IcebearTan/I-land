@@ -46,6 +46,19 @@ class UserPreference(SQLModel, table=True):
     ambience_volume: float = 0.55
 
 
+class RoomClock(SQLModel, table=True):
+    """共享景色锚点持久化；座位、连接与姿势只在单进程内存中保存。"""
+
+    room: str = Field(primary_key=True)
+    virtual_base_ms: int
+    real_anchor_utc_ms: int
+    rate: int = 1
+    version: int = 1
+    following_real: bool = True
+    time_zone: str = "Asia/Shanghai"
+    changed_by: Optional[str] = None
+
+
 class Letter(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     date: str  # YYYY-MM-DD 写信日期

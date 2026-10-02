@@ -11,7 +11,7 @@ Icebear 的「去你的岛」——星露谷式 2.5D 像素小岛网页小游戏
 - **游戏层**：Phaser 3 + TypeScript（tile 世界、角色、昼夜、交互）
 - **UI 层**：React 19 + Vite（登录、HUD、信箱/日历/留言面板）
 - **后端**：FastAPI + SQLModel + SQLite（WAL），Pillow 生成缩略图
-- **通信**：React ↔ Phaser 走事件总线（mitt）；React ↔ 后端走同源 REST
+- **通信**：React ↔ Phaser 走事件总线（mitt）；保存走同源 REST，海边房间经鉴权 WebSocket 推送快照
 
 架构铁律：**Phaser 不知道 React 存在，React 不碰 canvas，持久化一律走 API。**
 
@@ -53,11 +53,12 @@ cd ../backend && .venv/bin/python -m uvicorn app.main:app --port 8000
 
 ```bash
 cd backend && .venv/bin/python -m pytest tests/ -q
-cd ../frontend && npm run test:calendar && npm run build
+cd ../frontend && node --test tests/*.test.mjs && npm run build
 ```
 
 后端覆盖：登录/改密、私人内容访问控制、图片上传与派生图、记忆 CRUD 与
-版本冲突、软删除恢复、备份恢复演练、旧库迁移。
+版本冲突、软删除恢复、备份恢复演练、旧库迁移，以及海边房间鉴权、租约与共享时钟。
+当前本地检查：后端 118 项、前端 70 项通过；真机和线上验收另行记录。
 
 ## Docker（可选，一步起完整服务）
 
@@ -67,6 +68,7 @@ docker compose up --build -d   # http://localhost:8000
 
 数据持久化在 named volume `iland-data`（SQLite + uploads）。反向代理 HTTPS 时
 给服务加 `ILAND_COOKIE_SECURE=1`。
+海边成员由单进程内存管理，当前部署只支持一个 Uvicorn worker；多 worker / 多副本需要另做共享协调。
 
 ## 目录结构
 
@@ -82,21 +84,23 @@ I-land/
 │   │   ├── models.py    全部数据表
 │   │   ├── attachments.py  图片处理（三档派生、EXIF 去敏）
 │   │   ├── backup.py    备份/恢复（python -m app.backup）
-│   │   └── routers/     auth / letters / anniversaries / memories / uploads / settings / world / misc
+│   │   ├── room_runtime.py  海边成员、租约与快照广播（单 worker）
+│   │   └── routers/     auth / letters / anniversaries / memories / uploads / settings / rooms / world / misc
 │   └── tests/           pytest（TestClient 全链路）
 └── frontend/            React + Phaser
     └── src/
         ├── game/        Phaser（scenes/ + EventBus 事件总线）
         ├── calendar/    日历与记忆卡（节日 + 每日记忆）
+        ├── seaside/     海边房间连接、共享时钟与类型
         ├── components/  React（GameShell / Hud / Login / Settings / panels）
         ├── api/         fetch / multipart 上传封装
         └── styles/      木牌 UI 样式
 ```
 
-## 当前进度（M0 完成 · M1/M2/M3 推进中 · 声音已本地实现）
+## 当前进度（M0 完成 · M1/M2/M3 推进中 · 声音与双人看海已本地实现）
 
 当前功能与验证边界见 [当前状态](./docs/planning/CURRENT_STATE.md)，
-当前阶段按 [声音、双人看海与小屋](./docs/planning/NEXT_STAGE_EXPERIENCE.md)推进，声音已有本地实现，下一开发包为场景框架 SCENE-01；[M2 写信回信](./docs/planning/NEXT_STAGE_M2.md)保留后续。
+当前阶段按 [声音、双人看海与小屋](./docs/planning/NEXT_STAGE_EXPERIENCE.md)推进，声音、场景框架和双人看海已有本地实现，下一开发包为小屋室内 HOME-01；[M2 写信回信](./docs/planning/NEXT_STAGE_M2.md)保留后续。
 用户已确认服务器部署完成；备份恢复与真机等专项验收按实际证据单独记录。
 
 - [x] 岛内视觉重绘：原创像素小屋/灯塔/树木、花圃与海岸布局、前后遮挡、行走碰撞及昼夜暖灯。
@@ -119,7 +123,7 @@ I-land/
 - [x] 浏览器适配：声明 light color-scheme，处理移动暗色模式强制反色；实际设备效果待复测。
 - [x] 声音本地实现：原创昼夜 8bit 风格音乐、合成鸟鸣/海浪及 CC0 真实夜间虫鸣；默认开启、登录页轻音乐、设置内个人开关/音量、平滑区域混音与后台暂停。后续听感/手机与线上验收待补。
 - [x] 独立看海本地实现：沙滩入口与安全返回、专门坐姿、日出日落/月光与海面反光、暂停/1×/30×/120×及回现实时间；只调整景色，手机模拟视口通过，真机/线上待验。
-- [ ] 双人看海：真实两位玩家先后入座、依靠、共享景色时间与断线重连。
+- [x] 双人看海本地实现：真实两位身份先后入座、专门依靠姿势、共享景色时间、断线重连与同账号接管；隔离 Cookie 浏览器验证通过，真机/线上 WSS 待验。主岛仍为异步足迹。
 - [ ] 小屋室内：门口切换、一间可走动的小屋、家具连接现有信箱/日历/声音控制。
 - [ ] M4 漂流瓶：留言系统
 - [ ] M5 农场：种花送她

@@ -144,3 +144,24 @@ docker compose exec iland python -m app.maintenance orphans --days 2
 相同来源重跑跳过，源内容改变/已建信消失则要求人工核对。换 URL、丢日志或更换数据目录可能失去重跑保护。
 只实现本机工具锁与现有 API 精确比对，不宣称公共写信已支持数据库级并发幂等。
 图片响应丢失时可能留下未关联上传，当前继续只登记，不自动清理。迁入后核对数量、署名、页序与每页可读性。
+
+## 8. 双人海边发布
+
+新版本的海边同步需要同时更新前后端。继续使用现有 FastAPI / SQLite 服务，不增加独立联机服务或数据库；升级前按上面的流程备份数据库与 uploads。
+
+- **一个 Uvicorn worker、一个服务副本**。当前 Dockerfile 启动命令符合要求；不能加 `--workers 2` 或将 iland 扩为多副本。成员/座位/姿势在进程内管理，共享景色时钟存 `roomclock` 表，首次启动仅增加新表，不修改旧内容。
+- WebSocket 使用网站同源的 `/api/rooms/seaside/events`；HTTPS 网站自动使用 WSS。Vite 开发代理已开启 `ws: true` 并保留原 Host（[Vite 官方说明](https://vite.dev/config/server-options#server-proxy)）。
+- 反代必须保留 Host 与 Origin，不能缓存房间 API。Caddy 的 `reverse_proxy` 已支持 WebSocket 升级（[Caddy 官方说明](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy#streaming)），原站点可继续代理到现有服务端口。
+- 来源检查默认要求请求 Host/协议与页面 Origin 相同。若 Caddy 容器到后端的链路是 HTTP，而后端未收到可信 HTTPS 代理信息，在 iland 服务内显式设置公开站点来源；仅填自己的实际网站地址，多个地址用逗号分隔，不用 `*`：
+
+```yaml
+environment:
+  ILAND_COOKIE_SECURE: "1"
+  ILAND_ROOM_ORIGINS: "https://island.example.com"
+```
+
+`island.example.com` 是示例，替换为实际域名。Cookie 仍负责身份校验，来源白名单不授予登录或座位权限。网站若使用非默认端口，来源须包含端口。
+
+升级后用两位岛民的**隔离登录会话**验证：先进入/后进入、两边看到相同座位与姿势、依靠/起身/离开、共同暂停或调速、页面后台返回、网络恢复、同账号新窗口接管。WebSocket 请求应实际升级成功；不能仅凭 HTTP 页面加载成功宣布 WSS 发布完成。
+
+服务重启会清空在线成员并重新确认入座，保存的景色时钟继续按原倍率推进。暂停、加速和回现实只改变海边景色，不改变纪念日、恋爱天数、音频速度或会话过期时间。真实 iOS/Android 锁屏及服务器 WSS 尚需实际设备和部署环境验收。

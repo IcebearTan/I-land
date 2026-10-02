@@ -87,7 +87,7 @@ export class IslandScene extends Phaser.Scene {
   constructor() { super('Island') }
 
   init(entry?: IslandEntry): void {
-    this.identity = entry ? { character: entry.character, display: entry.display } : { character: 'bear', display: '小熊' }
+    this.identity = entry ? { character: entry.character, display: entry.display, account: entry.account } : { character: 'bear', display: '小熊' }
     this.spawn = entry?.returnPoint && Number.isFinite(entry.returnPoint.x) && Number.isFinite(entry.returnPoint.y)
       && this.walkable(entry.returnPoint.x, entry.returnPoint.y) ? { ...entry.returnPoint } : { ...SPAWN }
     this.facing = 'front'

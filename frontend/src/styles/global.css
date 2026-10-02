@@ -64,7 +64,15 @@ body {
 .seaside-ui[data-phase="dawn"] .shore-caption p { width: max-content; max-width: 100%; padding: 3px 7px; margin-left: -7px; background: #fdf6e9ed; border-radius: 2px; color: #4a3b55; text-shadow: none; }
 .seaside-ui[data-phase="dusk"] .shore-caption h1,
 .seaside-ui[data-phase="dawn"] .shore-caption h1 { width: max-content; padding: 0 7px; margin-left: -7px; background: #fdf6e9f2; border-radius: 2px; color: #4a3b55; text-shadow: none; }
-.shore-bottom { position: absolute; bottom: max(23px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: min(560px, calc(100% - 40px)); text-align: center; }
+.shore-bottom { position: absolute; bottom: max(23px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: min(620px, calc(100% - 40px)); text-align: center; }
+.shore-label-short { display: none; }
+.shore-company { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; width: max-content; max-width: min(380px, calc(100vw - 60px)); padding: 9px 12px; margin: 17px 0 0 -7px; border: 1px solid #c8ad8b; border-radius: 4px; background: #fdf6e9ed; color: #4a3b55; font-size: 11px; line-height: 1.6; text-shadow: none; letter-spacing: .03em; }
+.shore-company-people { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+.shore-company-people > span { display: flex; align-items: center; gap: 6px; }
+.shore-company-people > span > span:last-child { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.shore-company.is-together { border-color: #9ead91; }
+.shore-retry { pointer-events: auto; min-height: 40px; padding: 4px 10px; margin: 2px 0 0; border: 1px solid #9ead91; border-radius: 3px; background: #e3eee3; color: #4a3b55; font: inherit; cursor: pointer; }
+.shore-retry:focus-visible { outline: 2px solid #3f887f; outline-offset: 2px; }
 .shore-moment { display: flex; align-items: center; justify-content: center; gap: 9px; width: max-content; margin: 0 auto 12px; padding: 6px 13px; background: #fdf6e9f2; border: 1px solid #c8ad8b; border-radius: 20px; font-size: 11px; letter-spacing: .1em; }
 .shore-moment > span:first-child { color: #986149; font-size: 15px; }
 .shore-moment i { width: 1px; height: 10px; margin: 0 3px; background: #d5b78e; }
@@ -94,6 +102,12 @@ body {
   .shore-caption h1 { font-size: 25px; margin: 10px 0 8px; letter-spacing: .09em; }
   .shore-caption p { font-size: 11px; letter-spacing: .035em; }
   .shore-eyebrow { font-size: 10px; letter-spacing: .14em; }
+  .shore-label-wide { display: none; }
+  .shore-label-short { display: inline; }
+  .shore-company { padding: 6px 9px; gap: 3px; margin-top: 12px; max-width: calc(100vw - 46px); font-size: 10px; }
+  .shore-company-people { gap: 12px; }
+  .shore-company-people > span > span:last-child { max-width: 94px; }
+  .seaside-ui[data-time-open="true"] .shore-company { display: none; }
   .shore-bottom { width: calc(100% - 24px); bottom: max(16px, env(safe-area-inset-bottom)); }
   .shore-controls { padding: 6px; }
   .shore-button { padding: 9px 7px; gap: 5px; font-size: 11px; }
@@ -104,10 +118,16 @@ body {
   .shore-clock-heading > span:last-child { font-size: 9px; }
   .shore-clock-options { gap: 5px; }
 }
+@media (max-width: 360px) {
+  .shore-button:not(.shore-back) svg { display: none; }
+  .shore-button { padding-left: 5px; padding-right: 5px; }
+  .shore-caption h1 { font-size: 23px; }
+}
 @media (max-height: 560px) and (min-width: 601px) {
   .shore-caption { top: 24px; left: 26px; }
   .shore-caption h1 { font-size: 23px; margin: 8px 0; }
   .shore-caption p, .shore-small-note { display: none; }
+  .shore-company { margin-top: 7px; padding: 4px 8px; gap: 1px; }
   .shore-bottom { bottom: 12px; width: min(510px, calc(100% - 40px)); }
   .shore-moment { position: absolute; right: 0; bottom: 74px; margin: 0; }
   .shore-clock-settings { bottom: 95px; padding-top: 12px; }
