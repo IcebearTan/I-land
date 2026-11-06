@@ -1,0 +1,13 @@
+# ImageGen 参考记录
+
+2026-11-06，使用内置 `image_gen.imagegen`，非 CLI/API fallback。项目内原样保存为 `material-direction.png`。它是材质与体积参考，不是像素图集、运行时背景或成品尺寸承诺。
+
+参考优点：木石布区分明确，拱形石炉有厚度，局部火光、冷窗、少量生活细节。参考缺点：逻辑像素密度不固定、纹理偏密、角色头上混入猫耳、黑发长度与背面印花不符合身份约定；没有将这些问题带入手工整数像素源。最终样板的家具与人物由 `source/render.py` 重新绘制，不是裁剪/降采样这张图。
+
+完整生成提示词：
+
+```text
+Use case: stylized-concept. Asset type: art direction reference for I-land, a private cozy two-person pixel game. Create a single highly polished ORIGINAL 16-bit pixel-art interior sample, straight-on orthographic 3/4 top down, not isometric, visible top surfaces, horizontal wall baseline. Landscape 4:3 image. Composition: a close but complete fireplace-sofa-window corner. Left back wall: warm rough-hewn limestone fireplace with a deep arched firebox, pale stone voussoirs, thick carved timber mantle and small framed seascape. Center back wall: a small wooden vintage CRT TV on low wooden cabinet, showing a tiny blue sea. Right back wall: tall window with cream linen curtains, cool blue daylight, small green plant on sill. Foreground center: a two-seat warm terracotta upholstered sofa facing away toward TV, thick rolled arms, low back, visible seat surface above the back, teal woven blanket draped over right arm, cream woven rug. Two tiny characters seated with their backs to us, shown ONLY as scale studies: white Ice Bear with round ears, elongated bear proportions, no scarf; other character black hair, teal short sleeve Luo Xiaohei cat T shirt and black trousers. Their heads equal scale to 32-logical-pixel-tall standing sprites, NOT oversized chibi faces. Floor: warm natural oak boards with long horizontal grain, staggered joints, extremely sparse knots and edge wear. Few lived in details: two ceramic cups, stacked logs. The fireplace and sofa have true top/front/side values, occlusion and grounded contact shadows. Daylight dominates: cream wall, neutral wood, cool blue window reflection, localized amber fire only by hearth. Core hues #fdf6e9 #f5eee2 #4a3b55 #f0d9a8 #ffd98a #3f6f9e #7fb6d9 #3f887f #62b2a2. Beautiful crisp square pixel clusters at consistent density, texture follows form: chipped irregular stone edges, wood grain, fabric seams and folds; hand-crafted farming RPG material fidelity. No text, labels, UI, people elsewhere, orange overall filter, noisy random dithering, simplistic rectangle furniture, vector look, smooth gradients, fuzzy anti-aliased edges, photographic effects. One coherent composition, no panels or alternate views.
+```
+
+最终整数像素版本的源与数据见 `../source/`。没有下载第三方游戏资产，也没有新增素材包授权假设。现有 16px 对照角色从项目 `frontend/src/characters.ts` 只读获取；当前身份仍遵循该文件。文字使用系统字体绘制展示板，字体文件不分发。

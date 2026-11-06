@@ -1,0 +1,304 @@
+{
+  "canvas": [
+    320,
+    240
+  ],
+  "tile": 16,
+  "layers": [
+    "00-shell-floor",
+    "01-local-floor-light",
+    "02-contact-shadows",
+    "03-window",
+    "04-fireplace",
+    "05-tv-cabinet",
+    "06-fire",
+    "07-rug",
+    "08-sofa-base",
+    "09-scale-actors-NOT-live",
+    "10-sofa-foreground",
+    "11-details"
+  ],
+  "alpha_values": [
+    255
+  ],
+  "assets": {
+    "fireplace": {
+      "size": [
+        94,
+        110
+      ],
+      "visible_bbox": [
+        9,
+        3,
+        87,
+        101
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "fire": {
+      "size": [
+        40,
+        34
+      ],
+      "visible_bbox": [
+        3,
+        4,
+        38,
+        33
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "tv": {
+      "size": [
+        80,
+        82
+      ],
+      "visible_bbox": [
+        4,
+        5,
+        74,
+        80
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "window-day": {
+      "size": [
+        78,
+        91
+      ],
+      "visible_bbox": [
+        0,
+        1,
+        78,
+        83
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "window-night": {
+      "size": [
+        78,
+        91
+      ],
+      "visible_bbox": [
+        0,
+        1,
+        78,
+        83
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "rug": {
+      "size": [
+        160,
+        83
+      ],
+      "visible_bbox": [
+        5,
+        0,
+        155,
+        81
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "sofa-base": {
+      "size": [
+        128,
+        65
+      ],
+      "visible_bbox": [
+        4,
+        7,
+        126,
+        65
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "sofa-front": {
+      "size": [
+        128,
+        65
+      ],
+      "visible_bbox": [
+        13,
+        14,
+        122,
+        58
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "sofa-complete": {
+      "size": [
+        128,
+        65
+      ],
+      "visible_bbox": [
+        4,
+        7,
+        126,
+        65
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "bear-stand-front": {
+      "size": [
+        32,
+        40
+      ],
+      "visible_bbox": [
+        6,
+        5,
+        26,
+        36
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "bear-stand-back": {
+      "size": [
+        32,
+        40
+      ],
+      "visible_bbox": [
+        6,
+        5,
+        26,
+        36
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "bear-sit-front": {
+      "size": [
+        32,
+        40
+      ],
+      "visible_bbox": [
+        7,
+        9,
+        26,
+        36
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "bear-sit-back": {
+      "size": [
+        32,
+        40
+      ],
+      "visible_bbox": [
+        7,
+        9,
+        26,
+        36
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "her-stand-front": {
+      "size": [
+        32,
+        40
+      ],
+      "visible_bbox": [
+        7,
+        5,
+        25,
+        36
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "her-stand-back": {
+      "size": [
+        32,
+        40
+      ],
+      "visible_bbox": [
+        7,
+        5,
+        25,
+        36
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "her-sit-front": {
+      "size": [
+        32,
+        40
+      ],
+      "visible_bbox": [
+        7,
+        9,
+        25,
+        36
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    },
+    "her-sit-back": {
+      "size": [
+        32,
+        40
+      ],
+      "visible_bbox": [
+        7,
+        9,
+        25,
+        36
+      ],
+      "alpha_values": [
+        0,
+        255
+      ]
+    }
+  },
+  "head_shared_by_poses": true,
+  "actors_are_scale_studies": true,
+  "sha256": {
+    "day-1x.png": "d7b91293205205e0cf400fcb896b23e5169b8b2a210bd1cb3e40dd79c53a436a",
+    "night-1x.png": "918820fd548a07a07f8b03d8d9bca25c0d0652055a5e18349d55b35b5abd1d86"
+  }
+}

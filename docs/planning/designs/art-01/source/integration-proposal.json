@@ -1,0 +1,148 @@
+{
+  "status": "proposal-only; ART-03 must map and validate against live HOME_LAYOUT",
+  "canvas": {
+    "width": 320,
+    "height": 240,
+    "tile": 16
+  },
+  "character": {
+    "frame": [
+      32,
+      40
+    ],
+    "foot_anchor": [
+      16,
+      36
+    ],
+    "standing_foot_body_candidate": [
+      8,
+      4
+    ]
+  },
+  "objects": [
+    {
+      "id": "fireplace",
+      "asset": "fireplace",
+      "top_left": [
+        29,
+        16
+      ],
+      "footprint": [
+        40,
+        104,
+        76,
+        14
+      ],
+      "interact": [
+        77,
+        126
+      ],
+      "light": [
+        77,
+        102
+      ]
+    },
+    {
+      "id": "tv",
+      "asset": "tv",
+      "top_left": [
+        128,
+        39
+      ],
+      "footprint": [
+        134,
+        96,
+        66,
+        23
+      ],
+      "interact": [
+        167,
+        130
+      ],
+      "screen": [
+        144,
+        61,
+        36,
+        22
+      ]
+    },
+    {
+      "id": "window",
+      "asset": "window-day",
+      "top_left": [
+        222,
+        19
+      ],
+      "footprint": null,
+      "light": [
+        261,
+        96
+      ]
+    },
+    {
+      "id": "rug",
+      "asset": "rug",
+      "top_left": [
+        93,
+        139
+      ],
+      "footprint": null
+    },
+    {
+      "id": "sofa",
+      "asset": "sofa-base",
+      "foreground": "sofa-front",
+      "top_left": [
+        108,
+        148
+      ],
+      "footprint": [
+        113,
+        182,
+        118,
+        26
+      ],
+      "seated_foot_anchors": [
+        [
+          155,
+          178
+        ],
+        [
+          194,
+          178
+        ]
+      ],
+      "stand_candidates": [
+        [
+          150,
+          217
+        ],
+        [
+          192,
+          217
+        ]
+      ]
+    },
+    {
+      "id": "decor-stool",
+      "footprint": [
+        78,
+        161,
+        26,
+        14
+      ],
+      "interact": null
+    },
+    {
+      "id": "decor-plant",
+      "footprint": [
+        270,
+        117,
+        18,
+        17
+      ],
+      "interact": null
+    }
+  ],
+  "never_use_demo_actors_as_presence": true
+}

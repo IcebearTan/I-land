@@ -1,0 +1,355 @@
+{
+  "frames": {
+    "fireplace": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 94,
+        "h": 110
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 94,
+        "h": 110
+      },
+      "sourceSize": {
+        "w": 94,
+        "h": 110
+      }
+    },
+    "fire": {
+      "frame": {
+        "x": 100,
+        "y": 2,
+        "w": 40,
+        "h": 34
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 40,
+        "h": 34
+      },
+      "sourceSize": {
+        "w": 40,
+        "h": 34
+      }
+    },
+    "tv": {
+      "frame": {
+        "x": 144,
+        "y": 2,
+        "w": 80,
+        "h": 82
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 82
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 82
+      }
+    },
+    "window-day": {
+      "frame": {
+        "x": 228,
+        "y": 2,
+        "w": 78,
+        "h": 91
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 78,
+        "h": 91
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 91
+      }
+    },
+    "window-night": {
+      "frame": {
+        "x": 310,
+        "y": 2,
+        "w": 78,
+        "h": 91
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 78,
+        "h": 91
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 91
+      }
+    },
+    "rug": {
+      "frame": {
+        "x": 2,
+        "y": 116,
+        "w": 160,
+        "h": 83
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 83
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 83
+      }
+    },
+    "sofa-base": {
+      "frame": {
+        "x": 166,
+        "y": 116,
+        "w": 128,
+        "h": 65
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 65
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 65
+      }
+    },
+    "sofa-front": {
+      "frame": {
+        "x": 298,
+        "y": 116,
+        "w": 128,
+        "h": 65
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 65
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 65
+      }
+    },
+    "sofa-complete": {
+      "frame": {
+        "x": 2,
+        "y": 203,
+        "w": 128,
+        "h": 65
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 65
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 65
+      }
+    },
+    "bear-stand-front": {
+      "frame": {
+        "x": 134,
+        "y": 203,
+        "w": 32,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 40
+      }
+    },
+    "bear-stand-back": {
+      "frame": {
+        "x": 170,
+        "y": 203,
+        "w": 32,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 40
+      }
+    },
+    "bear-sit-front": {
+      "frame": {
+        "x": 206,
+        "y": 203,
+        "w": 32,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 40
+      }
+    },
+    "bear-sit-back": {
+      "frame": {
+        "x": 242,
+        "y": 203,
+        "w": 32,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 40
+      }
+    },
+    "her-stand-front": {
+      "frame": {
+        "x": 278,
+        "y": 203,
+        "w": 32,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 40
+      }
+    },
+    "her-stand-back": {
+      "frame": {
+        "x": 314,
+        "y": 203,
+        "w": 32,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 40
+      }
+    },
+    "her-sit-front": {
+      "frame": {
+        "x": 350,
+        "y": 203,
+        "w": 32,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 40
+      }
+    },
+    "her-sit-back": {
+      "frame": {
+        "x": 386,
+        "y": 203,
+        "w": 32,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 40
+      }
+    }
+  },
+  "meta": {
+    "image": "atlas-draft.png",
+    "size": {
+      "w": 512,
+      "h": 272
+    },
+    "scale": "1",
+    "status": "ART-01 review-only; not installed",
+    "padding": 2,
+    "extrude": 1
+  }
+}
