@@ -12,7 +12,7 @@ export function AudioControls({ audio }: { audio: ReturnType<typeof useIslandAud
     playback.status === 'blocked' || playback.status === 'locked' ? '浏览器暂停了声音，轻点继续播放。' :
     settings.muted ? '此刻安静。你的音量和开关都留着。' :
     !settings.music_enabled && !settings.ambience_enabled ? '音乐和环境声都关着，随时可以单独打开。' :
-    '白天听鸟鸣，夜里听虫声，岸边一直有海浪。'
+    '白天听鸟鸣，夜里听虫声，岸边有海浪，屋里有炉火。'
 
   return <section className="settings-section audio-settings" aria-labelledby="audio-title" data-playback-status={playback.status}
     data-audio-period={playback.period} data-audio-tracks={playback.availableTracks} data-audio-playing-layers={playback.playingLayers?.join(',')}>
@@ -35,7 +35,7 @@ export function AudioControls({ audio }: { audio: ReturnType<typeof useIslandAud
         </label>
       </div>
       <div className="audio-channel">
-        <label className="audio-toggle"><div><strong>自然的声音</strong><span>树梢鸟鸣、草间虫声与岸边海浪</span></div>
+        <label className="audio-toggle"><div><strong>环境的声音</strong><span>鸟鸣、虫声、海浪与屋里的炉火</span></div>
           <input type="checkbox" role="switch" aria-label="环境声" checked={settings.ambience_enabled} onChange={e => audio.change({ ambience_enabled: e.target.checked }, true)} />
         </label>
         <label className="audio-slider"><span className="sr-only">环境声音量</span>

@@ -5,7 +5,7 @@ import type { SceneryRate, SceneryTime } from '../seaside/clock'
 import type { RoomMember, RoomPose, RoomView } from '../seaside/types'
 
 export interface IslandIdentity { character: CharacterId; display: string; account?: 'bear' | 'her' }
-export type SceneId = 'login' | 'island' | 'seaside'
+export type SceneId = 'login' | 'island' | 'seaside' | 'interior'
 export interface IslandEntry extends IslandIdentity { returnPoint?: { x: number; y: number } }
 export interface SceneState { scene: SceneId; transitioning: boolean }
 export interface SeasideState {
@@ -14,6 +14,17 @@ export interface SeasideState {
   connection: Pick<RoomView, 'state' | 'pending' | 'message'>
   members: RoomMember[]
   companion?: RoomMember
+  notice?: string
+}
+
+/** 首版小屋只报告本人的本地姿势与电视状态，不能从足迹推测同伴。 */
+export interface InteriorState {
+  pose: 'walking' | 'approaching' | 'seated'
+  seat: 0 | 1 | null
+  television: boolean
+  channel: 0 | 1 | 2
+  phase: Phase
+  nearTelevision: boolean
   notice?: string
 }
 
@@ -41,7 +52,10 @@ export type GameEvents = {
   SCENE_READY: { scene: SceneId; identity?: IslandIdentity }
   SCENE_CHANGED: SceneState
   SCENE_REQUEST_STATE: Record<string, never>
-  TRAVEL_REQUEST: { from: 'island' | 'seaside'; to: 'island' | 'seaside'; returnPoint?: { x: number; y: number } }
+  TRAVEL_REQUEST: { from: Exclude<SceneId, 'login'>; to: Exclude<SceneId, 'login'>; returnPoint?: { x: number; y: number } }
+  INTERIOR_STATE: InteriorState
+  INTERIOR_REQUEST_STATE: Record<string, never>
+  INTERIOR_ACTION: { action: 'stand' | 'tv-toggle' | 'tv-next' }
   SEASIDE_STATE: SeasideState
   SEASIDE_REQUEST_STATE: Record<string, never>
   SEASIDE_ACTION: { action: 'sit' | 'stand' | 'lean' | 'unlean' }
@@ -53,6 +67,7 @@ export type GameEvents = {
   MOVE_INPUT: { x: number; y: number }
   INTERACT: Record<string, never>
   INTERACTION_CHANGED: { label: string | null }
+  INTERACTION_REQUEST_STATE: Record<string, never>
   OPEN_MAILBOX: { unread: number }
   OPEN_CALENDAR: Record<string, never>
   OPEN_BOTTLE: { id: string }

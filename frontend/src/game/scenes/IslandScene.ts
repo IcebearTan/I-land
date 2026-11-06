@@ -51,7 +51,7 @@ function phaseAtHour(h: number): Phase {
   return 'dusk'
 }
 
-interface Interactable { x: number; y: number; label: string; event: 'mailbox' | 'calendar' | 'bottle' | 'seaside' }
+interface Interactable { x: number; y: number; label: string; event: 'mailbox' | 'calendar' | 'bottle' | 'seaside' | 'interior' }
 
 export class IslandScene extends Phaser.Scene {
   private identity: IslandIdentity = { character: 'bear', display: '小熊' }
@@ -82,6 +82,7 @@ export class IslandScene extends Phaser.Scene {
     { x: TOWER.x, y: TOWER.y + 8, label: '灯塔 · 记忆日历', event: 'calendar' },
     { ...BOTTLE, label: '海边漂流瓶', event: 'bottle' },
     { ...SEASIDE_ENTRY, label: '去海边坐一会儿', event: 'seaside' },
+    { x: HOME.x, y: HOME.y + 10, label: '回家 · 进屋休息', event: 'interior' },
   ]
 
   constructor() { super('Island') }
@@ -138,6 +139,7 @@ export class IslandScene extends Phaser.Scene {
       if (input.x || input.y) this.tapTarget = null
     }
     const onInteract = () => this.tryInteract()
+    const onInteractionState = () => this.updatePrompt(true)
     const onOpen = () => {
       this.panelOpen = true; this.clearInput(); this.prompt.setVisible(false)
       this.input.keyboard!.enabled = false
@@ -158,6 +160,7 @@ export class IslandScene extends Phaser.Scene {
     this.game.events.on('blur', onBlur)
     document.addEventListener('visibilitychange', onVisibility)
     eventBus.on('MOVE_INPUT', onMove); eventBus.on('INTERACT', onInteract)
+    eventBus.on('INTERACTION_REQUEST_STATE', onInteractionState)
     eventBus.on('PANEL_OPENED', onOpen); eventBus.on('PANEL_CLOSED', onClose)
     eventBus.on('IDENTITY_CHANGED', onIdentity); eventBus.on('SCENE_CHANGED', onScene)
     this.scale.on('resize', this.fitZoom, this)
@@ -171,6 +174,7 @@ export class IslandScene extends Phaser.Scene {
       this.game.events.off('blur', onBlur)
       document.removeEventListener('visibilitychange', onVisibility)
       eventBus.off('MOVE_INPUT', onMove); eventBus.off('INTERACT', onInteract)
+      eventBus.off('INTERACTION_REQUEST_STATE', onInteractionState)
       this.input.off('pointerdown', onPointer); zone.off('pointerdown', onPrompt)
       eventBus.emit('INTERACTION_CHANGED', { label: null })
       this.input.keyboard!.removeCapture(Object.values(this.keys).map(key => key.keyCode))
@@ -319,10 +323,12 @@ export class IslandScene extends Phaser.Scene {
     else if (this.walkable(this.previous.x, y)) this.player.x = this.previous.x
     else { this.player.setPosition(this.previous.x, this.previous.y); this.tapTarget = null }
   }
-  private updatePrompt(): void {
-    this.promptTarget = this.leaving ? null : this.interactables.find(it => Math.hypot(it.x - this.player.x, it.y - this.player.y) < 34) ?? null
+  private updatePrompt(force = false): void {
+    this.promptTarget = this.leaving ? null : this.interactables
+      .filter(it => Math.hypot(it.x - this.player.x, it.y - this.player.y) < 34)
+      .sort((a, b) => Math.hypot(a.x - this.player.x, a.y - this.player.y) - Math.hypot(b.x - this.player.x, b.y - this.player.y))[0] ?? null
     const label = this.panelOpen ? null : this.promptTarget?.label ?? null
-    if (label !== this.interactionLabel) {
+    if (label !== this.interactionLabel || force) {
       this.interactionLabel = label
       eventBus.emit('INTERACTION_CHANGED', { label })
     }
@@ -340,6 +346,7 @@ export class IslandScene extends Phaser.Scene {
     if (this.promptTarget.event === 'mailbox') eventBus.emit('OPEN_MAILBOX', { unread: 0 })
     else if (this.promptTarget.event === 'calendar') eventBus.emit('OPEN_CALENDAR', {})
     else if (this.promptTarget.event === 'bottle') eventBus.emit('OPEN_BOTTLE', { id: 'shore' })
+    else if (this.promptTarget.event === 'interior') eventBus.emit('TRAVEL_REQUEST', { from: 'island', to: 'interior', returnPoint: { x: HOME.x, y: HOME.y + 16 } })
     else eventBus.emit('TRAVEL_REQUEST', { from: 'island', to: 'seaside', returnPoint: { ...SEASIDE_RETURN } })
   }
   private updateDayNight(): void {

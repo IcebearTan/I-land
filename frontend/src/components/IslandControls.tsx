@@ -21,6 +21,7 @@ export function IslandControls() {
     eventBus.on('INTERACTION_CHANGED', onInteraction)
     eventBus.on('PANEL_OPENED', onOpen)
     eventBus.on('PANEL_CLOSED', onClose)
+    eventBus.emit('INTERACTION_REQUEST_STATE', {})
     window.addEventListener('blur', stop)
     document.addEventListener('visibilitychange', onVisibility)
     return () => {

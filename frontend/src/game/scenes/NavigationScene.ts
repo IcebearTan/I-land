@@ -1,8 +1,9 @@
 import Phaser from 'phaser'
 import { eventBus, type GameEvents, type IslandEntry, type IslandIdentity, type SceneId } from '../EventBus'
 
-const SCENE_KEYS: Record<SceneId, string> = { login: 'Login', island: 'Island', seaside: 'Seaside' }
+const SCENE_KEYS: Record<SceneId, string> = { login: 'Login', island: 'Island', seaside: 'Seaside', interior: 'Interior' }
 const SAFE_RETURN = { x: 360, y: 338 }
+const HOME_RETURN = { x: 266, y: 246 }
 
 /** 常驻的导航状态；视觉场景负责自己的显示与输入，导航只安排交接。 */
 export class NavigationScene extends Phaser.Scene {
@@ -43,10 +44,10 @@ export class NavigationScene extends Phaser.Scene {
     }
     const travel = ({ from, to, returnPoint }: GameEvents['TRAVEL_REQUEST']) => {
       if (this.exitRequested || this.transitioning || !this.identity || from !== this.current || from === to) return
-      if (from === 'island' && to === 'seaside') {
+      if (from === 'island' && (to === 'seaside' || to === 'interior')) {
         this.returnPoint = returnPoint && Number.isFinite(returnPoint.x) && Number.isFinite(returnPoint.y)
-          ? { ...returnPoint } : { ...SAFE_RETURN }
-      } else if (from !== 'seaside' || to !== 'island') return
+          ? { ...returnPoint } : { ...(to === 'interior' ? HOME_RETURN : SAFE_RETURN) }
+      } else if ((from !== 'seaside' && from !== 'interior') || to !== 'island') return
       this.begin(to)
     }
     const exit = () => {
@@ -104,7 +105,7 @@ export class NavigationScene extends Phaser.Scene {
           : Object.values(SCENE_KEYS).map(key => this.scene.get(key)).find(scene => scene.scene.isActive())
         let data: IslandEntry | undefined
         if (this.identity) data = target === 'island'
-          ? { ...this.identity, ...(this.current === 'seaside' ? { returnPoint: { ...this.returnPoint } } : {}) }
+          ? { ...this.identity, ...(this.current === 'seaside' || this.current === 'interior' ? { returnPoint: { ...this.returnPoint } } : {}) }
           : { ...this.identity }
         if (active) active.scene.start(SCENE_KEYS[target], data)
         else this.scene.launch(SCENE_KEYS[target], data)

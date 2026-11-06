@@ -1,0 +1,43 @@
+BASE-01 local acceptance, 2026-11-06
+Server: 127.0.0.1:8031, uvicorn PID 85192; temporary DB/uploads only.
+Selected actual server output (repeated heartbeat/meta requests omitted).
+These are HTTP/WS lifecycle and asset-loading observations, not audio-listening or browser-console evidence.
+INFO:     127.0.0.1:60567 - "GET /audio/night-on-island.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60566 - "GET /audio/little-island.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60603 - "GET /api/settings/audio HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60599 - "GET /audio/birds.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60600 - "GET /audio/night-insects.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60601 - "GET /audio/waves.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60684 - "GET /audio/fireplace.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60830 - "PUT /api/settings/audio HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60830 - "GET /audio/little-island.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60836 - "GET /audio/night-on-island.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60839 - "GET /api/settings/audio HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60877 - "GET /audio/birds.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60878 - "GET /audio/night-insects.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60879 - "GET /audio/waves.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61269 - "GET /audio/little-island.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61270 - "GET /audio/night-on-island.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61287 - "GET /api/settings/audio HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61283 - "GET /audio/birds.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61285 - "GET /audio/waves.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61284 - "GET /audio/night-insects.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61368 - "GET /audio/fireplace.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61603 - "PUT /api/settings/audio HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61632 - "GET /api/settings/audio HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61633 - "PUT /api/settings/names HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61634 - "GET /api/settings/audio HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61955 - "POST /api/rooms/seaside/join HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61956 - "WebSocket /api/rooms/seaside/events?lease_id=9dcf8f88-aabe-491d-a842-dc9dc98242ad" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:62000 - "POST /api/rooms/seaside/leave HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62083 - "GET /api/settings/audio HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62113 - "GET /audio/little-island.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62116 - "GET /audio/night-on-island.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62119 - "GET /api/settings/audio HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62130 - "GET /audio/birds.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62131 - "GET /audio/night-insects.wav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62132 - "GET /audio/waves.wav HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Application shutdown complete.
+INFO:     Finished server process [85192]

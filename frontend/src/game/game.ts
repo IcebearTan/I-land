@@ -5,6 +5,7 @@ import { LoginScene } from './scenes/LoginScene'
 import { AudioScene } from './scenes/AudioScene'
 import { NavigationScene } from './scenes/NavigationScene'
 import { SeasideScene } from './scenes/SeasideScene'
+import { InteriorScene } from './scenes/InteriorScene'
 
 export function createGame(parent: HTMLElement, forceCanvas = false): Phaser.Game {
   return new Phaser.Game({
@@ -21,6 +22,6 @@ export function createGame(parent: HTMLElement, forceCanvas = false): Phaser.Gam
       default: 'arcade',
       arcade: { debug: false },
     },
-    scene: [BootScene, NavigationScene, AudioScene, LoginScene, IslandScene, SeasideScene],
+    scene: [BootScene, NavigationScene, AudioScene, LoginScene, IslandScene, SeasideScene, InteriorScene],
   })
 }

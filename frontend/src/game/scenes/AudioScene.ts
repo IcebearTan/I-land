@@ -4,10 +4,10 @@ import { audioMix, nightWeight, DEFAULT_AUDIO, type AudioContextInfo, type Audio
 
 type Track = keyof AudioMix
 type Loop = Phaser.Sound.WebAudioSound | Phaser.Sound.HTML5AudioSound
-const FILES: Record<Track, string> = { dayMusic: 'little-island', nightMusic: 'night-on-island', birds: 'birds', crickets: 'night-insects', waves: 'waves' }
+const FILES: Record<Track, string> = { dayMusic: 'little-island', nightMusic: 'night-on-island', birds: 'birds', crickets: 'night-insects', waves: 'waves', fireplace: 'fireplace' }
 const isMusic = (track: Track) => track === 'dayMusic' || track === 'nightMusic'
 
-/** 非视觉常驻场景。循环只在这里创建；登录/主岛/未来室内不拥有播放器。 */
+/** 非视觉常驻场景。循环只在这里创建；登录/主岛/室内不拥有播放器。 */
 export class AudioScene extends Phaser.Scene {
   private settings: AudioSettings = { ...DEFAULT_AUDIO }
   private contextInfo: AudioContextInfo = { scene: 'login' }
@@ -123,7 +123,9 @@ export class AudioScene extends Phaser.Scene {
   }
 
   private loadLoops(): void {
-    const tracks = (Object.keys(FILES) as Track[]).filter(track => this.contextInfo.scene !== 'login' || isMusic(track))
+    // 炉火首次进屋才加载；户外不因室内素材增加首屏负担。已加载的循环一直复用。
+    const tracks = (Object.keys(FILES) as Track[]).filter(track => isMusic(track)
+      || (this.contextInfo.scene === 'interior' ? track === 'fireplace' : this.contextInfo.scene !== 'login' && track !== 'fireplace'))
     if (this.loading || tracks.every(track => this.loops.has(track))) return
     this.loading = true
     let failed = false

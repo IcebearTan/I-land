@@ -13,6 +13,7 @@ import { ComingSoonPanel } from './components/panels/ComingSoonPanel'
 import { SettingsPanel } from './components/SettingsPanel'
 import { useIslandAudio } from './audio/useIslandAudio'
 import { SeasideControls } from './components/SeasideControls'
+import { InteriorControls } from './components/InteriorControls'
 
 function islandIdentity(user: User): IslandIdentity {
   return { character: characterId(user.sprite, user.account), display: user.display,
@@ -97,7 +98,7 @@ export default function App() {
         <>
           <Hud
             user={user}
-            quiet={scene.scene === 'seaside'}
+            quiet={scene.scene === 'seaside' || scene.scene === 'interior'}
             onLogout={() => {
               gameReady.current = false
               userRef.current = null
@@ -108,6 +109,7 @@ export default function App() {
           />
           {scene.scene === 'island' && !scene.transitioning && <IslandControls />}
           {scene.scene === 'seaside' && <SeasideControls transitioning={scene.transitioning} />}
+          {scene.scene === 'interior' && <InteriorControls transitioning={scene.transitioning} />}
           <MailboxPanel />
           <ComingSoonPanel />
           <CalendarFeature />

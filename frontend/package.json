@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test:calendar": "node --test tests/calendar.test.mjs",
     "test:audio": "node --test tests/audio.test.mjs",
-    "test:scenes": "node --test tests/navigation.test.mjs tests/seaside-clock.test.mjs tests/seaside-scene.test.mjs tests/room.test.mjs"
+    "test:scenes": "node --test tests/navigation.test.mjs tests/seaside-clock.test.mjs tests/seaside-scene.test.mjs tests/room.test.mjs tests/interior-navigation.test.mjs tests/interior-scene.test.mjs"
   },
   "dependencies": {
     "mitt": "^3.0.1",

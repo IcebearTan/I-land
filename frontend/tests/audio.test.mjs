@@ -12,7 +12,7 @@ const typesUrl = moduleUrl(compile('../src/audio/types.ts'))
 const { audioMix, nightWeight, DEFAULT_AUDIO } = await import(typesUrl)
 
 test('personal mute and toggles; smooth day/night mix; scene weights stay independent', () => {
-  const silence = { dayMusic: 0, nightMusic: 0, birds: 0, crickets: 0, waves: 0 }
+  const silence = { dayMusic: 0, nightMusic: 0, birds: 0, crickets: 0, waves: 0, fireplace: 0 }
   assert.deepEqual(audioMix({ ...DEFAULT_AUDIO, muted: true }, { scene: 'island' }), silence)
   const prefs = { ...DEFAULT_AUDIO }
   const inland = audioMix(prefs, { scene: 'island', shore: 0, grove: 1, night: 0 })
@@ -25,17 +25,39 @@ test('personal mute and toggles; smooth day/night mix; scene weights stay indepe
   const noNature = audioMix({ ...prefs, ambience_enabled: false }, { scene: 'island', night: .5 })
   assert.equal(noNature.birds + noNature.crickets + noNature.waves, 0)
   const indoors = audioMix(prefs, { scene: 'interior', night: 0 })
-  assert.equal(indoors.dayMusic, prefs.music_volume * .8)
+  assert.ok(indoors.dayMusic > 0 && indoors.dayMusic < inland.dayMusic)
   assert.equal(indoors.birds + indoors.crickets + indoors.waves, 0)
+  assert.ok(indoors.fireplace > 0 && indoors.fireplace < prefs.ambience_volume)
+  assert.equal(inland.fireplace + shore.fireplace + night.fireplace, 0)
   const login = audioMix(prefs, { scene: 'login', night: 0 })
   assert.ok(login.dayMusic > 0 && login.dayMusic < inland.dayMusic)
   assert.equal(login.birds + login.crickets + login.waves, 0)
+  assert.equal(login.fireplace, 0)
   for (const [hour, expected] of [[0, 1], [5.5, 1], [6.5, .5], [7.5, 0], [12, 0], [17, 0], [18.5, .5], [20, 1], [24, 1]]) {
     assert.equal(nightWeight(hour), expected)
   }
   assert.ok(Math.abs(nightWeight(19.999) - nightWeight(20.001)) < .001)
   const middle = audioMix(prefs, { scene: 'island', night: .5 })
   assert.ok(middle.dayMusic > 0 && middle.nightMusic > 0 && middle.birds > 0 && middle.crickets > 0)
+})
+
+test('interior keeps its real day/night melody while nature and fireplace obey personal preferences', () => {
+  for (const night of [0, .5, 1]) {
+    const context = { scene: 'interior', night, shore: 1, grove: 1 }
+    const mix = audioMix(DEFAULT_AUDIO, context)
+    assert.equal(mix.birds + mix.crickets + mix.waves, 0)
+    assert.ok(mix.fireplace > 0)
+    if (night === 1) assert.ok(mix.dayMusic < .0001 && mix.nightMusic > 0)
+    const muted = audioMix({ ...DEFAULT_AUDIO, muted: true, ambience_volume: 1, music_volume: 1 }, context)
+    assert.ok(Object.values(muted).every(volume => volume === 0))
+    const noAmbience = audioMix({ ...DEFAULT_AUDIO, ambience_enabled: false }, context)
+    assert.equal(noAmbience.fireplace, 0)
+    assert.ok(noAmbience.dayMusic + noAmbience.nightMusic > 0)
+    const noMusic = audioMix({ ...DEFAULT_AUDIO, music_enabled: false }, context)
+    assert.equal(noMusic.dayMusic + noMusic.nightMusic, 0)
+    assert.ok(noMusic.fireplace > 0)
+    assert.equal(audioMix({ ...DEFAULT_AUDIO, ambience_volume: 0 }, context).fireplace, 0)
+  }
 })
 
 // 用公开声音/场景接口的替身验证生命周期，不启动浏览器或真实扬声器。
@@ -72,8 +94,8 @@ class Scene {
     const cached = new Set()
     this.cache = { audio: { exists: key => cached.has(key) } }
     this.load = new EventEmitter()
-    this.load.queued = []; this.load.starts = 0; this.load.fail = false
-    this.load.audio = key => this.load.queued.push(key)
+    this.load.queued = []; this.load.files = []; this.load.starts = 0; this.load.fail = false
+    this.load.audio = (key, url) => { this.load.queued.push(key); this.load.files.push({ key, url }) }
     this.load.start = () => {
       this.load.starts++
       queueMicrotask(() => {
@@ -151,6 +173,73 @@ test('day/night shares music phase and gently replaces birds with crickets', asy
   } finally { destroy() }
 })
 
+test('fireplace loads on first entry and fades across interior/outdoor transitions with one set of loops', async () => {
+  const { scene, destroy } = setup()
+  const byKey = key => scene.sound.sounds.find(loop => loop.key === `audio-${key}`)
+  const advance = () => { for (let i = 0; i < 120; i++) scene.update(i * 100, 100) }
+  try {
+    scene.sound.context.refuse = false
+    bus.emit('AUDIO_UNLOCK', {}); await settle(); advance()
+    assert.equal(byKey('fireplace'), undefined)
+    const outdoorMusic = byKey('dayMusic').volume
+    const outdoorBirds = byKey('birds').volume
+    bus.emit('AUDIO_CONTEXT', { scene: 'interior', night: 0 }); await settle()
+    assert.equal(scene.sound.sounds.length, 6)
+    assert.equal(byKey('fireplace').volume, 0)
+    scene.update(0, 16)
+    assert.ok(byKey('fireplace').volume > 0)
+    assert.ok(byKey('birds').volume > 0 && byKey('birds').volume < outdoorBirds)
+    advance()
+    assert.ok(byKey('fireplace').isPlaying && byKey('fireplace').volume > 0)
+    assert.ok(byKey('dayMusic').volume > 0 && byKey('dayMusic').volume < outdoorMusic)
+    assert.ok(['birds', 'crickets', 'waves'].every(key => !byKey(key).isPlaying && byKey(key).volume === 0))
+    bus.emit('AUDIO_CONTEXT', { scene: 'seaside', night: 1 }); scene.update(0, 16)
+    assert.ok(byKey('fireplace').volume > 0) // 出门时也平滑收住炉火
+    advance()
+    assert.equal(byKey('fireplace').volume, 0)
+    assert.ok(byKey('fireplace').isPaused && byKey('waves').isPlaying && byKey('crickets').isPlaying)
+    assert.equal(byKey('birds').volume, 0)
+    for (let i = 0; i < 4; i++) {
+      bus.emit('AUDIO_CONTEXT', { scene: 'interior', night: 1 }); advance()
+      bus.emit('AUDIO_CONTEXT', { scene: 'island', night: 1, grove: 1 }); advance()
+    }
+    assert.equal(scene.sound.sounds.length, 6)
+    assert.equal(scene.load.files.filter(file => file.url === '/audio/fireplace.wav').length, 1)
+    assert.equal(byKey('fireplace').starts, 1)
+    assert.ok(['dayMusic', 'nightMusic'].every(key => byKey(key).starts === 1))
+  } finally { destroy() }
+})
+
+test('interior actions, volume changes, unlock and visibility never clear manual mute', async () => {
+  const { scene, statuses, destroy } = setup()
+  const advance = () => { for (let i = 0; i < 120; i++) scene.update(i * 100, 100) }
+  try {
+    scene.sound.context.refuse = false
+    bus.emit('AUDIO_UNLOCK', {}); await settle()
+    bus.emit('AUDIO_CONTEXT', { scene: 'interior', night: 1 }); await settle(); advance()
+    bus.emit('AUDIO_SETTINGS', { ...DEFAULT_AUDIO, muted: true })
+    bus.emit('AUDIO_SETTINGS', { ...DEFAULT_AUDIO, muted: true, music_volume: .8, ambience_volume: 1 })
+    bus.emit('AUDIO_CONTEXT', { scene: 'interior', night: 1 })
+    bus.emit('AUDIO_UNLOCK', {})
+    document.hidden = true; document.dispatchEvent(new Event('visibilitychange'))
+    const resumes = scene.sound.context.resumes
+    document.hidden = false; document.dispatchEvent(new Event('visibilitychange')); await settle(); advance()
+    assert.equal(scene.sound.context.resumes, resumes)
+    assert.equal(statuses.at(-1), 'off')
+    assert.ok(scene.sound.sounds.every(loop => !loop.isPlaying && loop.volume === 0))
+    // 明确解除总静音后，环境音关闭仍必须保持炉火无声。
+    bus.emit('AUDIO_SETTINGS', { ...DEFAULT_AUDIO, ambience_enabled: false }); advance()
+    const fire = scene.sound.sounds.find(loop => loop.key === 'audio-fireplace')
+    assert.ok(fire.isPaused && fire.volume === 0)
+    assert.ok(scene.sound.sounds.some(loop => loop.key === 'audio-nightMusic' && loop.isPlaying && loop.volume > 0))
+    bus.emit('AUDIO_SETTINGS', { ...DEFAULT_AUDIO, music_enabled: false }); advance()
+    assert.ok(fire.isPlaying && fire.volume > 0)
+    assert.ok(scene.sound.sounds.filter(loop => loop.key.endsWith('Music')).every(loop => loop.isPaused))
+    bus.emit('AUDIO_SESSION', { active: false })
+    assert.ok(!fire.isPlaying && !fire.isPaused && fire.volume === 0)
+  } finally { destroy() }
+})
+
 test('scene changes, background, mute and repeated login cannot duplicate or revive nature sounds', async () => {
   const { scene, statuses, destroy } = setup()
   try {
@@ -162,7 +251,8 @@ test('scene changes, background, mute and repeated login cannot duplicate or rev
       bus.emit('AUDIO_CONTEXT', { scene: 'interior' })
       bus.emit('AUDIO_CONTEXT', { scene: 'island', night: 0, grove: 1 })
     }
-    assert.equal(loops.length, 5)
+    await settle()
+    assert.equal(loops.length, 6)
     assert.ok(loops.every(loop => loop.starts <= 1))
     document.hidden = true; document.dispatchEvent(new Event('visibilitychange'))
     assert.ok(loops.every(loop => !loop.isPlaying && loop.volume === 0))
@@ -180,8 +270,8 @@ test('scene changes, background, mute and repeated login cannot duplicate or rev
       bus.emit('AUDIO_SESSION', { active: true })
       bus.emit('AUDIO_CONTEXT', { scene: 'island', night: 0, grove: 1 })
     }
-    assert.equal(scene.sound.sounds.length, 5)
-    assert.equal(scene.load.starts, 2) // 登录只加载音乐，登岛再加载环境声
+    assert.equal(scene.sound.sounds.length, 6)
+    assert.equal(scene.load.starts, 3) // 登录音乐、岛上环境声、首次进屋炉火各加载一次
     assert.ok(loops.filter(loop => loop.key.includes('Music')).every(loop => loop.starts === 1))
   } finally { destroy() }
   assert.ok(scene.sound.sounds.every(loop => loop.destroyed))
@@ -199,6 +289,27 @@ test('load failure stays quiet and can retry without partial or duplicate playba
     bus.emit('AUDIO_UNLOCK', {}); await settle()
     assert.equal(statuses.at(-1), 'playing')
     assert.equal(scene.sound.sounds.length, 5)
+  } finally { destroy() }
+})
+
+test('failed fireplace loading can retry in the same audio scene without replacing the music loops', async () => {
+  const { scene, statuses, destroy } = setup()
+  try {
+    scene.sound.context.refuse = false
+    bus.emit('AUDIO_UNLOCK', {}); await settle()
+    const music = scene.sound.sounds.filter(loop => loop.key.endsWith('Music'))
+    scene.load.fail = true
+    bus.emit('AUDIO_CONTEXT', { scene: 'interior', night: 1 }); await settle()
+    assert.equal(statuses.at(-1), 'error')
+    assert.equal(scene.sound.sounds.length, 5)
+    assert.ok(scene.sound.sounds.every(loop => !loop.isPlaying))
+    scene.load.fail = false
+    bus.emit('AUDIO_UNLOCK', {}); await settle()
+    for (let i = 0; i < 120; i++) scene.update(i * 100, 100)
+    assert.equal(statuses.at(-1), 'playing')
+    assert.equal(scene.sound.sounds.length, 6)
+    assert.ok(music.every(loop => scene.sound.sounds.includes(loop) && loop.starts === 1))
+    assert.ok(scene.sound.sounds.some(loop => loop.key === 'audio-fireplace' && loop.isPlaying && loop.volume > 0))
   } finally { destroy() }
 })
 
@@ -263,4 +374,36 @@ test('music off fades both arrangements then pauses together, preserving their s
     bus.emit('AUDIO_SETTINGS', { ...DEFAULT_AUDIO })
     assert.ok(music.every(loop => loop.isPlaying && loop.starts === 1))
   } finally { destroy() }
+})
+
+test('bundled fireplace loop has a compact PCM format and a quiet, continuous sample join', () => {
+  const wav = fs.readFileSync(new URL('../public/audio/fireplace.wav', import.meta.url))
+  assert.equal(wav.toString('ascii', 0, 4), 'RIFF')
+  assert.equal(wav.toString('ascii', 8, 12), 'WAVE')
+  let format, data
+  for (let offset = 12; offset + 8 <= wav.length;) {
+    const name = wav.toString('ascii', offset, offset + 4)
+    const size = wav.readUInt32LE(offset + 4)
+    const chunk = wav.subarray(offset + 8, offset + 8 + size)
+    if (name === 'fmt ') format = chunk
+    if (name === 'data') data = chunk
+    offset += 8 + size + (size % 2)
+  }
+  assert.ok(format && data)
+  assert.equal(format.readUInt16LE(0), 1) // PCM，保留精确边界，不依赖有损编码填充。
+  assert.equal(format.readUInt16LE(2), 1)
+  assert.equal(format.readUInt32LE(4), 22050)
+  assert.equal(format.readUInt16LE(14), 16)
+  const duration = data.length / 2 / 22050
+  assert.ok(duration >= 20 && duration <= 40)
+  assert.ok(wav.length < 2_000_000)
+  const first = data.readInt16LE(0), last = data.readInt16LE(data.length - 2)
+  assert.ok(Math.abs(first - last) / 32768 < .001)
+  let peak = 0, energy = 0
+  for (let i = 0; i < data.length; i += 2) {
+    const sample = data.readInt16LE(i) / 32768
+    peak = Math.max(peak, Math.abs(sample)); energy += sample * sample
+  }
+  assert.ok(peak <= .181)
+  assert.ok(Math.sqrt(energy / (data.length / 2)) > .01) // 没把音频处理成静音来通过接缝检查。
 })

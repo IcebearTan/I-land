@@ -26,7 +26,7 @@ function manager() {
     }
     return scene
   }
-  for (const key of ['Login', 'Island', 'Seaside']) scenes.set(key, visual(key))
+  for (const key of ['Login', 'Island', 'Seaside', 'Interior']) scenes.set(key, visual(key))
   return {
     timers, starts, scenes,
     plugin: {
@@ -179,4 +179,34 @@ test('destroy during queued handoff cancels timers and unbinds listeners exactly
   assert.equal(scene.events.listenerCount('shutdown'), 0)
   assert.equal(scene.events.listenerCount('destroy'), 0)
   destroy()
+})
+
+test('home entry and return keep current identity and use the doorway rather than the seaside return', () => {
+  const { world, destroy } = setup(true)
+  try {
+    onIsland(world)
+    bus.emit('TRAVEL_REQUEST', { from: 'island', to: 'interior' })
+    world.flush(); world.commit()
+    assert.deepEqual(world.starts.at(-1), { from: 'Island', target: 'Interior', data: identity })
+    bus.emit('SCENE_READY', { scene: 'interior', identity })
+    bus.emit('TRAVEL_REQUEST', { from: 'interior', to: 'seaside' })
+    assert.equal(world.timers.length, 0)
+    bus.emit('IDENTITY_CHANGED', { ...identity, display: '小青' })
+    bus.emit('TRAVEL_REQUEST', { from: 'interior', to: 'island' })
+    world.flush()
+    assert.deepEqual(world.starts.at(-1), { from: 'Interior', target: 'Island', data: { ...identity, display: '小青', returnPoint: { x: 266, y: 246 } } })
+  } finally { destroy() }
+})
+
+test('logout rejects a late home ready and never restarts a cancelled home transition', () => {
+  const { world, destroy } = setup(true)
+  try {
+    onIsland(world)
+    bus.emit('TRAVEL_REQUEST', { from: 'island', to: 'interior' }); world.flush()
+    bus.emit('EXIT_TO_LOGIN', {})
+    world.commit(); bus.emit('SCENE_READY', { scene: 'interior', identity })
+    world.flush()
+    assert.deepEqual(world.starts.at(-1), { from: 'Interior', target: 'Login', data: undefined })
+    assert.equal(world.starts.filter(item => item.target === 'Login').length, 1)
+  } finally { destroy() }
 })
