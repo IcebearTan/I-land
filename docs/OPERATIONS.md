@@ -74,9 +74,15 @@ docker compose exec iland python -m app.backup backup /data/backups
 
 - 数据库用 **sqlite3 backup API 在线快照**：运行中的服务不用停，WAL 里未合并的数据也会进快照。
   （把运行中的 `iland.db` 单文件复制走不算完整备份——WAL 与 SHM 不在其中。）
-- 附件直接复制：上传采用「临时文件 + 原子改名」，目录里永远是完整文件；备份进行中
-  新上传的照片至多多出几个未被引用的附件，不影响一致性。
-- 产物是 `iland-backup-<时间>/`（`iland.db` + `uploads/` + `manifest.json`）。
+- 数据库快照之后复制附件。现有上传在文件写完后才登记数据库，且没有自动物理清理；
+  期间新上传至多增加快照未引用的附件。备份期间不要人工删除、替换附件或运行清理任务。
+- 源数据库必须存在且含核心表，源 `uploads/` 必须存在（可以为空）。路径配错、尚未初始化、
+  损坏库、符号链接或复制失败会报错，不再把缺失的数据源当成空备份。
+- 产物是 `iland-backup-<时间>-<随机后缀>/`（`iland.db` + `uploads/` + `manifest.json`）。
+  同秒多次备份互不覆盖；先写隐藏暂存目录，校验数据库后才发布正式目录，正常失败清理暂存。
+- 新清单为 `format_version: 2`，记录数据库大小、附件文件数，以及数据库与每个附件的 SHA-256。
+  迁移/下载时保留完整目录结构和清单，不把 WAL、SHM、journal 或其他文件混入备份根目录。
+  校验和用于发现意外损坏，不是签名；仍需保留可信的异地副本。
 
 ### 建议节奏
 
@@ -95,21 +101,114 @@ cron 示例（宿主机）：
 ### 恢复演练（不影响真实数据，推荐先做一次）
 
 ```bash
-# 在 backend/ 下用本机环境
-.venv/bin/python -m app.backup restore <备份目录> /tmp/iland-rehearsal
-# 然后用演练数据起一个临时实例核对
-ILAND_DB_PATH=/tmp/iland-rehearsal/iland.db ILAND_UPLOADS_DIR=/tmp/iland-rehearsal/uploads \
+# 在 backend/ 下运行；替换为实际的独立备份目录
+backup_dir=/绝对路径/iland-backup-时间-后缀
+rehearsal_root="$(mktemp -d "${TMPDIR:-/tmp}/iland-rehearsal.XXXXXX")"
+# 恢复非零退出就停止，不能让应用在失败目录里自动建出空库
+if ! .venv/bin/python -m app.backup restore "$backup_dir" "$rehearsal_root/restored"; then
+  exit 1
+fi
+# 可选：确认 8001 未被占用后，以临时数据启动实例核对；不会改真实数据路径
+ILAND_DB_PATH="$rehearsal_root/restored/iland.db" ILAND_UPLOADS_DIR="$rehearsal_root/restored/uploads" \
   .venv/bin/python -m uvicorn app.main:app --port 8001
 ```
 
-自动化演练在 `backend/tests/test_backup.py`（独立临时目录，验证记录、原图与缩略图完整）。
+登录核对双方名字、旧信页序、记忆日期/内容以及原图、展示图和缩略图；核对后停止临时实例。
+本包自动化演练只运行 CLI/pytest，没有启动该实例或占用端口。
 
-### 正式恢复（目标 = 服务器数据卷）
+恢复按以下顺序执行：
 
-1. `docker compose down`（停写入）；
-2. 把备份目录内容放回 volume（或用 `restore` 命令指向挂载目录——它会把现有内容
-   挪成 `*.pre-restore-<时间>`，可回退）；
-3. `docker compose up -d`，登录核对记忆、照片与信件。
+1. 检查清单字段、数据库/附件目录和普通文件类型，拒绝符号链接、特殊文件、数据库旁路文件；
+2. 在目标父目录的同一文件系统中完整暂存数据库和附件；核对大小、数量，v2 另核对全部路径和 SHA-256；
+3. 只读打开暂存库，要求完整 `PRAGMA integrity_check` 结果恰为一行 `ok`，并检查核心表；
+4. 校验通过后，已有目标整体改名为唯一的 `目标.pre-restore-<时间>-<随机后缀>`，再发布暂存目录。
+   发布失败时尝试把旧目录改回；绝不从源备份再复制一遍来发布。
+
+旧格式（没有版本/哈希字段）仍可恢复，但只验证清单、数据库大小/完整性与附件数，并输出提示。
+它无法发现同数量附件被替换或照片字节损坏；先演练并人工核对，再由新工具制作后续备份。
+不要通过删除 v2 校验和、改清单数值或补空文件来绕过校验错误。
+
+### 正式恢复（Docker named volume）
+
+**不要把 `/data` 挂载点或项目的 `backend/` 代码目录传给 restore。** 工具发布需要重命名目标目录，
+挂载点不能这样替换；`/data/backups/...` 也不能恢复到包含它的 `/data`。推荐恢复到卷内新的独立子目录，
+再切换数据库和上传路径，保留原库及其 WAL/SHM、原上传、备份目录和原配置用于回退。
+
+以下命令以仓库现有 `docker-compose.yml` 和默认 `/data/iland.db`、`/data/uploads` 为例。
+如果部署用了其他 `-f` 覆盖文件，每条命令都保留原来的文件顺序和参数，并在最后追加恢复配置。
+执行前记录当前数据路径和 Compose 配置；使用包含本次备份修复的镜像。
+
+1. 先按上一节完成独立恢复演练。正常升级/回退前，额外保存当前数据库与附件的同套备份；
+   如果当前库已坏而无法备份，保留现有文件，不能以清空或重建原库作为恢复前置。
+2. 停止应用，确保没有其他容器、宿主进程或清理任务写入同一数据目录：
+
+   ```bash
+   docker compose stop iland
+   ```
+
+3. 选取已经验证的备份，恢复到新的目录。下面的备份名须替换为实际值；确认 `restored-candidate` 未被服务使用。
+   只有命令退出码为 0、终端报告恢复成功，才继续切换配置：
+
+   ```bash
+   docker compose run --rm --no-deps iland python -m app.backup restore \
+     /data/backups/iland-backup-时间-后缀 /data/restored-candidate
+   ```
+
+4. 在服务器准备 `compose.recovery.yml`（作为本次运维配置保留，不必提交到仓库）：
+
+   ```yaml
+   services:
+     iland:
+       environment:
+         ILAND_DB_PATH: /data/restored-candidate/iland.db
+         ILAND_UPLOADS_DIR: /data/restored-candidate/uploads
+   ```
+
+5. 加载原配置与该覆盖文件，重建服务容器后逐项核对内容：
+
+   ```bash
+   docker compose -f docker-compose.yml -f compose.recovery.yml up -d --force-recreate iland
+   ```
+
+   此后启动、升级、备份与 cron 也要使用同一套 `-f` 参数，才能继续指向恢复后的数据。
+   不要只改其中一个数据路径。核对无误后再恢复日常写入；旧数据和备份继续保留。
+
+6. 若应用验收失败，先停止恢复后的实例，保留恢复目录中可能新增的内容；
+   用**切换前保存的完整配置和原数据路径**重新创建容器。例如原先只有默认配置时：
+
+   ```bash
+   docker compose -f docker-compose.yml -f compose.recovery.yml stop iland
+   docker compose -f docker-compose.yml up -d --force-recreate iland
+   ```
+
+   若原库本身已损坏，回到原路径不能修复它，应保持停服并另选可信备份恢复到另一独立目录。
+   本地自动化没有实跑 Docker 卷、服务器路径切换或线上内容验收。
+
+### 失败与回退
+
+- 校验、复制或权限/空间不足导致失败：已有目标保持不变；新目标不会留下半套数据。
+  根据报错检查来源、可用空间、权限和备份传输完整性，重新从可信副本演练，不覆盖旧文件。
+- 旧目标已移走但发布失败：工具尝试自动改回原路径。若连回退都失败，错误会给出原数据所在的
+  `*.pre-restore-*` 完整路径；保持停服，先恢复磁盘/权限，再把该完整目录改回空缺的目标路径。
+  若目标又出现，先核对并将它另存，不强制覆盖；数据库、WAL/SHM 和 uploads 必须作为整套处理。
+- 成功后想撤销独立目录恢复：停服，将当前目标另存为唯一的新目录，再把终端记录的
+  `*.pre-restore-*` 改回原目标位置。不要猜“最新”目录，不合并两套附件或丢弃后来写入的记忆。
+- 切换由两个目录重命名组成，须串行执行、目标停写。它不承诺断电/强杀时自动回退；
+  异常退出后检查 `*.pre-restore-*` 和隐藏的 `.目标.restore-*`，保持停服，先找回原目标。
+  不运行 `docker compose down -v`，不删除唯一备份或把残留暂存目录当成成功备份。
+- SHA-256 不验证照片可解码、业务引用是否原本缺失或新旧程序兼容性；仍需上述应用内容验收。
+  恢复目录父文件系统需容纳完整新副本，旧目标保留也需要继续占用空间。
+
+自动化入口（使用现有 venv；测试自设临时数据库/附件）：
+
+```bash
+cd backend
+.venv/bin/python -m pytest tests/test_backup.py -q
+.venv/bin/python -m pytest tests/ -q
+```
+
+测试覆盖正常/WAL 恢复、坏清单/坏库/坏附件拒绝、源与目标保护、复制/发布失败与回退。
+本轮证据和未验证范围见 [BASE-02 评估](planning/evaluations/2026-11-06-backup-recovery.md)。
 
 ## 6. 附件清理（暂不自动执行）
 
