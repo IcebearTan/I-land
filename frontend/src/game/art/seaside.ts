@@ -1,5 +1,5 @@
 import type Phaser from 'phaser'
-import { CHARACTERS, type CharacterId } from '../../characters'
+import type { CharacterId } from '../../characters'
 import { colorAt, hash2, lerpRGB, type RGB } from '../art'
 import { makeTexture } from '../pixels'
 import { PixelArt } from './island'
@@ -7,7 +7,6 @@ import { PixelArt } from './island'
 export const SEASIDE_MAX = 640
 const BACKDROP = 'seaside-panorama-v1'
 export type SeasideOccupant = { character: CharacterId; seat: 0 | 1; pose: 'arriving' | 'seated' | 'standing' | 'leaning' }
-type SeasideSide = 'left' | 'right'
 type Mood = { sky: RGB; middle: RGB; horizon: RGB; sea: RGB; near: RGB; sand: RGB; shade: RGB; night: number; warmth: number }
 const rgb = (hex: string): RGB => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]
 const hex = (c: RGB) => '#' + c.map(v => Math.round(v).toString(16).padStart(2, '0')).join('')
@@ -33,13 +32,13 @@ function moodAt(hour: number): Mood {
 
 export function seasideLayout(width: number, height: number) {
   const portrait = height > width * 1.1
-  const horizon = Math.round(height * (portrait ? .34 : .40))
-  const shore = Math.round(height * (portrait ? .59 : .66))
-  const seatY = Math.round(height * (portrait ? .70 : .77))
+  const seatY = portrait ? Math.min(Math.round(height * .68), Math.max(110, height - 122)) : Math.round(height * .72)
+  const horizon = Math.round(height * (portrait ? .30 : .38))
+  const shore = Math.min(Math.round(height * (portrait ? .59 : .64)), seatY - 26)
   const center = Math.round(width * .5)
   return {
-    horizon, shore, seatY, center, seats: [center - 14, center + 14], standingY: seatY + 17,
-    leaningSeats: [center - 10, center + 10], singleLeaningSeats: [center - 6, center + 6], leaningY: seatY + 2,
+    horizon, shore, seatY, center, seats: [center - 12, center + 12], standingY: seatY + 14,
+    leaningSeats: [center - 9, center + 9], singleLeaningSeats: [center - 6, center + 6], leaningY: seatY + 2,
   }
 }
 
@@ -55,102 +54,9 @@ export function seasideActorPosition(width: number, height: number, seat: 0 | 1,
   }
 }
 
-/** 26×25 的专门背面依靠像素帧，耳朵、后脑、肩线与手臂分别重画，不旋转站姿。 */
-function leaningBear(side: SeasideSide, settling: boolean): PixelArt {
-  const p = new PixelArt(26, 25), direction = side === 'left' ? 1 : -1
-  const lean = settling ? 1 : 2, head = 13 + direction * lean
-  const leftEarY = 5 - direction, rightEarY = 5 + direction
-  p.ellipse(head - 5, leftEarY, 3, 3, '#8c999a'); p.ellipse(head + 5, rightEarY, 3, 3, '#8c999a')
-  p.ellipse(head - 5, leftEarY, 2, 2, '#e6e8e3'); p.ellipse(head + 5, rightEarY, 2, 2, '#fffaf2')
-  p.polygon([[head - 7, 12], [head + 7, 12], [21, 20], [19, 23], [7, 23], [5, 20]], '#8c999a')
-  p.polygon([[head - 6, 13], [head + 6, 13], [20, 20], [18, 22], [8, 22], [6, 20]], '#e6e8e3')
-  p.polygon([[head - 3, 13], [head + 6, 13], [19, 21], [10, 21]], '#fffaf2')
-  p.ellipse(head, 10, 8, 7, '#8c999a'); p.ellipse(head, 10, 7, 6, '#e6e8e3')
-  p.ellipse(head + 1, 9, 6, 5, '#fffaf2')
-  p.polygon([[head - 4, 14], [head + 6, 14], [18, 21], [10, 21]], '#fffaf2')
-  // 两只前爪安稳地落在坐垫上，保留白熊较长的背部而不是圆球。
-  p.polygon([[6, 15], [8, 16], [8, 21], [5, 21], [4, 19]], '#e6e8e3')
-  p.polygon([[19, 16], [21, 15], [22, 19], [21, 21], [18, 21]], '#fffaf2')
-  p.rect(6, 22, 6, 2, '#8c999a'); p.rect(15, 22, 6, 2, '#8c999a')
-  p.rect(6, 22, 6, 1, '#e6e8e3'); p.rect(15, 22, 6, 1, '#fffaf2')
-  return p
-}
-
-function leaningHer(side: SeasideSide, settling: boolean): PixelArt {
-  const p = new PixelArt(26, 25), direction = side === 'left' ? 1 : -1
-  const lean = settling ? 1 : 2, head = 13 + direction * lean
-  // 短袖与黑裤分别保留完整轮廓，长发顺着偏移后的肩线落下。
-  p.polygon([[head - 6, 14], [head + 6, 14], [20, 19], [19, 21], [7, 21], [6, 19]], '#3f887f')
-  p.polygon([[head - 4, 14], [head + 5, 14], [18, 20], [9, 20]], '#62b2a2')
-  p.polygon([[6, 16], [8, 16], [8, 21], [5, 21], [4, 19]], '#f0c6a0')
-  p.polygon([[19, 16], [21, 16], [22, 19], [21, 21], [18, 21]], '#f0c6a0')
-  p.rect(7, 21, 5, 3, '#242333'); p.rect(15, 21, 5, 3, '#242333')
-  p.rect(7, 23, 5, 1, '#393946'); p.rect(15, 23, 5, 1, '#393946')
-  p.ellipse(head, 9, 7, 7, '#20222e')
-  p.polygon([[head - 7, 8], [head + 7, 8], [head + 6, 15], [17, 19], [9, 19], [head - 6, 15]], '#20222e')
-  p.ellipse(head + 1, 8, 5, 5, '#393946')
-  p.polygon([[head - 4, 9], [head + 5, 9], [head + 4, 15], [16, 18], [11, 18], [head - 4, 15]], '#393946')
-  p.rect(head - 5, 15, 2, 2, '#20222e'); p.rect(head + 4, 15, 2, 2, '#20222e')
-  return p
-}
-
-/** 原创海边像素画。大场景只刷新原纹理，坐姿与小物件统一走字符画管线。 */
+/** 天空仍为原创程序纹理，人物统一从 Boot 预载 ART-02 图集。 */
 export function createSeasideArt(scene: Phaser.Scene): void {
-  if (!scene.textures.exists(BACKDROP)) {
-    makeTexture(scene, BACKDROP, Array(SEASIDE_MAX).fill('.'.repeat(SEASIDE_MAX)), {})
-  }
-  for (const [id, character] of Object.entries(CHARACTERS)) {
-    for (const direction of ['back', 'side'] as const) {
-      makeTexture(scene, `seaside-${id}-${direction}`, character.frames[direction], character.palette)
-      makeTexture(scene, `seaside-${id}-${direction}-step`, character.steps[direction], character.palette)
-    }
-  }
-  const bear = new PixelArt(22, 23)
-  bear.ellipse(5, 5, 3, 3, '#8c999a'); bear.ellipse(16, 5, 3, 3, '#8c999a')
-  bear.ellipse(5, 5, 2, 2, '#e6e8e3'); bear.ellipse(16, 5, 2, 2, '#fffaf2')
-  bear.ellipse(11, 12, 9, 9, '#8c999a')
-  bear.ellipse(11, 11, 8, 8, '#e6e8e3'); bear.ellipse(12, 10, 7, 7, '#fffaf2')
-  bear.rect(5, 13, 13, 7, '#e6e8e3'); bear.rect(7, 11, 10, 8, '#fffaf2')
-  bear.rect(3, 15, 3, 5, '#fffaf2'); bear.rect(17, 15, 3, 5, '#e6e8e3')
-  bear.rect(4, 20, 6, 2, '#8c999a'); bear.rect(12, 20, 6, 2, '#8c999a')
-  bear.rect(4, 19, 6, 2, '#e6e8e3'); bear.rect(12, 19, 6, 2, '#fffaf2')
-  bear.texture(scene, 'seaside-bear-seated')
-  const her = new PixelArt(22, 23)
-  her.rect(4, 14, 14, 5, '#3f887f'); her.rect(6, 13, 10, 5, '#62b2a2')
-  her.rect(3, 15, 3, 4, '#f0c6a0'); her.rect(16, 15, 3, 4, '#f0c6a0')
-  her.rect(5, 19, 5, 3, '#242333'); her.rect(12, 19, 5, 3, '#242333')
-  her.rect(5, 21, 5, 1, '#393946'); her.rect(12, 21, 5, 1, '#393946')
-  her.ellipse(11, 9, 7, 7, '#20222e'); her.rect(4, 8, 14, 8, '#20222e')
-  her.ellipse(12, 8, 5, 6, '#393946'); her.rect(6, 11, 10, 5, '#393946')
-  her.rect(5, 15, 3, 2, '#20222e'); her.rect(14, 15, 3, 2, '#20222e')
-  her.rect(8, 16, 6, 1, '#20222e')
-  her.texture(scene, 'seaside-her-seated')
-  for (const side of ['left', 'right'] as const) for (const settling of [false, true]) {
-    const suffix = settling ? '-settling' : ''
-    leaningBear(side, settling).texture(scene, `seaside-bear-leaning-${side}${suffix}`)
-    leaningHer(side, settling).texture(scene, `seaside-her-leaning-${side}${suffix}`)
-  }
-  for (const step of [false, true]) {
-    const bearStanding = new PixelArt(22, 32)
-    bearStanding.ellipse(5, 5, 3, 3, '#8c999a'); bearStanding.ellipse(16, 5, 3, 3, '#8c999a')
-    bearStanding.ellipse(5, 5, 2, 2, '#e6e8e3'); bearStanding.ellipse(16, 5, 2, 2, '#fffaf2')
-    bearStanding.ellipse(11, 10, 9, 8, '#8c999a'); bearStanding.ellipse(11, 10, 8, 7, '#fffaf2')
-    bearStanding.ellipse(11, 21, 8, 9, '#8c999a'); bearStanding.ellipse(11, 20, 7, 8, '#e6e8e3')
-    bearStanding.rect(7, 15, 9, 13, '#fffaf2'); bearStanding.rect(3, 17, 3, 9, '#e6e8e3')
-    bearStanding.rect(16, 17, 3, 9, '#fffaf2')
-    bearStanding.rect(5, 28, 5, 3, '#8c999a'); bearStanding.rect(12, step ? 27 : 28, 5, 3, '#8c999a')
-    bearStanding.rect(5, 28, 5, 2, '#e6e8e3'); bearStanding.rect(12, step ? 27 : 28, 5, 2, '#fffaf2')
-    bearStanding.texture(scene, `seaside-bear-standing${step ? '-step' : ''}`)
-    const herStanding = new PixelArt(22, 32)
-    herStanding.rect(3, 15, 16, 8, '#3f887f'); herStanding.rect(5, 15, 12, 7, '#62b2a2')
-    herStanding.rect(3, 20, 3, 6, '#f0c6a0'); herStanding.rect(16, 20, 3, 6, '#f0c6a0')
-    herStanding.rect(5, 23, 5, 7, '#242333'); herStanding.rect(12, 23, 5, step ? 6 : 7, '#242333')
-    herStanding.rect(5, 30, 5, 1, '#4a3b55'); herStanding.rect(12, step ? 29 : 30, 5, 1, '#4a3b55')
-    herStanding.ellipse(11, 9, 7, 7, '#20222e'); herStanding.rect(4, 8, 14, 12, '#20222e')
-    herStanding.ellipse(12, 9, 5, 6, '#393946'); herStanding.rect(6, 11, 10, 9, '#393946')
-    herStanding.rect(5, 19, 3, 2, '#20222e'); herStanding.rect(14, 19, 3, 2, '#20222e')
-    herStanding.texture(scene, `seaside-her-standing${step ? '-step' : ''}`)
-  }
+  if (!scene.textures.exists(BACKDROP)) makeTexture(scene, BACKDROP, Array(SEASIDE_MAX).fill('.'.repeat(SEASIDE_MAX)), {})
 }
 
 export function paintSeaside(scene: Phaser.Scene, width: number, height: number, hour: number, motion: number, participants: CharacterId | readonly SeasideOccupant[]): void {

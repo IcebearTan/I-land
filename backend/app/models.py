@@ -117,6 +117,18 @@ class Attachment(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
+class RoomTelevision(SQLModel, table=True):
+    """客厅共享节目；成员/座位仍是内存租约，不能从此表恢复在线。"""
+
+    room: str = Field(default="interior", primary_key=True)
+    powered: bool = False
+    channel: int = 0
+    position_ms: int = 0
+    anchor_utc_ms: int
+    version: int = 1
+    changed_by: Optional[str] = None
+
+
 class Note(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     from_user: str

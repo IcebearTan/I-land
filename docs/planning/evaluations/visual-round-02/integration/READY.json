@@ -1,0 +1,138 @@
+{
+  "round": "visual-02",
+  "status": "ready",
+  "version": "home02-visual02-v1",
+  "date": "2026-11-07",
+  "timezone": "Asia/Shanghai",
+  "frozen": true,
+  "handoff": "Main chat review, commit and next-round assignment; no deployment performed",
+  "scope": "ROOM-02/HOME-02, UI-01 + ART-02 integration, native atlas/Tiled room layout, local joint acceptance",
+  "checksum_policy": "No delivery checksums generated or recomputed per 2026-11-07 user instruction; existing backup safeguards unchanged",
+  "accepted_deliveries": [
+    {
+      "component": "UI-01",
+      "version": "ui-01-v1",
+      "ready": "docs/planning/evaluations/visual-round-02/ui/READY.json"
+    },
+    {
+      "component": "ART-02",
+      "version": "art-v2.1.0",
+      "ready": "docs/planning/evaluations/visual-round-02/art/READY.json"
+    }
+  ],
+  "integration_files": [
+    "backend/app/main.py",
+    "backend/app/models.py",
+    "backend/app/room_runtime.py",
+    "backend/app/routers/auth.py",
+    "backend/app/routers/rooms.py",
+    "backend/tests/test_home_rooms.py",
+    "backend/tests/test_rooms.py",
+    "frontend/src/game/EventBus.ts",
+    "frontend/src/game/rooms/SharedRoomClient.ts",
+    "frontend/src/game/rooms/SeasideClient.ts",
+    "frontend/src/game/rooms/entry.ts",
+    "frontend/src/interior/room.ts",
+    "frontend/src/interior/layout.ts",
+    "frontend/src/seaside/room.ts",
+    "frontend/src/visual/artV2.ts",
+    "frontend/src/visual/layout.ts",
+    "frontend/src/visual/screenText.ts",
+    "frontend/src/game/scenes/BootScene.ts",
+    "frontend/src/game/scenes/LoginScene.ts",
+    "frontend/src/game/scenes/IslandScene.ts",
+    "frontend/src/game/scenes/SeasideScene.ts",
+    "frontend/src/game/scenes/InteriorScene.ts",
+    "frontend/src/game/art/island.ts",
+    "frontend/src/game/art/seaside.ts",
+    "frontend/src/game/art/interior.ts",
+    "frontend/src/components/CharacterPortrait.tsx",
+    "frontend/src/components/InteriorControls.tsx",
+    "frontend/src/components/interior.css",
+    "frontend/src/styles/seaside.css",
+    "frontend/public/art-v2/home-room.tmj",
+    "frontend/public/art-v2/README.md",
+    "frontend/tests/home-map.test.mjs",
+    "frontend/tests/home-room.test.mjs",
+    "frontend/tests/visual-scale.test.mjs",
+    "frontend/tests/room.test.mjs",
+    "frontend/tests/interior-navigation.test.mjs",
+    "frontend/tests/interior-scene.test.mjs",
+    "frontend/tests/seaside-scene.test.mjs"
+  ],
+  "include_also": "Complete frozen UI-01 and ART-02 deliveries referenced above, plus this integration evidence directory. Shared root planning changes belong to main chat.",
+  "entrypoints": {
+    "report": "docs/planning/evaluations/visual-round-02/integration/REPORT.md",
+    "protocol": "docs/planning/evaluations/visual-round-02/integration/PROTOCOL.md",
+    "browser": "docs/planning/evaluations/visual-round-02/integration/browser-checks.json",
+    "environment": "docs/planning/evaluations/visual-round-02/integration/environment.json",
+    "tiled": "frontend/public/art-v2/home-room.tmj",
+    "tiled_equivalence": "docs/planning/evaluations/visual-round-02/integration/checks/tiled-equivalence.json"
+  },
+  "checks": {
+    "backend_room_specific": {
+      "passed": 53,
+      "new_home": 17,
+      "existing_seaside": 36,
+      "temporary_data": true
+    },
+    "shared_scale_and_scenes": {
+      "passed": 31,
+      "log": "docs/planning/evaluations/visual-round-02/integration/checks/world-scale-and-scenes.log"
+    },
+    "final_tiled_layout_and_home_scenes": {
+      "passed": 29,
+      "failed": 0,
+      "log": "docs/planning/evaluations/visual-round-02/integration/checks/tiled-home.log",
+      "coordinates_and_layers_unchanged": true,
+      "phaser_tiled_parsers_accept_map": true
+    },
+    "browser_scenarios": {
+      "passed": 25,
+      "failed": 0,
+      "pending": 0,
+      "independent_cookie_contexts": true,
+      "real_native_tab_visibility_verified": true,
+      "uncaught_page_errors": 0,
+      "unexpected_404_or_5xx": 0,
+      "screenshots": 63
+    },
+    "final_build": {
+      "typescript": "passed",
+      "vite": "passed",
+      "modules": 90,
+      "js": "index-DJ8N_jWk.js",
+      "css": "index-CqiWzKrh.css",
+      "js_kb": 1890.67,
+      "js_gzip_kb": 448.41,
+      "css_kb": 71.65,
+      "css_gzip_kb": 12.79,
+      "existing_large_chunk_warning": true,
+      "log": "docs/planning/evaluations/visual-round-02/integration/checks/build.log"
+    },
+    "diff_check": "passed",
+    "latest_user_test_policy": "No full regressions or checksum calculations after update; only affected files and necessary builds. Prior full runs remain historical stage-A evidence.",
+    "final_browser_boundary": "25 scenarios and latest large-screen screenshots precede only the equivalent Tiled layout extraction; afterward geometry/layer equivalence, 29 affected checks and final build passed without replaying unrelated browser flows."
+  },
+  "shutdown": {
+    "own_service_stopped": true,
+    "port_8031_free": true,
+    "own_browsers_closed": true,
+    "temporary_db_uploads_retained_for_review": true,
+    "real_data_untouched": true
+  },
+  "limits": [
+    "Physical iOS/Android touch, soft keyboard, safe areas, lock screen and mobile OS background policy not tested.",
+    "No production HTTPS/WSS, reverse proxy, Secure Cookie or production-volume recovery verification.",
+    "Single Uvicorn worker and single service replica remain required; members are in-memory leases.",
+    "No listening-quality or public-network performance benchmark.",
+    "No Tiled desktop-app manual inspection; format parsed by Phaser and runtime geometry/layers compared directly.",
+    "No free movement synchronization, invitations, cooking, inventory, decoration or next-round features."
+  ],
+  "git": {
+    "staged": false,
+    "committed": false,
+    "pushed": false,
+    "deployed": false
+  }
+}

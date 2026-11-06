@@ -10,10 +10,10 @@ const compile = source => ts.transpileModule(source, {
 const load = async file => import(moduleUrl(compile(fs.readFileSync(new URL(file, import.meta.url), 'utf8'))))
 const { homeWalkable, homeSegmentClear, homeRoute } = await load('../src/interior/navigation.ts')
 
-// 直接读取正式布局常量；不执行绘制，也不在测试里复制另一份家具位置。
-const artSource = ts.createSourceFile('interior.ts', fs.readFileSync(new URL('../src/game/art/interior.ts', import.meta.url), 'utf8'), ts.ScriptTarget.ES2022, true)
-const artWithoutImports = ts.factory.updateSourceFile(artSource, artSource.statements.filter(statement => !ts.isImportDeclaration(statement)))
-const { HOME_LAYOUT } = await import(moduleUrl(compile(ts.createPrinter().printFile(artWithoutImports))))
+// 直接读取运行时 Tiled 数据；独立几何断言不复制一套家具坐标。
+const mapText = fs.readFileSync(new URL('../public/art-v2/home-room.tmj', import.meta.url), 'utf8')
+const mapCode = compile(fs.readFileSync(new URL('../src/interior/layout.ts', import.meta.url), 'utf8')).replace(/import tiledRoom from ['"][^'"]+['"];?/, `const tiledRoom = ${JSON.stringify(mapText)};`)
+const { HOME_LAYOUT } = await import(moduleUrl(mapCode))
 
 const distance = (a, b) => Math.hypot(b.x - a.x, b.y - a.y)
 

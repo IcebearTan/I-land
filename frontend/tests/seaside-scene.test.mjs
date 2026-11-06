@@ -61,7 +61,7 @@ class Image {
   setCrop(...crop) { this.crop = crop; return this }
   setDepth(depth) { this.depth = depth; return this }
   setPosition(x, y) { this.x = x; this.y = y; return this }
-  setTexture(texture) { this.texture = texture; this.textures.push(texture); return this }
+  setTexture(texture, frame) { this.texture = frame ?? texture; this.textures.push(this.texture); return this }
   destroy() { this.destroyed = true; this.destroys++ }
 }
 class Keyboard extends EventEmitter {
@@ -81,7 +81,7 @@ class Scene {
     this.scale = new ContextEmitter(); this.scale.gameSize = { width: 1120, height: 740 }
     this.input = { keyboard: new Keyboard() }
     this.images = []
-    this.add = { image: (x, y, texture) => { const image = new Image(x, y, texture); this.images.push(image); return image } }
+    this.add = { image: (x, y, texture, frame) => { const image = new Image(x, y, frame ?? texture); this.images.push(image); return image } }
     this.cameras = { main: {
       zoom: 1, center: [], fades: [],
       setZoom(zoom) { this.zoom = zoom; return this },
@@ -125,7 +125,7 @@ globalThis.__seasideTestRoomClient = MockRoomClient
 
 // 使用真实纯布局函数；图形/纹理对象用 mock，测试房间事实如何驱动渲染。
 const artSource = fs.readFileSync(new URL('../src/game/art/seaside.ts', import.meta.url), 'utf8')
-const layoutSource = artSource.slice(artSource.indexOf('export function seasideLayout'), artSource.indexOf('/** 26×25'))
+const layoutSource = artSource.slice(artSource.indexOf('export function seasideLayout'), artSource.indexOf('export function createSeasideArt'))
 const { seasideLayout, seasideActorPosition } = await import(moduleUrl(compileSource(layoutSource)))
 globalThis.__seasideTestArt = {
   createSeasideArt: scene => { scene.artCreates = (scene.artCreates ?? 0) + 1 },
@@ -133,11 +133,15 @@ globalThis.__seasideTestArt = {
   SEASIDE_BACKDROP: 'seaside-backdrop', SEASIDE_MAX: 640,
 }
 globalThis.__seasideTestPhaser = { Scene, Scenes: { Events: { SHUTDOWN: 'shutdown', DESTROY: 'destroy' } } }
+const v2Url = moduleUrl(compile('../src/visual/artV2.ts'))
+const layoutUrl = moduleUrl(compile('../src/visual/layout.ts'));
 const source = compile('../src/game/scenes/SeasideScene.ts')
+  .replace(/from ['"]\.\.\/\.\.\/visual\/layout['"]/, `from '${layoutUrl}'`)
+  .replace(/from ['"]\.\.\/\.\.\/visual\/artV2['"]/, `from '${v2Url}'`)
   .replace(/import Phaser from ['"]phaser['"];?/, 'const Phaser = globalThis.__seasideTestPhaser;')
   .replace(/import \{ eventBus \} from ['"]\.\.\/EventBus['"];?/, 'const eventBus = globalThis.__seasideTestBus;')
   .replace(/import \{([^}]+)\} from ['"]\.\.\/art\/seaside['"];?/, 'const {$1} = globalThis.__seasideTestArt;')
-  .replace(/import \{ RoomClient \} from ['"]\.\.\/\.\.\/seaside\/room['"];?/, 'const RoomClient = globalThis.__seasideTestRoomClient;')
+  .replace(/import \{ RoomClient \} from ['"]\.\.\/rooms\/SeasideClient['"];?/, 'const RoomClient = globalThis.__seasideTestRoomClient;')
   .replace(/from ['"]\.\.\/\.\.\/seaside\/clock['"]/, `from '${clockUrl}'`)
   .replace(/from ['"]\.\.\/\.\.\/seaside\/roomClock['"]/, `from '${sharedClockUrl}'`)
 const { SeasideScene } = await import(moduleUrl(source))
@@ -158,8 +162,8 @@ function setup({ reduce = false, identity = { character: 'bear', display: '小�
   for (const [name, listener] of observers) bus.on(name, listener)
   scene.init(identity); scene.create()
   const client = clients.at(-1)
-  const actor = account => scene.images.filter(image => !image.destroyed && image.texture.startsWith(`seaside-${account}-`)).at(-1)
-  const actors = () => scene.images.filter(image => !image.destroyed && image.texture.startsWith('seaside-') && image.texture !== 'seaside-backdrop')
+  const actor = account => scene.images.filter(image => !image.destroyed && image.texture.startsWith(`${account}-`)).at(-1)
+  const actors = () => scene.images.filter(image => !image.destroyed && /^(bear|her)-/.test(image.texture))
   const complete = () => { for (const tween of scene.tweens.items) if (tween.isPlaying()) tween.complete() }
   const advance = delta => { mono += delta; realNow += delta; scene.update(mono, delta) }
   const destroy = () => { scene.events.emit('shutdown'); scene.events.emit('destroy'); for (const [name, listener] of observers) bus.off(name, listener) }
@@ -176,7 +180,7 @@ test('joining leaves both seats empty until a server-confirmed member supplies i
     bus.emit('SEASIDE_ACTION', { action: 'sit' }); bus.emit('SEASIDE_CLOCK_REQUEST', { action: 'rate', rate: 120 })
     assert.deepEqual(t.client.poseRequests, []); assert.deepEqual(t.client.clockRequests, [])
     t.client.server(packet({ members: [member('her', 0, 'seated', '小青')] }))
-    assert.equal(t.actors().length, 1); assert.equal(t.actor('her').texture, 'seaside-her-seated')
+    assert.equal(t.actors().length, 1); assert.equal(t.actor('her').texture, 'her-sit-up')
     assert.equal(t.actor('her').x, seasideLayout(560, 370).seats[0]) // 她真实分配在左座，不能按角色硬编码。
     assert.equal(t.states.at(-1).pose, 'seated'); assert.equal(t.states.at(-1).companion, undefined)
     assert.deepEqual(t.ready, [{ scene: 'seaside', identity: { character: 'her', account: 'her', display: '小青' } }])
@@ -196,9 +200,9 @@ test('two confirmed arrivals use independent actors and animations, including re
     assert.equal(t.actors().length, 2); assert.equal(t.actor('bear'), bear)
     assert.equal(t.scene.tweens.items.length, 2); assert.equal(first.stops, 0)
     assert.equal(t.states.at(-1).companion.account, 'her')
-    t.advance(600); assert.ok(bear.texture.startsWith('seaside-bear-standing'))
+    t.advance(600); assert.ok(bear.texture.startsWith('bear-walk-up-'))
     t.complete()
-    assert.equal(t.states.at(-1).pose, 'seated'); assert.equal(bear.texture, 'seaside-bear-seated')
+    assert.equal(t.states.at(-1).pose, 'seated'); assert.equal(bear.texture, 'bear-sit-up')
     assert.equal(bear.x, seasideLayout(560, 370).seats[1]); assert.equal(t.actor('her').x, seasideLayout(560, 370).seats[0])
     assert.deepEqual(t.scene.paintCalls.at(-1)[4].map(item => [item.character, item.seat]), [['her', 0], ['bear', 1]])
     t.client.server(packet({ revision: 3, members: [member('her', 0), member('bear', 1)] }))
@@ -212,13 +216,13 @@ test('pose requests wait for shared server facts and pending requests cannot pro
     t.client.server(packet())
     bus.emit('SEASIDE_ACTION', { action: 'stand' })
     assert.deepEqual(t.client.poseRequests, ['standing']); assert.equal(t.states.at(-1).pose, 'seated')
-    assert.equal(t.actor('bear').texture, 'seaside-bear-seated')
+    assert.equal(t.actor('bear').texture, 'bear-sit-up')
     t.client.status('connected', { pending: true })
     bus.emit('SEASIDE_ACTION', { action: 'stand' }); bus.emit('SEASIDE_CLOCK_REQUEST', { action: 'reset' })
     assert.deepEqual(t.client.poseRequests, ['standing']); assert.deepEqual(t.client.clockRequests, [])
     assert.equal(t.states.at(-1).connection.pending, true)
     t.client.server(packet({ revision: 2, members: [member('bear', 0, 'standing')] }))
-    assert.equal(t.states.at(-1).pose, 'standing'); assert.equal(t.actor('bear').texture, 'seaside-bear-standing')
+    assert.equal(t.states.at(-1).pose, 'standing'); assert.equal(t.actor('bear').texture, 'bear-idle-up')
     bus.emit('SEASIDE_ACTION', { action: 'sit' }); assert.equal(t.states.at(-1).pose, 'standing')
     t.client.server(packet({ revision: 3 }))
     assert.equal(t.states.at(-1).pose, 'seated'); assert.deepEqual(t.client.poseRequests, ['standing', 'seated'])
@@ -230,19 +234,19 @@ test('server-confirmed single and mutual leaning use side-specific settling fram
   try {
     t.client.server(packet({ members: [member('bear', 0), member('her', 1)] })); t.complete()
     bus.emit('SEASIDE_ACTION', { action: 'lean' })
-    assert.equal(t.actor('bear').texture, 'seaside-bear-seated'); assert.deepEqual(t.client.poseRequests, ['leaning'])
+    assert.equal(t.actor('bear').texture, 'bear-sit-up'); assert.deepEqual(t.client.poseRequests, ['leaning'])
     t.client.server(packet({ revision: 2, members: [member('bear', 0, 'leaning'), member('her', 1)] }))
-    assert.equal(t.actor('bear').texture, 'seaside-bear-leaning-left-settling')
-    assert.equal(t.actor('her').texture, 'seaside-her-seated'); t.complete()
-    assert.equal(t.actor('bear').texture, 'seaside-bear-leaning-left')
+    assert.equal(t.actor('bear').texture, 'bear-lean-right-0')
+    assert.equal(t.actor('her').texture, 'her-sit-up'); t.complete()
+    assert.equal(t.actor('bear').texture, 'bear-lean-right-1')
     assert.equal(t.actor('bear').x, seasideActorPosition(560, 370, 0, 'leaning', 'seated').x)
     t.client.server(packet({ revision: 3, members: [member('bear', 0, 'leaning'), member('her', 1, 'leaning')] }))
-    assert.equal(t.actor('her').texture, 'seaside-her-leaning-right-settling'); t.complete()
-    assert.equal(t.actor('her').texture, 'seaside-her-leaning-right')
+    assert.equal(t.actor('her').texture, 'her-lean-left-0'); t.complete()
+    assert.equal(t.actor('her').texture, 'her-lean-left-1')
     assert.equal(t.actor('bear').x, seasideActorPosition(560, 370, 0, 'leaning', 'leaning').x)
     assert.equal(t.actor('her').x, seasideActorPosition(560, 370, 1, 'leaning', 'leaning').x)
     t.client.server(packet({ revision: 4, members: [member('bear', 0), member('her', 1, 'standing')] })); t.complete()
-    assert.equal(t.actor('bear').texture, 'seaside-bear-seated'); assert.equal(t.actor('her').texture, 'seaside-her-standing')
+    assert.equal(t.actor('bear').texture, 'bear-sit-up'); assert.equal(t.actor('her').texture, 'her-idle-up')
     assert.equal(t.states.at(-1).companion.pose, 'standing')
     t.client.server(packet({ revision: 5, members: [member('bear', 0), member('her', 1)] })); t.complete()
     t.client.server(packet({ revision: 6, members: [member('bear', 0, 'leaning'), member('her', 1)] }))
@@ -267,7 +271,7 @@ test('a partner departure clears its actor and footprints, and cannot revive thr
     const her = t.actor('her'), oldTweens = [...t.scene.tweens.items]
     t.client.server(packet({ revision: 3, members: [member('bear', 0)] })); t.complete()
     assert.equal(her.destroyed, true); assert.equal(her.destroys, 1); assert.equal(t.actor('her'), undefined)
-    assert.equal(t.actor('bear').texture, 'seaside-bear-seated'); assert.equal(t.states.at(-1).companion, undefined)
+    assert.equal(t.actor('bear').texture, 'bear-sit-up'); assert.equal(t.states.at(-1).companion, undefined)
     assert.deepEqual(t.scene.paintCalls.at(-1)[4], [{ character: 'bear', seat: 0, pose: 'seated' }])
     const textures = her.textures.length, ownTexture = t.actor('bear').texture
     for (const tween of oldTweens) tween.lateComplete()
@@ -303,7 +307,7 @@ test('panels block pose, scenery, retry and keyboard API calls without restoring
     bus.emit('SEASIDE_CLOCK_REQUEST', { action: 'reset' }); bus.emit('SEASIDE_RECONNECT', {})
     t.scene.input.keyboard.emit('keydown', { code: 'Space' }); t.scene.input.keyboard.emit('keydown', { code: 'Escape' })
     assert.deepEqual(t.client.poseRequests, []); assert.deepEqual(t.client.clockRequests, []); assert.equal(t.client.retries, 0)
-    assert.deepEqual(t.travels, []); assert.equal(t.actor('bear').texture, 'seaside-bear-seated')
+    assert.deepEqual(t.travels, []); assert.equal(t.actor('bear').texture, 'bear-sit-up')
     bus.emit('PANEL_CLOSED', { panel: 'settings' })
     assert.equal(t.scene.input.keyboard.enabled, true); assert.equal(t.scene.input.keyboard.captured, false); assert.deepEqual(t.movement, [])
     bus.emit('SEASIDE_ACTION', { action: 'stand' }); t.client.server(packet({ revision: 2, members: [member('bear', 0, 'standing')] }))
@@ -351,10 +355,10 @@ test('resize and reduced motion preserve confirmed members, assigned seats and c
     t.scene.scale.gameSize = { width: 390, height: 844 }; t.scene.scale.emit('resize')
     assert.equal(t.states.at(-1).clock.virtualMs, before); assert.equal(t.states.at(-1).clock.rate, 30)
     assert.equal(t.actor('her'), her); assert.equal(t.actor('bear'), bear); assert.equal(t.client.starts, 1)
-    assert.equal(her.x, seasideLayout(195, 422).seats[0]); assert.equal(her.texture, 'seaside-her-seated')
+    assert.equal(her.x, seasideLayout(195, 422).seats[0]); assert.equal(her.texture, 'her-sit-up')
     t.client.server(packet({ revision: 2, members: [member('her', 0, 'standing'), member('bear', 1)], rate: 30, followingReal: false }))
     t.scene.scale.gameSize = { width: 1000, height: 700 }; t.scene.scale.emit('resize')
-    assert.equal(t.states.at(-1).pose, 'standing'); assert.equal(her.texture, 'seaside-her-standing')
+    assert.equal(t.states.at(-1).pose, 'standing'); assert.equal(her.texture, 'her-idle-up')
     assert.equal(her.y, seasideLayout(500, 350).standingY); assert.equal(t.client.starts, 1)
     assert.ok(t.scene.paintCalls.every(args => args[3] === 0))
   } finally { t.destroy() }
@@ -367,11 +371,11 @@ test('enabling reduced motion ends only visual arrivals and keeps confirmed seat
     const arrival = t.scene.tweens.items[0]
     assert.ok(t.scene.paintCalls.some(args => args[3] > 0)); media.change(true)
     assert.equal(arrival.stopped, true); assert.equal(t.states.at(-1).pose, 'seated')
-    assert.equal(t.actor('bear').texture, 'seaside-bear-seated'); assert.equal(t.scene.paintCalls.at(-1)[3], 0)
+    assert.equal(t.actor('bear').texture, 'bear-sit-up'); assert.equal(t.scene.paintCalls.at(-1)[3], 0)
     t.client.server(packet({ revision: 2, members: [member('bear', 0, 'leaning'), member('her', 1)] }))
-    assert.equal(t.actor('bear').texture, 'seaside-bear-leaning-left')
+    assert.equal(t.actor('bear').texture, 'bear-lean-right-1')
     assert.equal(t.scene.tweens.items.length, 2); assert.equal(t.client.starts, 1)
-    arrival.lateComplete(); assert.equal(t.actor('bear').texture, 'seaside-bear-leaning-left')
+    arrival.lateComplete(); assert.equal(t.actor('bear').texture, 'bear-lean-right-1')
   } finally { t.destroy() }
 })
 

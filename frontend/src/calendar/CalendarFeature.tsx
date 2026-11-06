@@ -357,6 +357,7 @@ export function CalendarFeature() {
 
   return <>
     {!open && <button className={`calendar-shortcut ${featured && !loadError ? 'calendar-shortcut--filled' : ''}`} onClick={() => eventBus.emit('OPEN_CALENDAR', {})} aria-label="打开记忆日历">
+      <span className="calendar-shortcut-mobile"><HolidayIcon icon="book" size={20} /><span>记忆日历</span></span>
       {featured && !loadError ? <CountdownCard holiday={featured.item} today={today} compact /> : <><HolidayIcon icon="book" size={22} /><span>记忆日历<small>{loadError ? '轻点重试，找回小日子' : '留住日子，也收藏期待'}</small></span><span aria-hidden="true">↗</span></>}
     </button>}
     {open && <div className="modal-mask calendar-mask" onClick={close}>
@@ -427,6 +428,7 @@ export function CalendarFeature() {
             <section className="calendar-month" aria-label="节日与记忆月历">
               <div className="month-heading"><div><span className="month-year num">{year}</span><h3>{monthNumber} 月 <small>{monthItems.length} 个特别日子</small></h3></div>
                 <div className="month-nav"><button aria-label="上个月" disabled={month <= '1900-01-01'} onClick={() => setMonth(shiftMonth(month, -1))}>‹</button><button onClick={() => selectDay(today)}>今天</button><button aria-label="下个月" disabled={month >= '2199-12-01'} onClick={() => setMonth(shiftMonth(month, 1))}>›</button></div></div>
+              <div className="calendar-grid-scroll" role="region" aria-label="月份日期表，窄屏可左右滑动" tabIndex={0}>
               <div className="calendar-week" aria-hidden="true">{['一', '二', '三', '四', '五', '六', '日'].map(day => <span key={day}>{day}</span>)}</div>
               <div className="calendar-grid">{cells.map(key => {
                 const events = items.filter(item => occursOn(item, key)), inMonth = key.slice(0, 7) === month.slice(0, 7)
@@ -443,6 +445,7 @@ export function CalendarFeature() {
                   {events[0] && <span className="day-event-name">{events[0].name}</span>}
                 </button>
               })}</div>
+              </div>
               {memoriesError && <div className="calendar-error" role="alert">{memoriesError}<button className="text-button" onClick={() => setRevision(value => value + 1)}>重新读取</button></div>}
               <div className="calendar-legend"><span><i />今天</span><span>照片与数字 = 这一天的记忆</span><span>轻点日期查看与添加</span></div>
               <section className="day-detail"><div className="day-detail-heading"><h4>{readableDate(selectedDay)}</h4><div className="day-detail-entry">

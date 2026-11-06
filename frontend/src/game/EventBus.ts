@@ -3,6 +3,7 @@ import type { CharacterId } from '../characters'
 import type { AudioContextInfo, AudioSettings, AudioStatus } from '../audio/types'
 import type { SceneryRate, SceneryTime } from '../seaside/clock'
 import type { RoomMember, RoomPose, RoomView } from '../seaside/types'
+import type { HomeMember, HomeView } from '../interior/room'
 
 export interface IslandIdentity { character: CharacterId; display: string; account?: 'bear' | 'her' }
 export type SceneId = 'login' | 'island' | 'seaside' | 'interior'
@@ -17,7 +18,7 @@ export interface SeasideState {
   notice?: string
 }
 
-/** 首版小屋只报告本人的本地姿势与电视状态，不能从足迹推测同伴。 */
+/** 位置留在 Phaser；成员、坐席与电视由独立小屋房间确认。 */
 export interface InteriorState {
   pose: 'walking' | 'approaching' | 'seated'
   seat: 0 | 1 | null
@@ -25,6 +26,10 @@ export interface InteriorState {
   channel: 0 | 1 | 2
   phase: Phase
   nearTelevision: boolean
+  nearSofa: boolean
+  connection: Pick<HomeView, 'state' | 'pending' | 'message'>
+  members: HomeMember[]
+  companion?: HomeMember
   notice?: string
 }
 
@@ -55,7 +60,7 @@ export type GameEvents = {
   TRAVEL_REQUEST: { from: Exclude<SceneId, 'login'>; to: Exclude<SceneId, 'login'>; returnPoint?: { x: number; y: number } }
   INTERIOR_STATE: InteriorState
   INTERIOR_REQUEST_STATE: Record<string, never>
-  INTERIOR_ACTION: { action: 'stand' | 'tv-toggle' | 'tv-next' }
+  INTERIOR_ACTION: { action: 'stand' | 'sit-left' | 'sit-right' | 'tv-toggle' | 'tv-next' | 'reconnect' }
   SEASIDE_STATE: SeasideState
   SEASIDE_REQUEST_STATE: Record<string, never>
   SEASIDE_ACTION: { action: 'sit' | 'stand' | 'lean' | 'unlean' }

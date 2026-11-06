@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-07",
+  "geometry_unchanged_from_browser_validated_layout": true,
+  "phaser_image_parser_agrees_with_runtime": true,
+  "tileSize": [
+    16,
+    16
+  ],
+  "mapSize": [
+    20,
+    15
+  ],
+  "imageLayers": 14,
+  "objectLayers": 5,
+  "checksum_used": false
+}

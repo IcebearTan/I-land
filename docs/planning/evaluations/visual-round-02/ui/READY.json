@@ -1,0 +1,171 @@
+{
+  "round": "visual-02",
+  "status": "ready",
+  "version": "ui-01-v1",
+  "delivered_on": "2026-11-07",
+  "timezone": "Asia/Shanghai",
+  "task": "UI-01",
+  "handoff": {
+    "frozen": true,
+    "next_owner": "HOME-02 integration",
+    "browser_validation_owner": "HOME-02 integration",
+    "checksum_policy": "No delivery checksums generated, following the user's 2026-11-07 update."
+  },
+  "files": [
+    {
+      "path": "frontend/src/styles/tokens.css",
+      "purpose": "Shared DOM typography, colors, spacing and screen-space contracts"
+    },
+    {
+      "path": "frontend/src/styles/global.css",
+      "purpose": "Login, HUD, dialogs, settings, audio and mailbox"
+    },
+    {
+      "path": "frontend/src/styles/seaside.css",
+      "purpose": "Seaside controls and responsive layout"
+    },
+    {
+      "path": "frontend/src/components/interior.css",
+      "purpose": "Interior controls and joystick/near-TV layout"
+    },
+    {
+      "path": "frontend/src/components/Hud.tsx",
+      "purpose": "Wrapping containers for long identity and presence names"
+    },
+    {
+      "path": "frontend/src/components/SeasideControls.tsx",
+      "purpose": "Four-second welcome heading and visible leaning hint"
+    },
+    {
+      "path": "frontend/src/calendar/calendar.css",
+      "purpose": "Calendar, theme pickers, memories, photos and trash presentation"
+    },
+    {
+      "path": "frontend/src/calendar/CalendarFeature.tsx",
+      "purpose": "Mobile calendar shortcut and isolated month-grid scrolling"
+    },
+    {
+      "path": "frontend/src/calendar/HolidayDateField.tsx",
+      "purpose": "Isolated date-grid scrolling and visible hint"
+    },
+    {
+      "path": "frontend/src/calendar/MemoryCards.tsx",
+      "purpose": "Wrapping container for long author names"
+    },
+    {
+      "path": "docs/planning/evaluations/visual-round-02/ui/REPORT.md",
+      "purpose": "Implementation report, layout contract, checks and integration checklist"
+    },
+    {
+      "path": "docs/planning/evaluations/visual-round-02/ui/source-review.json",
+      "purpose": "Static CSS/TSX source review results"
+    }
+  ],
+  "interface": {
+    "react_phaser": "Unchanged EventBus communication; no React access to canvas.",
+    "api_and_rules": "Existing API calls, interaction handlers, fields, identity rules and calendar themes unchanged.",
+    "typography_css_px": {
+      "body_and_inputs": 16,
+      "controls_and_hud": 14,
+      "metadata": 12,
+      "headings": [
+        20,
+        24
+      ],
+      "touch_target_min": 44,
+      "input_min_height": 48
+    },
+    "mobile_layout_css_px": {
+      "breakpoint_max_width": 600,
+      "quiet_hud": {
+        "top": 12,
+        "left": 12,
+        "right": 12,
+        "typical_height": 58,
+        "long_names": "Wrap, up to 20 characters; verify with actual artwork."
+      },
+      "island_hud": {
+        "account_top": 76,
+        "presence_top": 144,
+        "calendar_entry_top": 144,
+        "calendar_entry_width": 92,
+        "suggested_top_safe_area": 224
+      },
+      "interior": {
+        "back_button_top": 80,
+        "back_button_min_height": 44,
+        "welcome_top": 136,
+        "joystick_diameter": 88,
+        "walking_bottom_contract": 156,
+        "seated_bottom_contract": 160,
+        "near_tv": "Right/bottom 12px, width viewport -124px (max 280px); replaces duplicate interact button and leaves joystick visible."
+      },
+      "seaside": {
+        "button_min_height": 64,
+        "bottom_contract": 200,
+        "clock_panel_top": 112,
+        "clock_panel_max_height": "100dvh -336px",
+        "welcome_duration_ms": 4000
+      },
+      "calendar": {
+        "smallest_viewport_test_target": 320,
+        "month_grid_min_width": 308,
+        "date_grid_min_width": 308,
+        "date_touch_cell": 44,
+        "overflow_policy": "Dedicated keyboard-focusable horizontal region; full-width calendar below 361px."
+      },
+      "photos": {
+        "mobile_columns": 2,
+        "action_columns_mobile": 2,
+        "action_min_size": 44
+      }
+    }
+  },
+  "checks": [
+    {
+      "command": "npm run build -- --outDir /tmp/iland-ui-round2-20261107-01a1b16c-final",
+      "status": "passed",
+      "typescript": "passed",
+      "modules": 86,
+      "css_kb": 69.97,
+      "css_gzip_kb": 12.58,
+      "js_kb": 1885.46,
+      "js_gzip_kb": 449.88,
+      "notes": "Includes the concurrent shared workspace snapshot; existing large-chunk warning remains. frontend/dist was not overwritten."
+    },
+    {
+      "command": "node --test tests/calendar.test.mjs",
+      "status": "passed",
+      "passed": 10,
+      "failed": 0,
+      "scope": "Direct date/calendar/memory helpers; not a visual browser test."
+    },
+    {
+      "command": "git diff --check -- frontend/src/styles frontend/src/components frontend/src/calendar",
+      "status": "passed"
+    },
+    {
+      "kind": "static-source-review",
+      "status": "passed",
+      "ui_tokens": 44,
+      "undefined_ui_tokens": 0,
+      "explicit_font_literals_below_12px": 0,
+      "existing_handlers_and_api_bus_calls_preserved": true,
+      "calendar_themes_preserved": true
+    }
+  ],
+  "not_run": [
+    "Application browser control or new screenshots in this round.",
+    "Real 320x568 / 390x844 / desktop / landscape layout and overlap measurement after these changes.",
+    "Real devices, soft keyboard, safe-area, reduced-motion preference and forced-dark behavior.",
+    "HOME-02 shared room, seat competition, television synchronization and reconnect integration.",
+    "Full frontend/backend regression suites, delivery hashes, deployment."
+  ],
+  "known_limits": [
+    "READY means source and scoped checks are ready for integration; it does not mean full visual acceptance passed.",
+    "Phaser prompts and cameras must be aligned with the new DOM safe areas by the integrator.",
+    "Very long status/error messages use localized scrolling; verify actor visibility under shared-room error states.",
+    "Mobile island calendar shortcut is intentionally compact; full themed countdown cards remain on desktop and inside the calendar.",
+    "Character/furniture ratio and assets belong to ART-02/HOME-02 and were not changed by UI-01."
+  ]
+}

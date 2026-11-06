@@ -1,0 +1,21 @@
+{
+  "accepted_on": "2026-11-07",
+  "phase": "B",
+  "checksum_policy": "No checksum generated or recomputed; user instruction 2026-11-07",
+  "deliveries": [
+    {
+      "component": "ui",
+      "version": "ui-01-v1",
+      "files": 12,
+      "all_paths_exist": true,
+      "status": "ready"
+    },
+    {
+      "component": "art",
+      "version": "art-v2.1.0",
+      "files": 106,
+      "all_paths_exist": true,
+      "status": "ready"
+    }
+  ]
+}

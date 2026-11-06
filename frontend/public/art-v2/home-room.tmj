@@ -1,0 +1,687 @@
+{
+  "type": "map",
+  "version": "1.10",
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "infinite": false,
+  "tilewidth": 16,
+  "tileheight": 16,
+  "width": 20,
+  "height": 15,
+  "nextlayerid": 20,
+  "nextobjectid": 24,
+  "backgroundcolor": "#2b1b45",
+  "tilesets": [],
+  "layers": [
+    {
+      "id": 1,
+      "name": "shell",
+      "type": "imagelayer",
+      "image": "home/shell-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 0,
+      "offsety": 0,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "shell"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "fireplace-shadow",
+      "type": "imagelayer",
+      "image": "home/fireplace-shadow-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 36,
+      "offsety": 108,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "fireplace-shadow"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "tv-shadow",
+      "type": "imagelayer",
+      "image": "home/tv-shadow-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 135,
+      "offsety": 111,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "tv-shadow"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "window-view",
+      "type": "imagelayer",
+      "image": "home/window-view-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 242,
+      "offsety": 36,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "window-view"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "window-frame",
+      "type": "imagelayer",
+      "image": "home/window-frame-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 231,
+      "offsety": 24,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "window-frame"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "rug",
+      "type": "imagelayer",
+      "image": "home/rug-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 112,
+      "offsety": 143,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "rug"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "fireplace",
+      "type": "imagelayer",
+      "image": "home/fireplace-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 34,
+      "offsety": 31,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "fireplace"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 117
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "tv-case",
+      "type": "imagelayer",
+      "image": "home/tv-case-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 135,
+      "offsety": 55,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "tv-case"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 118
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "logs",
+      "type": "imagelayer",
+      "image": "home/logs-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 27,
+      "offsety": 108,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "logs"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 123
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "plant",
+      "type": "imagelayer",
+      "image": "home/plant-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 269,
+      "offsety": 91,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "plant"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 126
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "side-table",
+      "type": "imagelayer",
+      "image": "home/side-table-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 100,
+      "offsety": 163,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "side-table"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 186
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "cup-cream",
+      "type": "imagelayer",
+      "image": "home/cup-cream-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 107,
+      "offsety": 161,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "cup-cream"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 187
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "sofa-base",
+      "type": "imagelayer",
+      "image": "home/sofa-base-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 126,
+      "offsety": 153,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "sofa-base"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 199
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "sofa-front",
+      "type": "imagelayer",
+      "image": "home/sofa-front-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 126,
+      "offsety": 153,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "sofa-front"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 201
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "walkable",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "objects": [
+        {
+          "id": 1,
+          "name": "walkable",
+          "type": "bounds",
+          "x": 20,
+          "y": 102,
+          "width": 280,
+          "height": 126,
+          "rotation": 0,
+          "visible": true
+        }
+      ],
+      "opacity": 1,
+      "visible": false,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 16,
+      "name": "walls",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "objects": [
+        {
+          "id": 2,
+          "name": "wall-0",
+          "type": "bounds",
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 102,
+          "rotation": 0,
+          "visible": true
+        },
+        {
+          "id": 3,
+          "name": "wall-1",
+          "type": "bounds",
+          "x": 0,
+          "y": 102,
+          "width": 20,
+          "height": 138,
+          "rotation": 0,
+          "visible": true
+        },
+        {
+          "id": 4,
+          "name": "wall-2",
+          "type": "bounds",
+          "x": 300,
+          "y": 102,
+          "width": 20,
+          "height": 138,
+          "rotation": 0,
+          "visible": true
+        },
+        {
+          "id": 5,
+          "name": "wall-3",
+          "type": "bounds",
+          "x": 20,
+          "y": 228,
+          "width": 232,
+          "height": 12,
+          "rotation": 0,
+          "visible": true
+        },
+        {
+          "id": 6,
+          "name": "wall-4",
+          "type": "bounds",
+          "x": 292,
+          "y": 228,
+          "width": 8,
+          "height": 12,
+          "rotation": 0,
+          "visible": true
+        }
+      ],
+      "opacity": 1,
+      "visible": false,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 17,
+      "name": "furniture",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "objects": [
+        {
+          "id": 7,
+          "name": "fireplace",
+          "type": "bounds",
+          "x": 42,
+          "y": 103,
+          "width": 60,
+          "height": 14,
+          "rotation": 0,
+          "visible": true
+        },
+        {
+          "id": 8,
+          "name": "television",
+          "type": "bounds",
+          "x": 142,
+          "y": 99,
+          "width": 47,
+          "height": 19,
+          "rotation": 0,
+          "visible": true
+        },
+        {
+          "id": 9,
+          "name": "sofa",
+          "type": "bounds",
+          "x": 129,
+          "y": 166,
+          "width": 73,
+          "height": 33,
+          "rotation": 0,
+          "visible": true
+        },
+        {
+          "id": 10,
+          "name": "side-table",
+          "type": "bounds",
+          "x": 102,
+          "y": 172,
+          "width": 20,
+          "height": 14,
+          "rotation": 0,
+          "visible": true
+        },
+        {
+          "id": 11,
+          "name": "plant",
+          "type": "bounds",
+          "x": 275,
+          "y": 114,
+          "width": 14,
+          "height": 12,
+          "rotation": 0,
+          "visible": true
+        }
+      ],
+      "opacity": 1,
+      "visible": false,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 18,
+      "name": "interaction-bounds",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "objects": [
+        {
+          "id": 12,
+          "name": "sofaVisual",
+          "type": "bounds",
+          "x": 126,
+          "y": 153,
+          "width": 80,
+          "height": 48,
+          "rotation": 0,
+          "visible": true
+        },
+        {
+          "id": 13,
+          "name": "televisionVisual",
+          "type": "bounds",
+          "x": 135,
+          "y": 55,
+          "width": 60,
+          "height": 64,
+          "rotation": 0,
+          "visible": true
+        },
+        {
+          "id": 14,
+          "name": "fireplaceVisual",
+          "type": "bounds",
+          "x": 34,
+          "y": 31,
+          "width": 76,
+          "height": 86,
+          "rotation": 0,
+          "visible": true
+        }
+      ],
+      "opacity": 1,
+      "visible": false,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 19,
+      "name": "anchors",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "objects": [
+        {
+          "id": 15,
+          "name": "door",
+          "type": "anchor",
+          "x": 272,
+          "y": 218,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 16,
+          "name": "fireplace",
+          "type": "anchor",
+          "x": 73,
+          "y": 126,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 17,
+          "name": "tv",
+          "type": "anchor",
+          "x": 165,
+          "y": 130,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 18,
+          "name": "fire",
+          "type": "anchor",
+          "x": 59,
+          "y": 74,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 19,
+          "name": "tvScreen",
+          "type": "anchor",
+          "x": 148,
+          "y": 70,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 20,
+          "name": "seat-0",
+          "type": "anchor",
+          "x": 151,
+          "y": 179,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 21,
+          "name": "seat-1",
+          "type": "anchor",
+          "x": 178,
+          "y": 179,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 22,
+          "name": "stand-0",
+          "type": "anchor",
+          "x": 151,
+          "y": 211,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 23,
+          "name": "stand-1",
+          "type": "anchor",
+          "x": 178,
+          "y": 211,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        }
+      ],
+      "opacity": 1,
+      "visible": false,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "properties": [
+    {
+      "name": "runtimeVersion",
+      "type": "string",
+      "value": "home02-visual02-v1"
+    },
+    {
+      "name": "artVersion",
+      "type": "string",
+      "value": "art-v2.1.0"
+    }
+  ]
+}

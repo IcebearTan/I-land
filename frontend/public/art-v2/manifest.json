@@ -1,0 +1,3013 @@
+{
+  "version": "art-v2.1.0",
+  "round": "visual-02",
+  "status": "assets-prepared-not-runtime-verified",
+  "scale": {
+    "tile": 16,
+    "characterVisibleHeight": 24,
+    "frame": [
+      32,
+      32
+    ],
+    "footAnchor": [
+      16,
+      29
+    ],
+    "origin": [
+      0.5,
+      0.90625
+    ],
+    "spriteScale": 1,
+    "cameraZoom": {
+      "mobile": 2,
+      "desktop": "integer 2..4, same across scenes"
+    },
+    "footCollisionCandidate": {
+      "width": 8,
+      "height": 4,
+      "offsetFromAnchor": [
+        -4,
+        -4
+      ],
+      "frameOffset": [
+        12,
+        25
+      ]
+    }
+  },
+  "atlases": {
+    "art-v2-characters": {
+      "png": "/art-v2/characters-atlas.png",
+      "json": "/art-v2/characters-atlas.json"
+    },
+    "art-v2-home": {
+      "png": "/art-v2/home-atlas.png",
+      "json": "/art-v2/home-atlas.json"
+    }
+  },
+  "characters": {
+    "bear-idle-down": {
+      "url": "/art-v2/characters/bear-idle-down.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-idle-down",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-down-0": {
+      "url": "/art-v2/characters/bear-walk-down-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-down-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-down-1": {
+      "url": "/art-v2/characters/bear-walk-down-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-down-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-down-2": {
+      "url": "/art-v2/characters/bear-walk-down-2.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-down-2",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-down-3": {
+      "url": "/art-v2/characters/bear-walk-down-3.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-down-3",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-sit-down": {
+      "url": "/art-v2/characters/bear-sit-down.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-sit-down",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        9,
+        26,
+        29
+      ],
+      "head_rect": [
+        7,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-idle-up": {
+      "url": "/art-v2/characters/bear-idle-up.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-idle-up",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-up-0": {
+      "url": "/art-v2/characters/bear-walk-up-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-up-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-up-1": {
+      "url": "/art-v2/characters/bear-walk-up-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-up-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-up-2": {
+      "url": "/art-v2/characters/bear-walk-up-2.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-up-2",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-up-3": {
+      "url": "/art-v2/characters/bear-walk-up-3.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-up-3",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-sit-up": {
+      "url": "/art-v2/characters/bear-sit-up.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-sit-up",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        9,
+        26,
+        29
+      ],
+      "head_rect": [
+        7,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-idle-right": {
+      "url": "/art-v2/characters/bear-idle-right.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-idle-right",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-right-0": {
+      "url": "/art-v2/characters/bear-walk-right-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-right-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-right-1": {
+      "url": "/art-v2/characters/bear-walk-right-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-right-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-right-2": {
+      "url": "/art-v2/characters/bear-walk-right-2.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-right-2",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-right-3": {
+      "url": "/art-v2/characters/bear-walk-right-3.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-right-3",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-sit-right": {
+      "url": "/art-v2/characters/bear-sit-right.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-sit-right",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        9,
+        26,
+        29
+      ],
+      "head_rect": [
+        7,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-idle-left": {
+      "url": "/art-v2/characters/bear-idle-left.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-idle-left",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        8,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-left-0": {
+      "url": "/art-v2/characters/bear-walk-left-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-left-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        8,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-left-1": {
+      "url": "/art-v2/characters/bear-walk-left-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-left-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        8,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-left-2": {
+      "url": "/art-v2/characters/bear-walk-left-2.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-left-2",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        8,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-walk-left-3": {
+      "url": "/art-v2/characters/bear-walk-left-3.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-walk-left-3",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        8,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-sit-left": {
+      "url": "/art-v2/characters/bear-sit-left.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-sit-left",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        9,
+        26,
+        29
+      ],
+      "head_rect": [
+        8,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-lean-left-0": {
+      "url": "/art-v2/characters/bear-lean-left-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-lean-left-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        9,
+        26,
+        29
+      ],
+      "head_rect": [
+        6,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-lean-left-1": {
+      "url": "/art-v2/characters/bear-lean-left-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-lean-left-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        6,
+        9,
+        26,
+        29
+      ],
+      "head_rect": [
+        4,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-lean-right-0": {
+      "url": "/art-v2/characters/bear-lean-right-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-lean-right-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        9,
+        26,
+        29
+      ],
+      "head_rect": [
+        8,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "bear-lean-right-1": {
+      "url": "/art-v2/characters/bear-lean-right-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "bear-lean-right-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        9,
+        26,
+        29
+      ],
+      "head_rect": [
+        10,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-idle-down": {
+      "url": "/art-v2/characters/her-idle-down.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-idle-down",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-down-0": {
+      "url": "/art-v2/characters/her-walk-down-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-down-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-down-1": {
+      "url": "/art-v2/characters/her-walk-down-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-down-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-down-2": {
+      "url": "/art-v2/characters/her-walk-down-2.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-down-2",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-down-3": {
+      "url": "/art-v2/characters/her-walk-down-3.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-down-3",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-sit-down": {
+      "url": "/art-v2/characters/her-sit-down.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-sit-down",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        9,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-idle-up": {
+      "url": "/art-v2/characters/her-idle-up.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-idle-up",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-up-0": {
+      "url": "/art-v2/characters/her-walk-up-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-up-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-up-1": {
+      "url": "/art-v2/characters/her-walk-up-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-up-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-up-2": {
+      "url": "/art-v2/characters/her-walk-up-2.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-up-2",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-up-3": {
+      "url": "/art-v2/characters/her-walk-up-3.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-up-3",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-sit-up": {
+      "url": "/art-v2/characters/her-sit-up.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-sit-up",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        9,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-idle-right": {
+      "url": "/art-v2/characters/her-idle-right.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-idle-right",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-right-0": {
+      "url": "/art-v2/characters/her-walk-right-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-right-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-right-1": {
+      "url": "/art-v2/characters/her-walk-right-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-right-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-right-2": {
+      "url": "/art-v2/characters/her-walk-right-2.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-right-2",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-right-3": {
+      "url": "/art-v2/characters/her-walk-right-3.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-right-3",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "head_rect": [
+        7,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-sit-right": {
+      "url": "/art-v2/characters/her-sit-right.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-sit-right",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        9,
+        25,
+        29
+      ],
+      "head_rect": [
+        7,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-idle-left": {
+      "url": "/art-v2/characters/her-idle-left.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-idle-left",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "head_rect": [
+        8,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-left-0": {
+      "url": "/art-v2/characters/her-walk-left-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-left-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "head_rect": [
+        8,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-left-1": {
+      "url": "/art-v2/characters/her-walk-left-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-left-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "head_rect": [
+        8,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-left-2": {
+      "url": "/art-v2/characters/her-walk-left-2.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-left-2",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "head_rect": [
+        8,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-walk-left-3": {
+      "url": "/art-v2/characters/her-walk-left-3.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-walk-left-3",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "head_rect": [
+        8,
+        5,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-sit-left": {
+      "url": "/art-v2/characters/her-sit-left.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-sit-left",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        9,
+        25,
+        29
+      ],
+      "head_rect": [
+        8,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-lean-left-0": {
+      "url": "/art-v2/characters/her-lean-left-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-lean-left-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        9,
+        25,
+        29
+      ],
+      "head_rect": [
+        6,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-lean-left-1": {
+      "url": "/art-v2/characters/her-lean-left-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-lean-left-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        6,
+        9,
+        25,
+        29
+      ],
+      "head_rect": [
+        4,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-lean-right-0": {
+      "url": "/art-v2/characters/her-lean-right-0.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-lean-right-0",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        9,
+        25,
+        29
+      ],
+      "head_rect": [
+        8,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    },
+    "her-lean-right-1": {
+      "url": "/art-v2/characters/her-lean-right-1.png",
+      "atlas": "art-v2-characters",
+      "frame": "her-lean-right-1",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        9,
+        26,
+        29
+      ],
+      "head_rect": [
+        10,
+        9,
+        18,
+        12
+      ],
+      "foot_anchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ]
+    }
+  },
+  "animations": {
+    "bear-walk-down": {
+      "frames": [
+        "bear-walk-down-0",
+        "bear-walk-down-1",
+        "bear-walk-down-2",
+        "bear-walk-down-3"
+      ],
+      "frameRate": 7,
+      "repeat": -1,
+      "reducedMotionFrame": "bear-idle-down"
+    },
+    "bear-walk-up": {
+      "frames": [
+        "bear-walk-up-0",
+        "bear-walk-up-1",
+        "bear-walk-up-2",
+        "bear-walk-up-3"
+      ],
+      "frameRate": 7,
+      "repeat": -1,
+      "reducedMotionFrame": "bear-idle-up"
+    },
+    "bear-walk-right": {
+      "frames": [
+        "bear-walk-right-0",
+        "bear-walk-right-1",
+        "bear-walk-right-2",
+        "bear-walk-right-3"
+      ],
+      "frameRate": 7,
+      "repeat": -1,
+      "reducedMotionFrame": "bear-idle-right"
+    },
+    "bear-walk-left": {
+      "frames": [
+        "bear-walk-left-0",
+        "bear-walk-left-1",
+        "bear-walk-left-2",
+        "bear-walk-left-3"
+      ],
+      "frameRate": 7,
+      "repeat": -1,
+      "reducedMotionFrame": "bear-idle-left"
+    },
+    "bear-lean-left": {
+      "frames": [
+        "bear-lean-left-0",
+        "bear-lean-left-1"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionFrame": "bear-lean-left-1"
+    },
+    "bear-lean-right": {
+      "frames": [
+        "bear-lean-right-0",
+        "bear-lean-right-1"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionFrame": "bear-lean-right-1"
+    },
+    "her-walk-down": {
+      "frames": [
+        "her-walk-down-0",
+        "her-walk-down-1",
+        "her-walk-down-2",
+        "her-walk-down-3"
+      ],
+      "frameRate": 7,
+      "repeat": -1,
+      "reducedMotionFrame": "her-idle-down"
+    },
+    "her-walk-up": {
+      "frames": [
+        "her-walk-up-0",
+        "her-walk-up-1",
+        "her-walk-up-2",
+        "her-walk-up-3"
+      ],
+      "frameRate": 7,
+      "repeat": -1,
+      "reducedMotionFrame": "her-idle-up"
+    },
+    "her-walk-right": {
+      "frames": [
+        "her-walk-right-0",
+        "her-walk-right-1",
+        "her-walk-right-2",
+        "her-walk-right-3"
+      ],
+      "frameRate": 7,
+      "repeat": -1,
+      "reducedMotionFrame": "her-idle-right"
+    },
+    "her-walk-left": {
+      "frames": [
+        "her-walk-left-0",
+        "her-walk-left-1",
+        "her-walk-left-2",
+        "her-walk-left-3"
+      ],
+      "frameRate": 7,
+      "repeat": -1,
+      "reducedMotionFrame": "her-idle-left"
+    },
+    "her-lean-left": {
+      "frames": [
+        "her-lean-left-0",
+        "her-lean-left-1"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionFrame": "her-lean-left-1"
+    },
+    "her-lean-right": {
+      "frames": [
+        "her-lean-right-0",
+        "her-lean-right-1"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionFrame": "her-lean-right-1"
+    }
+  },
+  "home": {
+    "shell-day": {
+      "url": "/art-v2/home/shell-day.png",
+      "atlas": "art-v2-home",
+      "frame": "shell-day",
+      "size": [
+        320,
+        240
+      ],
+      "visibleBBox": [
+        0,
+        0,
+        320,
+        240
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        0,
+        0
+      ]
+    },
+    "shell-night": {
+      "url": "/art-v2/home/shell-night.png",
+      "atlas": "art-v2-home",
+      "frame": "shell-night",
+      "size": [
+        320,
+        240
+      ],
+      "visibleBBox": [
+        0,
+        0,
+        320,
+        240
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        0,
+        0
+      ]
+    },
+    "fireplace-day": {
+      "url": "/art-v2/home/fireplace-day.png",
+      "atlas": "art-v2-home",
+      "frame": "fireplace-day",
+      "size": [
+        76,
+        86
+      ],
+      "visibleBBox": [
+        9,
+        2,
+        69,
+        81
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        34,
+        31
+      ]
+    },
+    "fireplace-night": {
+      "url": "/art-v2/home/fireplace-night.png",
+      "atlas": "art-v2-home",
+      "frame": "fireplace-night",
+      "size": [
+        76,
+        86
+      ],
+      "visibleBBox": [
+        9,
+        2,
+        69,
+        81
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        34,
+        31
+      ]
+    },
+    "tv-case-day": {
+      "url": "/art-v2/home/tv-case-day.png",
+      "atlas": "art-v2-home",
+      "frame": "tv-case-day",
+      "size": [
+        60,
+        64
+      ],
+      "visibleBBox": [
+        5,
+        2,
+        56,
+        63
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        135,
+        55
+      ]
+    },
+    "tv-case-night": {
+      "url": "/art-v2/home/tv-case-night.png",
+      "atlas": "art-v2-home",
+      "frame": "tv-case-night",
+      "size": [
+        60,
+        64
+      ],
+      "visibleBBox": [
+        5,
+        2,
+        56,
+        63
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        135,
+        55
+      ]
+    },
+    "tv-screen-day": {
+      "url": "/art-v2/home/tv-screen-day.png",
+      "atlas": "art-v2-home",
+      "frame": "tv-screen-day",
+      "size": [
+        27,
+        20
+      ],
+      "visibleBBox": [
+        0,
+        0,
+        27,
+        20
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        148,
+        70
+      ]
+    },
+    "tv-screen-night": {
+      "url": "/art-v2/home/tv-screen-night.png",
+      "atlas": "art-v2-home",
+      "frame": "tv-screen-night",
+      "size": [
+        27,
+        20
+      ],
+      "visibleBBox": [
+        0,
+        0,
+        27,
+        20
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        148,
+        70
+      ]
+    },
+    "tv-screen-off-day": {
+      "url": "/art-v2/home/tv-screen-off-day.png",
+      "atlas": "art-v2-home",
+      "frame": "tv-screen-off-day",
+      "size": [
+        27,
+        20
+      ],
+      "visibleBBox": [
+        0,
+        0,
+        27,
+        20
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        148,
+        70
+      ]
+    },
+    "tv-screen-off-night": {
+      "url": "/art-v2/home/tv-screen-off-night.png",
+      "atlas": "art-v2-home",
+      "frame": "tv-screen-off-night",
+      "size": [
+        27,
+        20
+      ],
+      "visibleBBox": [
+        0,
+        0,
+        27,
+        20
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        148,
+        70
+      ]
+    },
+    "window-frame-day": {
+      "url": "/art-v2/home/window-frame-day.png",
+      "atlas": "art-v2-home",
+      "frame": "window-frame-day",
+      "size": [
+        60,
+        74
+      ],
+      "visibleBBox": [
+        0,
+        1,
+        60,
+        69
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        231,
+        24
+      ]
+    },
+    "window-frame-night": {
+      "url": "/art-v2/home/window-frame-night.png",
+      "atlas": "art-v2-home",
+      "frame": "window-frame-night",
+      "size": [
+        60,
+        74
+      ],
+      "visibleBBox": [
+        0,
+        1,
+        60,
+        69
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        231,
+        24
+      ]
+    },
+    "window-view-day": {
+      "url": "/art-v2/home/window-view-day.png",
+      "atlas": "art-v2-home",
+      "frame": "window-view-day",
+      "size": [
+        39,
+        49
+      ],
+      "visibleBBox": [
+        0,
+        0,
+        39,
+        49
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        242,
+        36
+      ]
+    },
+    "window-view-night": {
+      "url": "/art-v2/home/window-view-night.png",
+      "atlas": "art-v2-home",
+      "frame": "window-view-night",
+      "size": [
+        39,
+        49
+      ],
+      "visibleBBox": [
+        0,
+        0,
+        39,
+        49
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        242,
+        36
+      ]
+    },
+    "rug-day": {
+      "url": "/art-v2/home/rug-day.png",
+      "atlas": "art-v2-home",
+      "frame": "rug-day",
+      "size": [
+        112,
+        68
+      ],
+      "visibleBBox": [
+        3,
+        0,
+        109,
+        67
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        112,
+        143
+      ]
+    },
+    "rug-night": {
+      "url": "/art-v2/home/rug-night.png",
+      "atlas": "art-v2-home",
+      "frame": "rug-night",
+      "size": [
+        112,
+        68
+      ],
+      "visibleBBox": [
+        3,
+        0,
+        109,
+        67
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        112,
+        143
+      ]
+    },
+    "sofa-base-day": {
+      "url": "/art-v2/home/sofa-base-day.png",
+      "atlas": "art-v2-home",
+      "frame": "sofa-base-day",
+      "size": [
+        80,
+        48
+      ],
+      "visibleBBox": [
+        2,
+        5,
+        77,
+        48
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        126,
+        153
+      ]
+    },
+    "sofa-base-night": {
+      "url": "/art-v2/home/sofa-base-night.png",
+      "atlas": "art-v2-home",
+      "frame": "sofa-base-night",
+      "size": [
+        80,
+        48
+      ],
+      "visibleBBox": [
+        2,
+        5,
+        77,
+        48
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        126,
+        153
+      ]
+    },
+    "sofa-front-day": {
+      "url": "/art-v2/home/sofa-front-day.png",
+      "atlas": "art-v2-home",
+      "frame": "sofa-front-day",
+      "size": [
+        80,
+        48
+      ],
+      "visibleBBox": [
+        9,
+        9,
+        77,
+        43
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        126,
+        153
+      ]
+    },
+    "sofa-front-night": {
+      "url": "/art-v2/home/sofa-front-night.png",
+      "atlas": "art-v2-home",
+      "frame": "sofa-front-night",
+      "size": [
+        80,
+        48
+      ],
+      "visibleBBox": [
+        9,
+        9,
+        77,
+        43
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        126,
+        153
+      ]
+    },
+    "door-day": {
+      "url": "/art-v2/home/door-day.png",
+      "atlas": "art-v2-home",
+      "frame": "door-day",
+      "size": [
+        30,
+        40
+      ],
+      "visibleBBox": [
+        1,
+        2,
+        29,
+        40
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        0,
+        0
+      ]
+    },
+    "door-night": {
+      "url": "/art-v2/home/door-night.png",
+      "atlas": "art-v2-home",
+      "frame": "door-night",
+      "size": [
+        30,
+        40
+      ],
+      "visibleBBox": [
+        1,
+        2,
+        29,
+        40
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        0,
+        0
+      ]
+    },
+    "cup-cream-day": {
+      "url": "/art-v2/home/cup-cream-day.png",
+      "atlas": "art-v2-home",
+      "frame": "cup-cream-day",
+      "size": [
+        8,
+        8
+      ],
+      "visibleBBox": [
+        1,
+        2,
+        7,
+        7
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        107,
+        161
+      ]
+    },
+    "cup-cream-night": {
+      "url": "/art-v2/home/cup-cream-night.png",
+      "atlas": "art-v2-home",
+      "frame": "cup-cream-night",
+      "size": [
+        8,
+        8
+      ],
+      "visibleBBox": [
+        1,
+        2,
+        7,
+        7
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        107,
+        161
+      ]
+    },
+    "side-table-day": {
+      "url": "/art-v2/home/side-table-day.png",
+      "atlas": "art-v2-home",
+      "frame": "side-table-day",
+      "size": [
+        24,
+        25
+      ],
+      "visibleBBox": [
+        1,
+        5,
+        23,
+        25
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        100,
+        163
+      ]
+    },
+    "side-table-night": {
+      "url": "/art-v2/home/side-table-night.png",
+      "atlas": "art-v2-home",
+      "frame": "side-table-night",
+      "size": [
+        24,
+        25
+      ],
+      "visibleBBox": [
+        1,
+        5,
+        23,
+        25
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        100,
+        163
+      ]
+    },
+    "plant-day": {
+      "url": "/art-v2/home/plant-day.png",
+      "atlas": "art-v2-home",
+      "frame": "plant-day",
+      "size": [
+        24,
+        38
+      ],
+      "visibleBBox": [
+        1,
+        3,
+        24,
+        38
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        269,
+        91
+      ]
+    },
+    "plant-night": {
+      "url": "/art-v2/home/plant-night.png",
+      "atlas": "art-v2-home",
+      "frame": "plant-night",
+      "size": [
+        24,
+        38
+      ],
+      "visibleBBox": [
+        1,
+        3,
+        24,
+        38
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        269,
+        91
+      ]
+    },
+    "logs-day": {
+      "url": "/art-v2/home/logs-day.png",
+      "atlas": "art-v2-home",
+      "frame": "logs-day",
+      "size": [
+        24,
+        19
+      ],
+      "visibleBBox": [
+        1,
+        0,
+        24,
+        19
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        27,
+        108
+      ]
+    },
+    "logs-night": {
+      "url": "/art-v2/home/logs-night.png",
+      "atlas": "art-v2-home",
+      "frame": "logs-night",
+      "size": [
+        24,
+        19
+      ],
+      "visibleBBox": [
+        1,
+        0,
+        24,
+        19
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        27,
+        108
+      ]
+    },
+    "fire-0-day": {
+      "url": "/art-v2/home/fire-0-day.png",
+      "atlas": "art-v2-home",
+      "frame": "fire-0-day",
+      "size": [
+        28,
+        28
+      ],
+      "visibleBBox": [
+        3,
+        4,
+        26,
+        27
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        59,
+        74
+      ]
+    },
+    "fire-0-night": {
+      "url": "/art-v2/home/fire-0-night.png",
+      "atlas": "art-v2-home",
+      "frame": "fire-0-night",
+      "size": [
+        28,
+        28
+      ],
+      "visibleBBox": [
+        3,
+        4,
+        26,
+        27
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        59,
+        74
+      ]
+    },
+    "fire-1-day": {
+      "url": "/art-v2/home/fire-1-day.png",
+      "atlas": "art-v2-home",
+      "frame": "fire-1-day",
+      "size": [
+        28,
+        28
+      ],
+      "visibleBBox": [
+        3,
+        2,
+        26,
+        27
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        59,
+        74
+      ]
+    },
+    "fire-1-night": {
+      "url": "/art-v2/home/fire-1-night.png",
+      "atlas": "art-v2-home",
+      "frame": "fire-1-night",
+      "size": [
+        28,
+        28
+      ],
+      "visibleBBox": [
+        3,
+        2,
+        26,
+        27
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        59,
+        74
+      ]
+    },
+    "fire-2-day": {
+      "url": "/art-v2/home/fire-2-day.png",
+      "atlas": "art-v2-home",
+      "frame": "fire-2-day",
+      "size": [
+        28,
+        28
+      ],
+      "visibleBBox": [
+        3,
+        3,
+        26,
+        27
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        59,
+        74
+      ]
+    },
+    "fire-2-night": {
+      "url": "/art-v2/home/fire-2-night.png",
+      "atlas": "art-v2-home",
+      "frame": "fire-2-night",
+      "size": [
+        28,
+        28
+      ],
+      "visibleBBox": [
+        3,
+        3,
+        26,
+        27
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        59,
+        74
+      ]
+    },
+    "fire-3-day": {
+      "url": "/art-v2/home/fire-3-day.png",
+      "atlas": "art-v2-home",
+      "frame": "fire-3-day",
+      "size": [
+        28,
+        28
+      ],
+      "visibleBBox": [
+        3,
+        7,
+        26,
+        27
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        59,
+        74
+      ]
+    },
+    "fire-3-night": {
+      "url": "/art-v2/home/fire-3-night.png",
+      "atlas": "art-v2-home",
+      "frame": "fire-3-night",
+      "size": [
+        28,
+        28
+      ],
+      "visibleBBox": [
+        3,
+        7,
+        26,
+        27
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        59,
+        74
+      ]
+    },
+    "fireplace-shadow-day": {
+      "url": "/art-v2/home/fireplace-shadow-day.png",
+      "atlas": "art-v2-home",
+      "frame": "fireplace-shadow-day",
+      "size": [
+        76,
+        12
+      ],
+      "visibleBBox": [
+        2,
+        1,
+        75,
+        12
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        36,
+        108
+      ]
+    },
+    "fireplace-shadow-night": {
+      "url": "/art-v2/home/fireplace-shadow-night.png",
+      "atlas": "art-v2-home",
+      "frame": "fireplace-shadow-night",
+      "size": [
+        76,
+        12
+      ],
+      "visibleBBox": [
+        2,
+        1,
+        75,
+        12
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        36,
+        108
+      ]
+    },
+    "tv-shadow-day": {
+      "url": "/art-v2/home/tv-shadow-day.png",
+      "atlas": "art-v2-home",
+      "frame": "tv-shadow-day",
+      "size": [
+        60,
+        10
+      ],
+      "visibleBBox": [
+        2,
+        1,
+        59,
+        10
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        135,
+        111
+      ]
+    },
+    "tv-shadow-night": {
+      "url": "/art-v2/home/tv-shadow-night.png",
+      "atlas": "art-v2-home",
+      "frame": "tv-shadow-night",
+      "size": [
+        60,
+        10
+      ],
+      "visibleBBox": [
+        2,
+        1,
+        59,
+        10
+      ],
+      "origin": [
+        0,
+        0
+      ],
+      "sampleTopLeft": [
+        135,
+        111
+      ]
+    }
+  },
+  "poseBindings": {
+    "islandIdle": "{account}-idle-{direction}",
+    "islandWalk": "{account}-walk-{direction}",
+    "interiorSeated": "{account}-sit-up",
+    "seasideStanding": "{account}-idle-up",
+    "seasideArriving": "{account}-walk-up",
+    "seasideSeated": "{account}-sit-up",
+    "seasideLeaningBySeat": {
+      "0": "{account}-lean-right-1",
+      "1": "{account}-lean-left-1"
+    },
+    "portrait": "{account}-idle-down",
+    "legacyDirections": {
+      "front": "down",
+      "back": "up",
+      "side": "right"
+    }
+  },
+  "seaside": {
+    "seatOffsetsX": [
+      -12,
+      12
+    ],
+    "pairedLeaningOffsetsX": [
+      -9,
+      9
+    ],
+    "singleLeaningOffsetsX": [
+      -6,
+      6
+    ],
+    "standingOffsetY": 14,
+    "footAnchorSameAsEverywhere": true,
+    "leanDirectionMeansVisualDirectionNotSeatName": true
+  },
+  "homeLayout": {
+    "canvas": [
+      320,
+      240
+    ],
+    "walkable": [
+      20,
+      102,
+      280,
+      126
+    ],
+    "door": [
+      272,
+      218
+    ],
+    "doorOpening": [
+      252,
+      222,
+      40,
+      10
+    ],
+    "objects": [
+      {
+        "id": "fireplace",
+        "base": "fireplace",
+        "topLeft": [
+          34,
+          31
+        ],
+        "footprint": [
+          42,
+          103,
+          60,
+          14
+        ],
+        "interact": [
+          73,
+          126
+        ],
+        "depthY": 117
+      },
+      {
+        "id": "tv",
+        "base": "tv-case",
+        "screen": "tv-screen",
+        "topLeft": [
+          135,
+          55
+        ],
+        "screenTopLeft": [
+          148,
+          70
+        ],
+        "screenSize": [
+          27,
+          20
+        ],
+        "footprint": [
+          142,
+          99,
+          47,
+          19
+        ],
+        "interact": [
+          165,
+          130
+        ],
+        "depthY": 118
+      },
+      {
+        "id": "sofa",
+        "base": "sofa-base",
+        "foreground": "sofa-front",
+        "topLeft": [
+          126,
+          153
+        ],
+        "footprint": [
+          129,
+          166,
+          73,
+          33
+        ],
+        "seats": [
+          [
+            151,
+            179
+          ],
+          [
+            178,
+            179
+          ]
+        ],
+        "standPoints": [
+          [
+            151,
+            211
+          ],
+          [
+            178,
+            211
+          ]
+        ],
+        "depthY": 199,
+        "foregroundForSeatedOnly": true
+      },
+      {
+        "id": "window",
+        "base": "window-frame",
+        "content": "window-view",
+        "topLeft": [
+          231,
+          24
+        ],
+        "contentTopLeft": [
+          242,
+          36
+        ],
+        "footprint": null
+      },
+      {
+        "id": "rug",
+        "base": "rug",
+        "topLeft": [
+          112,
+          143
+        ],
+        "footprint": null
+      },
+      {
+        "id": "table",
+        "base": "side-table",
+        "topLeft": [
+          100,
+          163
+        ],
+        "footprint": [
+          102,
+          172,
+          20,
+          14
+        ],
+        "depthY": 186
+      },
+      {
+        "id": "plant",
+        "base": "plant",
+        "topLeft": [
+          269,
+          91
+        ],
+        "footprint": [
+          275,
+          114,
+          14,
+          12
+        ],
+        "depthY": 126
+      }
+    ],
+    "fire": {
+      "topLeft": [
+        59,
+        74
+      ],
+      "frames": [
+        "fire-0-day",
+        "fire-1-day",
+        "fire-2-day",
+        "fire-3-day"
+      ],
+      "frameRate": 5,
+      "reducedMotionFrame": "fire-0-day"
+    },
+    "staticPaintOrder": [
+      "shell",
+      "fireplace-shadow",
+      "tv-shadow",
+      "window-view",
+      "window-frame",
+      "fireplace",
+      "tv-screen",
+      "tv-case",
+      "logs",
+      "plant",
+      "rug",
+      "sofa-base",
+      "side-table",
+      "cup-cream",
+      "fire"
+    ],
+    "dynamicPaintOrder": [
+      "floor-and-shadows",
+      "furniture-and-actors-by-footY",
+      "sofa-front-over-seated-actors"
+    ],
+    "allFootprintsAreProposals": true,
+    "demoActorsIncluded": false
+  },
+  "doorAsset": {
+    "key": "door-day",
+    "opening": [
+      4,
+      5,
+      22,
+      32
+    ],
+    "note": "For targeted cottage aperture replacement; existing building must be adapted by integrator, not overlaid blindly."
+  },
+  "source": "Original integer pixel drawing, derived from ART-01 palette/material grammar. No third-party downloaded art."
+}

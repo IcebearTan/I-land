@@ -1,0 +1,221 @@
+{
+  "version": "art-v2.1.0",
+  "round": "visual-02",
+  "status": "passed",
+  "categories": 27,
+  "characterFrames": 56,
+  "homeFrames": 42,
+  "atlasSizes": {
+    "characters": [
+      1024,
+      80
+    ],
+    "home": [
+      1024,
+      368
+    ]
+  },
+  "checks": [
+    {
+      "name": "56 complete character frames",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "one 32×32 frame / fixed origin for every scene",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "characters: declared dimensions and visible bbox",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "characters: binary alpha / no antialias fringes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all character frames have clear border",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "home: declared dimensions and visible bbox",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "home: binary alpha / no antialias fringes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all four standing directions are 24 visible pixels",
+      "passed": true,
+      "detail": {
+        "bear": {
+          "down": 24,
+          "up": 24,
+          "right": 24,
+          "left": 24
+        },
+        "her": {
+          "down": 24,
+          "up": 24,
+          "right": 24,
+          "left": 24
+        }
+      }
+    },
+    {
+      "name": "standing/sitting/walking/leaning share exact same-direction head pixels",
+      "passed": true,
+      "detail": {
+        "bear-down": [
+          2,
+          0,
+          16,
+          10
+        ],
+        "bear-up": [
+          2,
+          0,
+          16,
+          10
+        ],
+        "bear-right": [
+          3,
+          0,
+          16,
+          10
+        ],
+        "bear-left": [
+          2,
+          0,
+          15,
+          10
+        ],
+        "her-down": [
+          2,
+          0,
+          16,
+          11
+        ],
+        "her-up": [
+          2,
+          0,
+          16,
+          11
+        ],
+        "her-right": [
+          2,
+          0,
+          16,
+          11
+        ],
+        "her-left": [
+          2,
+          0,
+          16,
+          11
+        ]
+      }
+    },
+    {
+      "name": "four distinct walk frames for both identities and four directions",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "animation frame references and reduced-motion states exist",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "front-only cat eyes are absent from her back and leaning frames",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "characters atlas: exactly declared frame set",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "characters atlas: untrimmed unrotated crops equal individual PNGs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "characters atlas: 1px edge extrusion exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "characters atlas: 2px guards within bounds and non-overlapping",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "home atlas: exactly declared frame set",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "home atlas: untrimmed unrotated crops equal individual PNGs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "home atlas: 1px edge extrusion exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "home atlas: 2px guards within bounds and non-overlapping",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "makeTexture / DOM pure-data frames reconstruct PNGs exactly",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "day/night furniture geometry stays identical",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "CRT screen and window view are genuine separate alpha holes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all four fire keyframes are distinct",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no runtime preview or demo actor layer exists",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "layout exit preserves current room doorway",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "original ART-01 master is not a write target",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "limits": [
+    "Static assets only; no browser, device, actual room-member or collision validation.",
+    "Door/camera/screen/native-channel integration must be completed by HOME-02."
+  ]
+}

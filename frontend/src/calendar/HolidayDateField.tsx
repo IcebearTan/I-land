@@ -21,10 +21,12 @@ export function HolidayDateField({ value, onChange }: { value: string; onChange:
     </div>
     {expanded && <div id={`${id}-picker`} className="date-mini" role="group" aria-label="选择节日日期">
       <div className="date-mini-heading"><button type="button" aria-label="日期选择上个月" disabled={month <= '1900-01-01'} onClick={() => setMonth(shiftMonth(month, -1))}>‹</button><strong>{year} 年 {number} 月</strong><button type="button" aria-label="日期选择下个月" disabled={month >= '2199-12-01'} onClick={() => setMonth(shiftMonth(month, 1))}>›</button></div>
+      <div className="date-mini-scroll" role="region" aria-label="日期表，可左右滑动" tabIndex={0}>
       <div className="date-mini-week" aria-hidden="true">{['一', '二', '三', '四', '五', '六', '日'].map(day => <span key={day}>{day}</span>)}</div>
       <div className="date-mini-grid">{monthCells(month).map(key => <button key={key} type="button" aria-label={`选择 ${key}`} aria-pressed={key === value} disabled={!validDate(key)} className={key.slice(0, 7) !== month.slice(0, 7) ? 'date-mini-outside' : ''} onClick={() => pick(key)}>{dateParts(key)[2]}</button>)}</div>
+      </div>
       <button className="text-button" type="button" onClick={() => pick(localDateKey())}>选择今天</button>
-      <small>远一点的日子，也可以直接输入 YYYY-MM-DD。</small>
+      <small>小挂历可左右滑动，也可以直接输入 YYYY-MM-DD。</small>
     </div>}
   </div>
 }

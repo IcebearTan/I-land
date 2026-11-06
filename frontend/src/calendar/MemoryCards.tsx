@@ -30,7 +30,7 @@ export function MemoryCards({ memories, busy, onDelete, onEdit, onOpenPhoto }: C
           <h4>{memoryTitle(memory)}</h4>
           {memory.description && <p>{memory.description}</p>}
           <div className="memory-card-meta">
-            <span className="memory-card-author"><CharacterPortrait character={memory.created_by === 'her' ? 'her' : 'bear'} size={22} />{islanderName(memory.created_by)}记下</span>
+            <span className="memory-card-author"><CharacterPortrait character={memory.created_by === 'her' ? 'her' : 'bear'} size={22} /><span>{islanderName(memory.created_by)}记下</span></span>
             {memory.mood && <span aria-label={`心情 ${memory.mood}`}>{memory.mood}</span>}
             {weather && <span aria-label={`天气 ${weather.label}`}>{weather.icon}{memory.weather.note ? ` ${memory.weather.note}` : ''}</span>}
             {memory.location && <span>📍 {memory.location}</span>}

@@ -7,8 +7,9 @@ const transpile = code => ts.transpileModule(code, { compilerOptions: { module: 
 const compile = path => transpile(fs.readFileSync(new URL(path, import.meta.url), 'utf8'));
 const url = code => 'data:text/javascript;base64,' + Buffer.from(code).toString('base64');
 const audioUrl = url(compile('../src/audio/types.ts')), navigationUrl = url(compile('../src/interior/navigation.ts')), charactersUrl = url(compile('../src/characters.ts'));
-const artSource = fs.readFileSync(new URL('../src/game/art/interior.ts', import.meta.url), 'utf8');
-const { HOME_LAYOUT } = await import(url(transpile(artSource.slice(artSource.indexOf('export const HOME_LAYOUT'), artSource.indexOf('const C =')))));
+const mapText = fs.readFileSync(new URL('../public/art-v2/home-room.tmj', import.meta.url), 'utf8');
+const mapCode = compile('../src/interior/layout.ts').replace(/import tiledRoom from ['"][^'"]+['"];?/, `const tiledRoom = ${JSON.stringify(mapText)};`);
+const { HOME_LAYOUT } = await import(url(mapCode));
 const bus = new EventEmitter(), RealDate = Date, baseRealMs = RealDate.parse('2026-10-02T14:00:00.000Z');
 let realNow = baseRealMs;
 class FixedDate extends RealDate {
@@ -52,12 +53,13 @@ class DisplayObject extends EventEmitter {
     alpha = 1;
     width = 0;
     constructor(kind, x = 0, y = 0, texture = '') { super(); Object.assign(this, { kind, x, y, texture }); this.textures = [texture]; }
+    setScale(value) { this.scaleX = this.scaleY = value; return this; }
     setOrigin(...value) { this.origin = value; return this; }
     setDepth(value) { this.depth = value; return this; }
     setVisible(value) { this.visible = value; return this; }
     setAlpha(value) { this.alpha = value; return this; }
     setPosition(x, y) { this.x = x; this.y = y; return this; }
-    setTexture(texture) { this.texture = texture; this.textures.push(texture); return this; }
+    setTexture(texture, frame) { this.texture = frame ?? texture; this.textures.push(this.texture); return this; }
     setFlipX(value) { this.flipX = value; return this; }
     setText(text) { this.text = text; this.width = text.length * 8; return this; }
     setInteractive() { this.interactive = true; return this; }
@@ -87,7 +89,7 @@ class Scene {
         this.input.keyboard = new Keyboard();
         this.objects = [];
         const add = (kind, x, y, key) => { const item = new DisplayObject(kind, x, y, key); this.objects.push(item); return item; };
-        this.add = { image: (x, y, key) => add('image', x, y, key), sprite: (x, y, key) => add('sprite', x, y, key), ellipse: (x, y) => add('ellipse', x, y), graphics: () => add('graphics'), text: (x, y, text) => add('text', x, y).setText(text), zone: (x, y) => add('zone', x, y), container: (x, y, children) => { const item = add('container', x, y); item.children = children; return item; } };
+        this.add = { image: (x, y, key, frame) => add('image', x, y, frame ?? key), sprite: (x, y, key, frame) => add('sprite', x, y, frame ?? key), ellipse: (x, y) => add('ellipse', x, y), graphics: () => add('graphics'), text: (x, y, text) => add('text', x, y).setText(text), zone: (x, y) => add('zone', x, y), container: (x, y, children) => { const item = add('container', x, y); item.children = children; return item; } };
         this.cameras = { main: { zoom: 1, center: [], fades: [], setBackgroundColor(color) { this.background = color; return this; }, setZoom(zoom) { this.zoom = zoom; return this; }, centerOn(...point) { this.center = point; return this; }, getWorldPoint(x, y) { return { x, y }; }, fadeIn(duration) { this.fades.push(duration); } } };
         this.tweens = { items: [], add: config => {
                 const initialAlpha = config.targets.alpha;
@@ -112,7 +114,51 @@ globalThis.__homeTestBus = bus;
 globalThis.__homeTestPhaser = { Scene, Math: { Clamp: (value, min, max) => Math.max(min, Math.min(max, value)) }, Scenes: { Events: { SHUTDOWN: 'shutdown', DESTROY: 'destroy' } } };
 globalThis.__homeTestArt = { HOME_LAYOUT, createInteriorArt: scene => { scene.artCreates = (scene.artCreates ?? 0) + 1; }, paintInteriorBackdrop: (scene, hour) => scene.backdrops.push(hour), paintInteriorTV: (scene, ...args) => scene.programs.push(args) };
 globalThis.__homeTestTexture = (scene, key) => scene.textureCreates.push(key);
+const clients = [];
+const member = (account, seat = null) => ({ user_id: account === 'bear' ? 1 : 2, account, sprite: account, display: account, seat, pose: seat === null ? 'standing' : 'seated' });
+class MockHomeClient {
+    constructor(options) {
+        this.options = options; this.autoConfirm = true; this.requests = []; this.disposals = 0;
+        this.snapshot = { room: 'interior', epoch: 'test-home', revision: 1, server_now_ms: realNow,
+            television: { powered: false, channel: 0, position_ms: 0, anchor_utc_ms: realNow, version: 1, changed_by: null },
+            members: [member(options.account)] };
+        clients.push(this);
+    }
+    deliver() { this.options.onStatus({ state: 'connected', pending: false, snapshot: this.snapshot }); this.options.onSnapshot(this.snapshot, { receivedMonoMs: performance.now() }); }
+    start() { this.deliver(); }
+    setSeat(seat) {
+        this.requests.push({ seat });
+        if (this.autoConfirm) { this.snapshot = { ...this.snapshot, revision: this.snapshot.revision + 1, members: this.snapshot.members.map(m => m.account === this.options.account ? member(m.account, seat) : m) }; this.deliver(); }
+        return Promise.resolve(this.autoConfirm);
+    }
+    setTelevision(action) {
+        this.requests.push({ action });
+        if (this.autoConfirm) {
+            const tv = this.snapshot.television;
+            this.snapshot = { ...this.snapshot, revision: this.snapshot.revision + 1, television: { ...tv, version: tv.version + 1,
+                powered: action === 'toggle' ? !tv.powered : tv.powered, channel: action === 'next' ? (tv.channel + 1) % 3 : tv.channel } };
+            this.deliver();
+        }
+        return Promise.resolve(this.autoConfirm);
+    }
+    status(state) { this.options.onStatus({ state, pending: false }); }
+    retry() { this.retries = (this.retries ?? 0) + 1; }
+    dispose() { if (!this.disposals) this.disposals++; }
+}
+class MockProgramClock {
+    update(snapshot) { this.tv = snapshot.television; this.anchor = realNow; }
+    read() { return this.tv?.powered ? this.tv.position_ms + realNow - this.anchor : this.tv?.position_ms ?? 0; }
+}
+globalThis.__homeTestRoom = { HomeRoomClient: MockHomeClient, SharedProgramClock: MockProgramClock };
+
+const textUrl = url(compile('../src/visual/screenText.ts'));
+const v2Url = url(compile('../src/visual/artV2.ts'));
+const layoutUrl = url(compile('../src/visual/layout.ts'));
 const source = compile('../src/game/scenes/InteriorScene.ts')
+  .replace(/from ['"]\.\.\/\.\.\/visual\/layout['"]/, `from '${layoutUrl}'`)
+    .replace(/from ['"]\.\.\/\.\.\/visual\/artV2['"]/, `from '${v2Url}'`)
+    .replace(/from ['"]\.\.\/\.\.\/visual\/screenText['"]/, `from '${textUrl}'`)
+    .replace(/import \{ HomeRoomClient, SharedProgramClock \} from ['"]\.\.\/\.\.\/interior\/room['"];?/, 'const { HomeRoomClient, SharedProgramClock } = globalThis.__homeTestRoom;')
     .replace(/import Phaser from ['"]phaser['"];?/, 'const Phaser = globalThis.__homeTestPhaser;')
     .replace(/import \{ eventBus \} from ['"]\.\.\/EventBus['"];?/, 'const eventBus = globalThis.__homeTestBus;')
     .replace(/import \{([^}]+)\} from ['"]\.\.\/art\/interior['"];?/, 'const {$1} = globalThis.__homeTestArt;')
@@ -149,13 +195,13 @@ function setup({ reduce = false, identity = { character: 'bear', display: '小�
             item.destroy(); }; // Phaser 管理显示列表的 shutdown。
     const destroy = () => { shutdown(); scene.events.emit('destroy'); for (const [name, listener] of observers)
         bus.off(name, listener); };
-    return { scene, states, contexts, ready, days, travels, settings, actor, advance, complete, click, seat, shutdown, destroy };
+    return { scene, client: clients.at(-1), states, contexts, ready, days, travels, settings, actor, advance, complete, click, seat, shutdown, destroy };
 }
-test('local interior creates only the selected person and starts with television off', () => {
+test('interior starts from the server snapshot and does not invent a companion', () => {
     const t = setup({ reduce: true, identity: { character: 'her', display: '小青', account: 'her' } });
     try {
         assert.equal(t.scene.objects.filter(item => item.kind === 'sprite').length, 1);
-        assert.equal(t.actor().texture, 'islander-her-front');
+        assert.equal(t.actor().texture, 'her-idle-down');
         assert.deepEqual(t.ready, [{ scene: 'interior', identity: { character: 'her', display: '小青', account: 'her' } }]);
         assert.equal(t.states.at(-1).pose, 'walking');
         assert.equal(t.states.at(-1).seat, null);
@@ -163,7 +209,7 @@ test('local interior creates only the selected person and starts with television
         assert.equal(t.states.at(-1).channel, 0);
         assert.equal(t.states.at(-1).companion, undefined);
         bus.emit('IDENTITY_CHANGED', { character: 'bear', display: '熊', account: 'bear' });
-        assert.equal(t.actor().texture, 'islander-bear-front');
+        assert.equal(t.actor().texture, 'bear-idle-down');
         assert.equal(t.scene.objects.filter(item => item.kind === 'sprite').length, 1);
         assert.equal(t.settings.length, 0);
     }
@@ -180,7 +226,7 @@ test('sofa arrival, sitting and standing use dedicated poses and safe points wit
         t.complete();
         assert.equal(t.states.at(-1).pose, 'seated');
         assert.equal(t.states.at(-1).seat, 1);
-        assert.equal(t.actor().texture, 'home-bear-seated');
+        assert.equal(t.actor().texture, 'bear-sit-up');
         assert.deepEqual(point(t.actor()), HOME_LAYOUT.seats[1]);
         bus.emit('MOVE_INPUT', { x: 1, y: 0 });
         t.advance(80);
@@ -189,7 +235,7 @@ test('sofa arrival, sitting and standing use dedicated poses and safe points wit
         t.complete();
         assert.equal(t.states.at(-1).pose, 'walking');
         assert.equal(t.states.at(-1).seat, null);
-        assert.equal(t.actor().texture, 'islander-bear-front');
+        assert.equal(t.actor().texture, 'bear-idle-down');
         assert.deepEqual(point(t.actor()), HOME_LAYOUT.standPoints[1]);
         t.advance(80);
         assert.deepEqual(point(t.actor()), HOME_LAYOUT.standPoints[1]);
@@ -198,7 +244,7 @@ test('sofa arrival, sitting and standing use dedicated poses and safe points wit
         t.destroy();
     }
 });
-test('panel opened during sitting cancels to safe floor and closing does not restore pending keys or actions', () => {
+test('panel opened during sitting finishes the confirmed seat and closing does not restore pending keys or actions', () => {
     const t = setup();
     try {
         t.seat();
@@ -207,8 +253,8 @@ test('panel opened during sitting cancels to safe floor and closing does not res
         bus.emit('PANEL_OPENED', { panel: 'settings' });
         assert.equal(arrival.stopped, true);
         assert.equal(t.scene.input.keyboard.enabled, false);
-        assert.deepEqual(point(t.actor()), HOME_LAYOUT.standPoints[0]);
-        assert.equal(t.states.at(-1).pose, 'walking');
+        assert.deepEqual(point(t.actor()), HOME_LAYOUT.seats[0]);
+        assert.equal(t.states.at(-1).pose, 'seated');
         const count = t.states.length;
         bus.emit('INTERIOR_ACTION', { action: 'tv-toggle' });
         bus.emit('INTERACT', {});
@@ -222,7 +268,7 @@ test('panel opened during sitting cancels to safe floor and closing does not res
         t.advance(80);
         assert.equal(t.scene.input.keyboard.enabled, true);
         assert.equal(t.scene.input.keyboard.captured, false);
-        assert.deepEqual(point(t.actor()), HOME_LAYOUT.standPoints[0]);
+        assert.deepEqual(point(t.actor()), HOME_LAYOUT.seats[0]);
         assert.equal(t.states.at(-1).television, false);
     }
     finally {
@@ -242,14 +288,16 @@ test('blur and visibility cancel old movement and sitting without late animation
         const arrival = t.scene.tweens.items.at(-1);
         document.hidden = true;
         document.dispatchEvent(new Event('visibilitychange'));
+        t.client.status('away');
         assert.equal(arrival.stopped, true);
         assert.equal(t.states.at(-1).pose, 'walking');
         const count = t.states.length;
         arrival.lateComplete();
+        assert.equal(t.states.length, count);
         document.hidden = false;
         document.dispatchEvent(new Event('visibilitychange'));
         t.advance(80);
-        assert.equal(t.states.length, count);
+        assert.equal(t.states.at(-1).pose, 'walking');
         assert.deepEqual(point(t.actor()), HOME_LAYOUT.standPoints[0]);
     }
     finally {
@@ -263,7 +311,7 @@ test('interrupting a stand clears its progress notice and lands safely for eithe
             t.seat(seat); t.complete();
             bus.emit('INTERIOR_ACTION', { action: 'stand' });
             const motion = t.scene.tweens.items.at(-1);
-            assert.equal(t.states.at(-1).notice, '慢慢起身…');
+            assert.equal(t.states.at(-1).pose, 'approaching');
             if (interrupt === 'blur') t.scene.game.events.emit('blur');
             else if (interrupt === 'panel') bus.emit('PANEL_OPENED', { panel: 'settings' });
             else bus.emit('MOVE_INPUT', { x: 1, y: 0 });
@@ -282,7 +330,7 @@ test('clicking clear floor from either seat stands first then routes around the 
         const t = setup();
         try {
             t.seat(seat); t.complete();
-            const target = { x: HOME_LAYOUT.seats[seat].x, y: HOME_LAYOUT.sofa.y - 12 };
+            const target = { x: HOME_LAYOUT.seats[seat].x, y: HOME_LAYOUT.sofaVisual.y - 12 };
             t.click(target);
             assert.equal(t.states.at(-1).pose, 'approaching');
             assert.deepEqual(point(t.actor()), HOME_LAYOUT.seats[seat]);
@@ -337,38 +385,33 @@ test('reduced motion skips sofa/TV tweens and changing the preference ends the c
         active.destroy();
     }
 });
-test('TV transitions can be interrupted without stale rendering, extra players or changing personal audio preferences', () => {
-    const t = setup();
+test('TV and seats change only after server confirmation and preserve personal audio', () => {
+    const t = setup({ reduce: true });
     try {
-        t.seat();
-        t.complete();
-        bus.emit('INTERIOR_ACTION', { action: 'tv-next' });
-        assert.equal(t.states.at(-1).channel, 0);
+        t.actor().setPosition(HOME_LAYOUT.tv.x, HOME_LAYOUT.tv.y);
+        t.client.autoConfirm = false;
         bus.emit('INTERIOR_ACTION', { action: 'tv-toggle' });
-        const turnOn = t.scene.tweens.items.at(-1);
-        assert.equal(t.states.at(-1).television, true);
-        assert.equal(turnOn.config.duration, 400);
-        bus.emit('INTERIOR_ACTION', { action: 'tv-next' });
-        assert.equal(turnOn.stopped, true);
-        assert.equal(t.states.at(-1).channel, 1);
-        const change = t.scene.tweens.items.at(-1);
-        change.yoyo();
-        assert.equal(t.scene.programs.at(-1)[0], 1);
-        bus.emit('INTERIOR_ACTION', { action: 'tv-toggle' });
-        const current = t.scene.programs.at(-1), screen = t.scene.objects.find(item => item.texture === 'home-tv');
         assert.equal(t.states.at(-1).television, false);
-        assert.equal(screen.alpha, 1);
-        change.lateComplete();
-        turnOn.lateComplete();
-        assert.equal(t.scene.programs.at(-1), current);
-        assert.equal(screen.alpha, 1);
-        assert.equal(t.settings.length, 0);
-        assert.equal(t.scene.sound.rate, 1);
-        assert.equal(t.scene.time.timeScale, 1);
-    }
-    finally {
-        t.destroy();
-    }
+        assert.deepEqual(t.client.requests.at(-1), { action: 'toggle' });
+        t.client.snapshot.television = { ...t.client.snapshot.television, powered: true, channel: 2, version: 2 };
+        t.client.deliver();
+        assert.equal(t.states.at(-1).television, true); assert.equal(t.states.at(-1).channel, 2);
+        t.seat(); assert.notEqual(t.states.at(-1).pose, 'seated');
+        assert.equal(t.settings.length, 0); assert.equal(t.scene.sound.rate, 1); assert.equal(t.scene.time.timeScale, 1);
+    } finally { t.destroy(); }
+});
+test('remote standing members are present but only confirmed seats produce a remote actor', () => {
+    const t = setup({ reduce: true });
+    try {
+        t.client.snapshot.members.push(member('her')); t.client.deliver();
+        assert.equal(t.states.at(-1).companion.pose, 'standing'); assert.equal(t.scene.remoteActors.size, 0);
+        t.client.snapshot.members[1] = member('her', 1); t.client.deliver();
+        assert.equal(t.scene.remoteActors.size, 1); assert.equal(t.scene.remoteActors.get('her').texture, 'her-sit-up');
+        t.client.snapshot.members[1] = member('her'); t.client.deliver();
+        assert.equal(t.scene.remoteActors.size, 0); assert.equal(t.states.at(-1).members.length, 2);
+        t.client.snapshot.members[1] = member('her', 0); t.client.deliver();
+        t.client.status('reconnecting'); assert.equal(t.scene.remoteActors.size, 0); assert.deepEqual(t.states.at(-1).members, []);
+    } finally { t.destroy(); }
 });
 test('focused React controls block held movement keys and E/Space/Escape game actions', () => {
     const t = setup({ reduce: true });
@@ -413,7 +456,7 @@ test('television commands require a seat or proximity, and renaming preserves th
         bus.emit('IDENTITY_CHANGED', { character: 'bear', account: 'bear', display: '新名字' });
         assert.deepEqual(t.states.at(-1), before);
         assert.deepEqual(point(t.actor()), HOME_LAYOUT.seats[1]);
-        assert.equal(t.actor().texture, 'home-bear-seated');
+        assert.equal(t.actor().texture, 'bear-sit-up');
         assert.deepEqual(t.travels, []);
     } finally { t.destroy(); }
 });
@@ -518,7 +561,8 @@ test('travel and repeated shutdown clean all listeners; same-instance reentry re
         const arrival = t.scene.tweens.items.at(-1);
         t.complete();
         bus.emit('INTERIOR_ACTION', { action: 'tv-toggle' });
-        const tv = t.scene.tweens.items.at(-1), notice = t.scene.timers.at(-1);
+        t.scene.say('测试中的临时提示');
+        const notice = t.scene.timers.at(-1);
         for (const name of subscriptions)
             assert.equal(bus.listenerCount(name), 1);
         assert.equal(media.listenerCount('change'), 1);
@@ -526,12 +570,10 @@ test('travel and repeated shutdown clean all listeners; same-instance reentry re
         bus.emit('SCENE_CHANGED', { scene: 'interior', transitioning: true });
         const count = t.states.length;
         arrival.lateComplete();
-        tv.lateComplete();
         notice.lateFire();
         bus.emit('INTERIOR_ACTION', { action: 'stand' });
         bus.emit('INTERIOR_ACTION', { action: 'tv-next' });
         assert.equal(t.states.length, count);
-        assert.equal(tv.stopped, true);
         const keyboard = t.scene.input.keyboard;
         t.shutdown();
         t.scene.events.emit('destroy');
@@ -548,7 +590,6 @@ test('travel and repeated shutdown clean all listeners; same-instance reentry re
         assert.equal(t.scene.events.listenerCount('shutdown'), 0);
         assert.equal(t.scene.events.listenerCount('destroy'), 0);
         const paints = t.scene.programs.length;
-        tv.lateComplete();
         notice.lateFire();
         t.scene.update(1000, 1000);
         assert.equal(t.scene.programs.length, paints);
@@ -556,18 +597,17 @@ test('travel and repeated shutdown clean all listeners; same-instance reentry re
         t.scene.init({ character: 'her', display: '青', account: 'her' });
         t.scene.create();
         const actor = t.actor(), latest = t.states.at(-1);
-        assert.equal(actor.texture, 'islander-her-front');
+        assert.equal(actor.texture, 'her-idle-down');
         assert.equal(latest.pose, 'walking');
         assert.equal(latest.television, false);
         assert.equal(latest.channel, 0);
         const states = t.states.length, programs = t.scene.programs.length;
         arrival.lateComplete();
-        tv.lateComplete();
         notice.lateFire();
         assert.equal(t.states.length, states);
         assert.equal(t.scene.programs.length, programs);
         assert.equal(t.actor(), actor);
-        assert.equal(actor.texture, 'islander-her-front');
+        assert.equal(actor.texture, 'her-idle-down');
         assert.equal(media.listenerCount('change'), 1);
         assert.equal(document.listenerCount('visibilitychange'), 1);
         for (const name of subscriptions)
@@ -580,4 +620,18 @@ test('travel and repeated shutdown clean all listeners; same-instance reentry re
     finally {
         t.destroy();
     }
+});
+
+test('landscape doorway keeps feet clear of the bottom operation area', () => {
+    const t = setup({ reduce: true });
+    try {
+        for (const size of [{ width: 844, height: 390 }, { width: 568, height: 320 }]) {
+            t.scene.scale.gameSize = size;
+            t.actor().setPosition(HOME_LAYOUT.door.x, HOME_LAYOUT.door.y);
+            t.scene.scale.emit('resize');
+            const camera = t.scene.cameras.main;
+            const foot = (t.actor().y - camera.center[1]) * camera.zoom + size.height / 2;
+            assert.ok(foot <= size.height - 120, 'room entrance is above the landscape operation area');
+        }
+    } finally { t.destroy(); }
 });

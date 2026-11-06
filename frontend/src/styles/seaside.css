@@ -1,0 +1,73 @@
+/* 海边 DOM：沿用同一套纸张与按钮，不随景色倍率改变。 */
+.seaside-ui { position: absolute; inset: 0; pointer-events: none; color: var(--ui-ink); }
+.shore-caption { position: absolute; top: max(24px, env(safe-area-inset-top)); left: max(24px, env(safe-area-inset-left)); width: min(380px, calc(100% - 48px)); }
+.shore-eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); background: var(--ui-paper); font-size: var(--ui-text-meta); }
+.shore-eyebrow svg { width: 20px; height: 20px; }
+.shore-caption h1 { margin: 12px 0 0; padding: 10px 12px 4px; border: 1px solid var(--ui-border); border-bottom: 0; border-radius: 4px 4px 0 0; background: var(--ui-paper); font: 600 var(--ui-text-title)/1.4 var(--ui-font); }
+.shore-caption > p { margin: 0; padding: 0 12px 10px; border: 1px solid var(--ui-border); border-top: 0; border-radius: 0 0 4px 4px; background: var(--ui-paper); font-size: var(--ui-text-control); line-height: 1.6; }
+.seaside-ui[data-welcome="false"] .shore-caption > h1,
+.seaside-ui[data-welcome="false"] .shore-caption > p { display: none; }
+.shore-company { display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 12px; margin-top: 12px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); background: var(--ui-paper); color: var(--ui-ink); font-size: var(--ui-text-control); line-height: 1.5; overflow-wrap: anywhere; }
+.shore-company-people { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 8px 16px; }
+.shore-company-people > span { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1 1 120px; }
+.shore-company-people > span > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.shore-company.is-together { border-color: var(--ui-accent); }
+.shore-company-copy { font-size: var(--ui-text-control); }
+.shore-retry { pointer-events: auto; align-self: flex-start; min-height: 44px; padding: 8px 12px; border: 1px solid var(--ui-accent); border-radius: var(--ui-radius); background: var(--ui-accent-soft); color: var(--ui-accent); font-size: var(--ui-text-control); cursor: pointer; }
+.shore-bottom { position: absolute; bottom: max(20px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: min(660px, calc(100% - 32px)); text-align: center; }
+.shore-label-short { display: none; }
+.shore-moment { display: flex; align-items: center; justify-content: center; gap: 8px; width: max-content; max-width: 100%; margin: 0 auto 8px; padding: 6px 12px; background: var(--ui-paper); border: 1px solid var(--ui-border); border-radius: var(--ui-radius); font-size: var(--ui-text-control); }
+.shore-moment > span:first-child { color: var(--ui-accent); }
+.shore-moment i { width: 1px; height: 14px; background: var(--ui-border); }
+.shore-time-value { font-family: var(--ui-font-number); font-size: var(--ui-text-control); }
+.shore-controls { pointer-events: auto; padding: 6px; background: var(--ui-paper); border: 1px solid var(--ui-border); border-radius: var(--ui-radius-panel); box-shadow: var(--ui-shadow-control); }
+.shore-main-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; gap: 4px; }
+.shore-button { display: flex; justify-content: center; align-items: center; gap: 6px; min-height: 44px; min-width: 44px; padding: 8px 10px; border: 1px solid transparent; border-radius: var(--ui-radius); background: transparent; color: var(--ui-ink); font-size: var(--ui-text-control); line-height: 1.4; cursor: pointer; overflow-wrap: anywhere; }
+.shore-button svg { flex: 0 0 20px; width: 20px; height: 20px; color: var(--ui-accent); }
+.shore-button:hover:not(:disabled), .shore-button.is-open { background: var(--ui-accent-soft); border-color: var(--ui-border); }
+.shore-button:disabled { opacity: .7; cursor: default; }
+.shore-action-divider { display: none; }
+.shore-action-hint { margin: 4px 8px 2px; color: var(--ui-muted); font-size: var(--ui-text-meta); line-height: 1.5; }
+.shore-rate { padding: 2px 4px; border: 1px solid var(--ui-border); border-radius: 3px; font: var(--ui-text-meta)/1.4 var(--ui-font-number); }
+.shore-small-note { margin: 8px 0 0; padding: 4px 8px; border-radius: var(--ui-radius); background: var(--ui-paper); font-size: var(--ui-text-control); line-height: 1.5; color: var(--ui-ink); overflow-wrap: anywhere; max-height: 4.5em; overflow-y: auto; pointer-events: auto; }
+.shore-clock-settings { position: absolute; pointer-events: auto; right: max(16px, env(safe-area-inset-right)); bottom: max(180px, calc(env(safe-area-inset-bottom) + 164px)); width: min(340px, calc(100% - 32px)); max-height: calc(100dvh - 220px); overflow-y: auto; overscroll-behavior: contain; padding: 16px; background: var(--ui-paper); border: 1px solid var(--ui-wood); border-radius: var(--ui-radius-panel); box-shadow: var(--ui-shadow-panel); }
+.shore-clock-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; margin-bottom: 12px; font-size: var(--ui-text-control); }
+.shore-clock-heading > span:last-child { font-size: var(--ui-text-meta); color: var(--ui-muted); }
+.shore-clock-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.shore-clock-options button { display: grid; gap: 4px; padding: 10px 4px; min-height: 64px; min-width: 44px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); background: var(--ui-paper-raised); color: var(--ui-ink); font: var(--ui-text-control)/1.4 var(--ui-font-number); cursor: pointer; }
+.shore-clock-options button small { font: var(--ui-text-meta)/1.4 var(--ui-font); overflow-wrap: anywhere; }
+.shore-clock-options button[aria-pressed="true"] { border-color: var(--ui-accent); background: var(--ui-accent-soft); box-shadow: inset 0 -2px 0 var(--ui-accent); }
+.shore-reset { display: block; margin: 8px 0 0 auto; min-height: 44px; padding: 8px; border: 1px solid transparent; border-radius: var(--ui-radius); background: transparent; color: var(--ui-accent); font-size: var(--ui-text-control); cursor: pointer; }
+@media (max-width: 600px) {
+  .shore-caption { left: var(--ui-inset-left); top: max(84px, calc(env(safe-area-inset-top) + 72px)); width: calc(100% - 24px); }
+  .shore-caption h1 { font-size: var(--ui-text-section); }
+  .shore-label-wide { display: none; }
+  .shore-label-short { display: inline; }
+  .shore-company { margin-top: 8px; padding: 8px 10px; gap: 6px; max-height: calc(100dvh - 340px); overflow-y: auto; pointer-events: auto; }
+  .shore-company-people { gap: 8px; }
+  .shore-bottom { width: calc(100% - 24px); bottom: var(--ui-inset-bottom); }
+  .shore-controls { padding: 4px; }
+  .shore-button { flex-direction: column; gap: 4px; padding: 6px 2px; min-height: 64px; }
+  .shore-button svg { width: 18px; height: 18px; flex-basis: 18px; }
+  .shore-clock-toggle { flex-direction: row; flex-wrap: wrap; align-content: center; gap: 2px; }
+  .shore-clock-toggle svg { display: none; }
+  .shore-rate { font-size: var(--ui-text-meta); }
+  .shore-clock-settings { top: max(112px, calc(env(safe-area-inset-top) + 100px)); bottom: auto; left: var(--ui-inset-left); right: var(--ui-inset-right); width: auto; max-height: calc(100dvh - 336px); padding: 12px; }
+  .seaside-ui[data-time-open="true"][data-room-state="connected"] .shore-caption { display: none; }
+  .seaside-ui:not([data-room-state="connected"]) .shore-clock-settings { display: none; }
+}
+@media (max-height: 640px) and (max-width: 600px) {
+  .shore-caption > h1, .shore-caption > p { display: none; }
+  .shore-company { font-size: var(--ui-text-control); }
+  /* 320×568 实测：时间面板底边须留在两位角色头部上方。 */
+  .shore-clock-settings { top: max(96px, calc(env(safe-area-inset-top) + 84px)); padding: 10px; }
+}
+@media (max-height: 500px) and (min-width: 601px) {
+  .shore-caption { top: 16px; left: 16px; width: 280px; }
+  .shore-caption > h1, .shore-caption > p { display: none; }
+  .shore-company { padding: 8px; margin-top: 8px; }
+  .shore-bottom { bottom: 12px; width: min(620px, calc(100% - 32px)); }
+  .shore-small-note { display: none; }
+  .shore-moment { position: absolute; right: 0; bottom: 64px; }
+  .shore-clock-settings { bottom: 84px; max-height: calc(100dvh - 108px); }
+}

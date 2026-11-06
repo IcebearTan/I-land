@@ -1,0 +1,44 @@
+✔ room validates complete identities, seats, poses and clock state before rendering (0.81275ms)
+✔ HTTP LAN browsers without randomUUID still generate a valid per-page v4 client ID (1.288208ms)
+✔ shared clock uses server UTC plus RTT, regardless of local system-clock offsets (0.308458ms)
+✔ shared clock preserves pause, Shanghai midnight and normal speed after acceleration (0.097084ms)
+✔ shared clock rejects obsolete revisions/epochs and eases small corrections without jumping (0.588708ms)
+✔ shared reset is explicit and invalid clock samples cannot corrupt the active anchor (0.104292ms)
+✔ status-triggered rendering before a snapshot callback does not invalidate its recent timing sample (0.059333ms)
+✔ join waits for a WS full frame, emits connected before rendering and carries cookie credentials (0.291625ms)
+✔ a Cookie account switch cannot let a stale bear scene control her, even with another bear in the snapshot (0.297333ms)
+✔ expected account lets the server reject a Cookie identity change before touching either seat (0.175791ms)
+✔ join self must match the user ID of the expected member, not merely an account label (0.120375ms)
+✔ delayed REST results cannot overwrite newer WS state; clock conflicts adopt full latest state (0.2475ms)
+✔ network loss clears unverified companions and reconnects with the same page ID in real time (0.250125ms)
+✔ taken-over stops automatic retries and explicit retry alone creates a fresh client identity (0.156792ms)
+✔ ordinary lease expiry 4410 reconnects automatically with a higher generation and fresh lease (0.161166ms)
+✔ REST ended leases recover with the same client UUID; actual taken_over leases remain terminal (0.240167ms)
+✔ expired/forbidden sessions do not retry or silently reconnect when visible again (0.102417ms)
+✔ hidden/pagehide releases only the current lease and visible rejoins without stealing (0.141125ms)
+✔ rapid exit cancels old generations and compensates a late join even when the fetch ignores abort (0.084458ms)
+✔ late hidden join cannot issue a leave against the lease reused by the newer visible join (0.11875ms)
+✔ visible return waits for old leave, and a leave timeout requires explicit fresh-ID retry (0.158208ms)
+✔ heartbeat uses real 10-second intervals and stale lease errors stop control (0.159083ms)
+✔ reconnect delay increases to a capped interval and missing WS first-frame cannot claim connection (0.368833ms)
+✔ an initially hidden page joins only on return; malformed or unauthenticated WS clears state (0.084459ms)
+✔ joining leaves both seats empty until a server-confirmed member supplies its seat and identity (2.170416ms)
+✔ two confirmed arrivals use independent actors and animations, including reversed seat assignments (0.426666ms)
+✔ pose requests wait for shared server facts and pending requests cannot promise a fake successful action (0.208208ms)
+✔ server-confirmed single and mutual leaning use side-specific settling frames and reflow both actors (0.293375ms)
+✔ a partner departure clears its actor and footprints, and cannot revive through a late animation callback (0.146ms)
+✔ disconnect clears online people, blocks actions, and only explicit retry asks the room to rejoin (0.130583ms)
+✔ panels block pose, scenery, retry and keyboard API calls without restoring island movement or key capture (0.152917ms)
+✔ clock controls issue shared API requests and only confirmed anchors affect scenery, never date ticks or playback speed (0.157667ms)
+✔ resize and reduced motion preserve confirmed members, assigned seats and clock without repeating the join (0.17175ms)
+✔ enabling reduced motion ends only visual arrivals and keeps confirmed seated or leaning facts intact (0.218417ms)
+✔ shutdown, destroy and same-instance reentry clean up once and reject all callbacks from the previous room lifetime (0.200584ms)
+✔ rapid travel releases a pending room or active seat and late joins or animations cannot place anyone back (0.106083ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 236.598917

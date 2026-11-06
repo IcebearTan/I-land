@@ -1,0 +1,26 @@
+✔ interior starts from the server snapshot and does not invent a companion (3.282125ms)
+✔ sofa arrival, sitting and standing use dedicated poses and safe points without reviving earlier movement (0.96425ms)
+✔ panel opened during sitting finishes the confirmed seat and closing does not restore pending keys or actions (0.291416ms)
+✔ blur and visibility cancel old movement and sitting without late animation resurrection (0.331083ms)
+✔ interrupting a stand clears its progress notice and lands safely for either seat (0.854792ms)
+✔ clicking clear floor from either seat stands first then routes around the sofa (8.726333ms)
+✔ reduced motion skips sofa/TV tweens and changing the preference ends the current visual arrival (0.323708ms)
+✔ TV and seats change only after server confirmation and preserve personal audio (0.126291ms)
+✔ remote standing members are present but only confirmed seats produce a remote actor (0.173833ms)
+✔ focused React controls block held movement keys and E/Space/Escape game actions (0.174375ms)
+✔ television commands require a seat or proximity, and renaming preserves the seat and channel (0.179583ms)
+✔ held keyboard movement cannot clip the sofa even with fractional positions and long frames (0.947ms)
+✔ short portrait TV and fireplace prompts stay below the return control (0.4515ms)
+✔ portrait camera keeps door and stand points above the walking controls (0.248875ms)
+✔ interior audio and day ticks use real time and do not respond to accelerated seaside clock controls (0.136125ms)
+✔ a fireplace notice still expires after ordinary walking and a newer notice ignores the older timer (0.199916ms)
+✔ travel and repeated shutdown clean all listeners; same-instance reentry rejects prior animation and timer callbacks (0.507291ms)
+✔ landscape doorway keeps feet clear of the bottom operation area (0.21975ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 282.666792

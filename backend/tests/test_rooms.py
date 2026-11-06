@@ -80,8 +80,8 @@ def test_anonymous_third_identity_and_unknown_room_rejected(client):
     login(client, "tester")
     assert client.get(BASE).status_code == 403
     assert client.post(f"{BASE}/join", json={"client_id": str(uuid4())}).status_code == 403
-    assert client.get("/api/rooms/interior").status_code == 404
-    assert client.post("/api/rooms/interior/join", json={"client_id": str(uuid4())}).status_code == 404
+    assert client.get("/api/rooms/unknown").status_code == 404
+    assert client.post("/api/rooms/unknown/join", json={"client_id": str(uuid4())}).status_code == 404
 
 
 def test_rest_source_and_identity_spoofing_rejected(client, monkeypatch):

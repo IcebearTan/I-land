@@ -14,7 +14,7 @@ function RoomIcon({ kind }: { kind: 'return' | 'stand' | 'tv' | 'next' }) {
   </svg>
 }
 
-/** 只显示场景确认的本地姿势；走动、家具与电视都通过 EventBus 操作。 */
+/** 只显示独立小屋房间确认的成员与电视；走动仍留在 Phaser。 */
 export function InteriorControls({ transitioning }: { transitioning: boolean }) {
   const [state, setState] = useState<InteriorState | null>(null)
   const [panelOpen, setPanelOpen] = useState(false)
@@ -52,29 +52,42 @@ export function InteriorControls({ transitioning }: { transitioning: boolean }) 
 
   if (panelOpen) return null
   const seated = state?.pose === 'seated'
+  const connected = state?.connection.state === 'connected'
+  const busy = transitioning || !connected || state?.connection.pending
+  const retry = state && ['taken-over', 'error'].includes(state.connection.state)
   const televisionNearby = state?.pose === 'walking' && state.nearTelevision && !transitioning
-  const showActions = seated || televisionNearby
-  const message = notice || (state?.pose === 'approaching' ? '慢慢走向沙发…' : state?.television ? CHANNELS[state.channel] : null)
+  const sofaNearby = state?.pose === 'walking' && state.nearSofa && !televisionNearby && !transitioning
+  const showActions = seated || televisionNearby || sofaNearby
+  const companion = state?.companion
+  const presence = companion ? (companion.pose === 'seated' ? `${companion.display}在沙发上。` : `${companion.display}也在屋里，暂时没坐下。`) : null
+  const message = notice || state?.connection.message || (state?.pose === 'approaching' ? '慢慢坐好，或起身走走…' : presence || (state?.television ? CHANNELS[state.channel] : null))
 
   return <div className="interior-ui" data-interior-pose={state?.pose} data-interior-seat={state?.seat ?? 'none'}
     data-interior-tv={state?.television} data-interior-channel={state?.channel} data-interior-near-tv={state?.nearTelevision}
-    data-phase={state?.phase} data-transitioning={transitioning}>
+    data-room-state={state?.connection.state} data-home-members={state?.members.length ?? 0} data-companion-pose={companion?.pose ?? 'none'} data-phase={state?.phase} data-transitioning={transitioning}>
     <button className="room-back room-button" disabled={transitioning} onClick={() => eventBus.emit('TRAVEL_REQUEST', { from: 'interior', to: 'island' })}>
       <RoomIcon kind="return" /><span className="room-label-wide">回到小岛</span><span className="room-label-short">回岛</span>
     </button>
-    {welcome && <p className="room-welcome" role="status">进屋，火还暖着。</p>}
+    {welcome && !televisionNearby && !sofaNearby && <p className="room-welcome" role="status">进屋，火还暖着。</p>}
     {state?.pose === 'walking' && !transitioning && <IslandControls />}
-    {(showActions || message) && <div className={`room-bottom${seated ? ' is-seated' : ''}${televisionNearby ? ' is-near-tv' : ''}`}>
+    {(showActions || message || retry) && <div className={`room-bottom${seated ? ' is-seated' : ''}${televisionNearby ? ' is-near-tv' : ''}${sofaNearby ? ' is-near-sofa' : ''}`}>
       {message && <p className="room-status" role="status">{message}</p>}
-      {state && showActions && <section className={`room-actions${televisionNearby ? ' room-actions-tv' : ''}`} aria-label={seated ? '沙发与电视' : '电视'}>
-        {seated && <button className="room-button" disabled={transitioning} onClick={() => eventBus.emit('INTERIOR_ACTION', { action: 'stand' })}>
+      {retry && <button className="room-button room-reconnect" onClick={() => eventBus.emit('INTERIOR_ACTION', { action: 'reconnect' })}>重新加入客厅</button>}
+      {state && sofaNearby && <section className="room-actions room-actions-tv" aria-label="选择沙发座位">{([0, 1] as const).map(seat => {
+        const occupied = state.members.some(member => member.account === companion?.account && member.seat === seat)
+        return <button key={seat} className="room-button" disabled={busy || occupied} onClick={() => eventBus.emit('INTERIOR_ACTION', { action: seat === 0 ? 'sit-left' : 'sit-right' })}>
+          <RoomIcon kind="stand" /><span>{occupied ? (seat === 0 ? '左边有人' : '右边有人') : (seat === 0 ? '坐左边' : '坐右边')}</span>
+        </button>
+      })}</section>}
+      {state && (seated || televisionNearby) && <section className={`room-actions${televisionNearby ? ' room-actions-tv' : ''}`} aria-label={seated ? '沙发与电视' : '电视'}>
+        {seated && <button className="room-button" disabled={busy} onClick={() => eventBus.emit('INTERIOR_ACTION', { action: 'stand' })}>
           <RoomIcon kind="stand" /><span>起身</span>
         </button>}
-        <button className={`room-button${state.television ? ' is-on' : ''}`} disabled={transitioning} aria-pressed={state.television}
+        <button className={`room-button${state.television ? ' is-on' : ''}`} disabled={busy} aria-pressed={state.television}
           aria-label={state.television ? '关闭电视' : '打开电视'} onClick={() => eventBus.emit('INTERIOR_ACTION', { action: 'tv-toggle' })}>
           <RoomIcon kind="tv" /><span>{state.television ? '关电视' : '开电视'}</span>
         </button>
-        <button className="room-button" disabled={transitioning || !state.television}
+        <button className="room-button" disabled={busy || !state.television}
           aria-label={`换到下一个频道，当前${CHANNELS[state.channel]}`} onClick={() => eventBus.emit('INTERIOR_ACTION', { action: 'tv-next' })}>
           <RoomIcon kind="next" /><span>换台</span>
         </button>

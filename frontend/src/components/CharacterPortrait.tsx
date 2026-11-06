@@ -1,9 +1,7 @@
-import { CHARACTERS, type CharacterId } from '../characters'
+import type { CharacterId } from '../characters'
 
+/** 与游戏共用 ART-02 原生帧；头像只改变 CSS 展示尺寸。 */
 export function CharacterPortrait({ character, size = 40 }: { character: CharacterId; size?: number }) {
-  const art = CHARACTERS[character]
-  return <svg className="character-portrait" width={size} height={size} viewBox="0 0 16 16" shapeRendering="crispEdges" aria-hidden="true">
-    {art.frames.front.flatMap((row, y) => [...row].map((pixel, x) => art.palette[pixel]
-      ? <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill={art.palette[pixel]} /> : null))}
-  </svg>
+  return <img className="character-portrait" src={`/art-v2/characters/${character}-idle-down.png`}
+    width={size} height={size} alt="" aria-hidden="true" style={{ imageRendering: 'pixelated', objectFit: 'contain' }} />
 }

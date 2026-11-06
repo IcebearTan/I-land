@@ -1,19 +1,30 @@
 import Phaser from 'phaser'
-import { CHARACTERS } from '../../characters'
+import { worldZoom } from '../../visual/layout'
+import { SCREEN_BODY_PX, screenTextScale } from '../../visual/screenText'
+import { HomeRoomClient, SharedProgramClock } from '../../interior/room'
+import type { HomeSnapshot, HomeMember, HomeView } from '../../interior/room'
+import type { RoomTiming } from '../../seaside/types'
+import { CHARACTER_ATLAS, CHARACTER_ORIGIN, HOME_ATLAS, actorFrame } from '../../visual/artV2'
 import { nightWeight } from '../../audio/types'
 import { homeRoute, homeSegmentClear, homeWalkable, type Point, type Rect } from '../../interior/navigation'
 import { eventBus, type GameEvents, type InteriorState, type IslandIdentity, type Phase, type SceneState } from '../EventBus'
-import { makeTexture } from '../pixels'
 import { createInteriorArt, HOME_LAYOUT, paintInteriorBackdrop, paintInteriorTV } from '../art/interior'
 
 type Interaction = { point: Point; label: string; kind: 'fireplace' | 'tv' | 'sofa' | 'door'; seat?: 0 | 1 }
-const CHANNELS = ['海风小岛', '海上月亮', '猫咪午后'] as const
 const contains = (rect: Rect, p: Point) => p.x >= rect.x && p.x <= rect.x + rect.w && p.y >= rect.y && p.y <= rect.y + rect.h
 const distance = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.y - b.y)
 const inUI = (target: EventTarget | null) => target instanceof HTMLElement && !!target.closest('button, input, textarea, select, a, [contenteditable="true"], [role="button"]')
 
-/** 首版客厅：位置与家具留在 Phaser，只经事件总线报告自己的坐姿和电视。 */
+/** 本地走动与服务器确认的沙发/电视共存，远端只显示已入座成员。 */
 export class InteriorScene extends Phaser.Scene {
+  private room?: HomeRoomClient
+  private connection: HomeView = { state: 'joining', pending: false }
+  private members: HomeMember[] = []
+  private remoteActors = new Map<string, Phaser.GameObjects.Image>()
+  private program = new SharedProgramClock()
+  private confirmedSeat: 0 | 1 | null = null
+  private afterStand?: () => void
+  private lifetime = 0
   private identity: IslandIdentity = { character: 'bear', display: '小熊' }
   private player!: Phaser.GameObjects.Sprite
   private shadow!: Phaser.GameObjects.Ellipse
@@ -42,6 +53,7 @@ export class InteriorScene extends Phaser.Scene {
   private interaction: Interaction | null = null
   private lastLabel: string | null = null
   private nearTV = false
+  private nearSofa = false
   private notice?: string
   private noticeTimer?: Phaser.Time.TimerEvent
   private noticeEpoch = 0
@@ -55,7 +67,6 @@ export class InteriorScene extends Phaser.Scene {
   private tvTimer = 0
   private backdropKey = -1
   private elapsed = 0
-  private programStart = 0
   private fireBoostUntil = 0
   private cameraCenter: Point = { x: 160, y: 120 }
   private readonly reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -63,6 +74,7 @@ export class InteriorScene extends Phaser.Scene {
   constructor() { super('Interior') }
 
   init(identity?: IslandIdentity): void {
+    this.lifetime++
     this.identity = identity ? { ...identity } : { character: 'bear', display: '小熊' }
   }
 
@@ -70,30 +82,26 @@ export class InteriorScene extends Phaser.Scene {
     this.disposed = false; this.leaving = false; this.panelOpen = false
     this.pose = 'walking'; this.seat = null; this.television = false; this.channel = 0
     this.path = []; this.arrival = undefined; this.moveInput = { x: 0, y: 0 }
-    this.notice = undefined; this.lastLabel = null; this.interaction = null; this.nearTV = false
+    this.notice = undefined; this.lastLabel = null; this.interaction = null; this.nearTV = false; this.nearSofa = false
     this.noticeEpoch++
-    this.elapsed = 0; this.programStart = 0; this.fireBoostUntil = 0
+    this.elapsed = 0; this.fireBoostUntil = 0
+    this.members = []; this.remoteActors = new Map(); this.confirmedSeat = null; this.afterStand = undefined
+    this.connection = { state: 'joining', pending: false }; this.program = new SharedProgramClock()
     this.clockTimer = 0; this.tvTimer = 0; this.backdropKey = -1; this.facing = 'front'; this.flip = false
     this.seatTween = undefined; this.tvTween = undefined; this.finishMotion = undefined; this.motionReturn = undefined
     this.cameras.main.setBackgroundColor('#2b1b45')
     createInteriorArt(this)
-    for (const [id, character] of Object.entries(CHARACTERS)) for (const direction of ['front', 'back', 'side'] as const) {
-      makeTexture(this, `islander-${id}-${direction}`, character.frames[direction], character.palette)
-      makeTexture(this, `islander-${id}-${direction}-step`, character.steps[direction], character.palette)
-    }
     this.readClock()
-    this.add.image(0, 0, 'home-backdrop').setOrigin(0).setDepth(0)
-    this.add.image(0, 0, 'home-sofa-front').setOrigin(0).setDepth(HOME_LAYOUT.sofa.y + HOME_LAYOUT.sofa.h)
-    this.screen = this.add.image(HOME_LAYOUT.tvScreen.x, HOME_LAYOUT.tvScreen.y, 'home-tv').setOrigin(0).setDepth(90)
-    this.fire = this.add.image(HOME_LAYOUT.fire.x, HOME_LAYOUT.fire.y, 'home-fire-0').setOrigin(0).setDepth(96)
+    this.screen = this.add.image(HOME_LAYOUT.tvScreen.x, HOME_LAYOUT.tvScreen.y, 'home-tv').setOrigin(0).setDepth(117.5)
+    this.fire = this.add.image(HOME_LAYOUT.fire.x, HOME_LAYOUT.fire.y, HOME_ATLAS, 'fire-0-day').setOrigin(0).setDepth(117.5)
     this.fireGlow = this.add.ellipse(74, 123, 55, 20, 0xffd98a, .08).setDepth(1)
-    this.player = this.add.sprite(HOME_LAYOUT.door.x, HOME_LAYOUT.door.y, `islander-${this.identity.character}-front`).setOrigin(.5, 1)
+    this.player = this.add.sprite(HOME_LAYOUT.door.x, HOME_LAYOUT.door.y, CHARACTER_ATLAS, actorFrame(this.identity.character, 'down')).setOrigin(CHARACTER_ORIGIN.x, CHARACTER_ORIGIN.y)
     this.shadow = this.add.ellipse(this.player.x, this.player.y - 1, 12, 4, 0x4a3b55, .23).setDepth(1)
     this.destination = this.add.graphics().setDepth(2).setVisible(false)
     this.destination.lineStyle(1, 0xfdf6e9).strokeEllipse(0, 0, 12, 5)
     this.promptBg = this.add.graphics()
-    this.promptText = this.add.text(0, 0, '', { fontFamily: 'system-ui, sans-serif', fontSize: '8px', color: '#4a3b55', resolution: 3 }).setOrigin(.5)
-    const promptZone = this.add.zone(0, 0, 126, 24).setInteractive({ useHandCursor: true })
+    this.promptText = this.add.text(0, 0, '', { fontFamily: 'system-ui, sans-serif', fontSize: SCREEN_BODY_PX, color: '#4a3b55', resolution: 3 }).setOrigin(.5)
+    const promptZone = this.add.zone(0, 0, 170, 44).setInteractive({ useHandCursor: true })
     this.prompt = this.add.container(0, 0, [this.promptBg, this.promptText, promptZone]).setDepth(500).setVisible(false)
     this.keys = this.input.keyboard!.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT', false) as Record<string, Phaser.Input.Keyboard.Key>
     this.input.keyboard!.enabled = true; this.input.keyboard!.disableGlobalCapture(); this.input.keyboard!.resetKeys()
@@ -120,6 +128,11 @@ export class InteriorScene extends Phaser.Scene {
     const onInteractionState = () => { if (!this.disposed) this.updatePrompt(true) }
     const onAction = (value: GameEvents['INTERIOR_ACTION']) => {
       if (this.blocked()) return
+      if (value.action === 'reconnect') { this.room?.retry(); return }
+      if (value.action === 'sit-left' || value.action === 'sit-right') {
+        const seat = value.action === 'sit-left' ? 0 : 1
+        this.goTo(HOME_LAYOUT.standPoints[seat], () => this.sit(seat), seat); return
+      }
       if (value.action === 'stand') this.stand()
       else if (this.pose === 'seated' || (this.pose === 'walking' && distance(this.player, HOME_LAYOUT.tv) < 28)) this.changeTV(value.action)
     }
@@ -136,7 +149,7 @@ export class InteriorScene extends Phaser.Scene {
     const onIdentity = (value: IslandIdentity) => { this.identity = { ...value }; this.drawPlayer(); this.publish() }
     const onScene = (value: SceneState) => {
       if (value.scene === 'interior' && value.transitioning) {
-        this.leaving = true; this.clearInput(); this.stopActivities(); this.updatePrompt(true)
+        this.leaving = true; this.clearInput(); this.stopActivities(); this.room?.dispose(); this.updatePrompt(true)
         this.input.keyboard!.enabled = false; this.input.keyboard!.disableGlobalCapture()
       }
     }
@@ -164,7 +177,8 @@ export class InteriorScene extends Phaser.Scene {
     eventBus.on('IDENTITY_CHANGED', onIdentity); eventBus.on('SCENE_CHANGED', onScene)
     const cleanup = () => {
       if (this.disposed) return
-      this.disposed = true; this.leaving = true; this.clearInput(); this.stopActivities()
+      this.disposed = true; this.leaving = true; this.clearInput(); this.stopActivities(); this.room?.dispose()
+      this.clearRemotes()
       this.noticeEpoch++
       this.noticeTimer?.remove(false); this.noticeTimer = undefined
       this.input.off('pointerdown', onPointer); promptZone.off('pointerdown', onPrompt)
@@ -184,6 +198,25 @@ export class InteriorScene extends Phaser.Scene {
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, cleanup); this.events.once(Phaser.Scenes.Events.DESTROY, cleanup)
     this.fitView(); this.drawTV(); this.drawPlayer(); this.updatePrompt(true); this.publish()
     if (!this.reducedMotion.matches) this.cameras.main.fadeIn(280)
+    const lifetime = this.lifetime
+    this.room = new HomeRoomClient({ account: this.identity.account ?? this.identity.character,
+      onStatus: view => {
+        if (this.disposed || this.leaving || lifetime !== this.lifetime) return
+        this.connection = view
+        if (view.state !== 'connected') {
+          this.members = []; this.clearRemotes(); this.clearInput(); this.stopActivities()
+          if (this.seat !== null) this.player.setPosition(HOME_LAYOUT.standPoints[this.seat].x, HOME_LAYOUT.standPoints[this.seat].y)
+          this.pose = 'walking'; this.seat = null; this.confirmedSeat = null; this.afterStand = undefined
+          this.drawPlayer()
+          if (view.state === 'expired') eventBus.emit('SESSION_EXPIRED', {})
+        }
+        this.publish()
+      },
+      onSnapshot: (snapshot, timing) => {
+        if (!this.disposed && !this.leaving && lifetime === this.lifetime) this.receive(snapshot, timing)
+      },
+    })
+    this.room.start()
     eventBus.emit('SCENE_READY', { scene: 'interior', identity: { ...this.identity } })
   }
 
@@ -198,8 +231,11 @@ export class InteriorScene extends Phaser.Scene {
   }
 
   private cancelAction(): void {
+    const finish = this.finishMotion
     this.actionEpoch++; this.path = []; this.arrival = undefined
     this.seatTween?.stop(); this.seatTween = undefined; this.finishMotion = undefined
+    this.afterStand = undefined
+    if (finish) { this.applyConfirmedSeat(false); this.destination?.setVisible(false); return }
     if (this.pose === 'approaching') {
       if (this.motionReturn) this.player.setPosition(this.motionReturn.x, this.motionReturn.y)
       // 起身被失焦、面板或方向输入打断后，进度文案也必须随动作结束。
@@ -221,12 +257,12 @@ export class InteriorScene extends Phaser.Scene {
   }
 
   private clickedFurniture(point: Point): Interaction | null {
-    if (contains(HOME_LAYOUT.sofa, point)) {
+    if (contains(HOME_LAYOUT.sofaVisual, point)) {
       const seat: 0 | 1 = point.x < (HOME_LAYOUT.seats[0].x + HOME_LAYOUT.seats[1].x) / 2 ? 0 : 1
       return { kind: 'sofa', seat, point: HOME_LAYOUT.standPoints[seat], label: '坐一会儿' }
     }
-    if (contains({ x: 128, y: 45, w: 74, h: 68 }, point)) return { kind: 'tv', point: HOME_LAYOUT.tv, label: '电视 · 开关' }
-    if (contains({ x: 34, y: 30, w: 78, h: 83 }, point)) return { kind: 'fireplace', point: HOME_LAYOUT.fireplace, label: '拨一拨炉火' }
+    if (contains(HOME_LAYOUT.televisionVisual, point)) return { kind: 'tv', point: HOME_LAYOUT.tv, label: '电视 · 开关' }
+    if (contains(HOME_LAYOUT.fireplaceVisual, point)) return { kind: 'fireplace', point: HOME_LAYOUT.fireplace, label: '拨一拨炉火' }
     if (contains({ x: 252, y: 214, w: 40, h: 20 }, point)) return { kind: 'door', point: HOME_LAYOUT.door, label: '回到小岛' }
     return null
   }
@@ -249,56 +285,84 @@ export class InteriorScene extends Phaser.Scene {
   }
 
   private sit(seat: 0 | 1): void {
-    if (this.pose === 'seated') return
-    // E 触发也先走到相应起身点，不能隔着家具直接穿进去。
+    if (this.pose === 'seated' || !this.canShare()) return
     if (distance(this.player, HOME_LAYOUT.standPoints[seat]) > 2) {
       this.goTo(HOME_LAYOUT.standPoints[seat], () => this.sit(seat), seat); return
     }
-    this.clearInput(); this.pose = 'approaching'; this.seat = seat
-    this.motionReturn = { ...HOME_LAYOUT.standPoints[seat] }
-    const epoch = ++this.actionEpoch, target = HOME_LAYOUT.seats[seat]
-    const complete = () => {
-      if (this.blocked() || epoch !== this.actionEpoch) return
-      this.seatTween = undefined; this.finishMotion = undefined; this.motionReturn = undefined
-      this.player.setPosition(target.x, target.y); this.pose = 'seated'; this.drawPlayer(); this.publish(); this.updatePrompt(true)
-    }
-    this.facing = 'back'; this.flip = false; this.finishMotion = complete; this.publish()
-    if (this.reducedMotion.matches) { complete(); return }
-    this.seatTween = this.tweens.add({ targets: this.player, x: target.x, y: target.y, duration: 460, ease: 'Sine.easeInOut', onComplete: complete })
+    this.clearInput()
+    const lifetime = this.lifetime
+    void this.room?.setSeat(seat).then(ok => {
+      if (!ok && lifetime === this.lifetime && !this.disposed && !this.leaving && this.confirmedSeat === null) this.cancelAction()
+    })
   }
 
   private stand(after?: () => void): void {
-    if (this.blocked() || this.pose !== 'seated' || this.seat === null) return
-    const target = HOME_LAYOUT.standPoints[this.seat], epoch = ++this.actionEpoch
-    this.pose = 'approaching'; this.motionReturn = { ...target }; this.notice = '慢慢起身…'
-    const complete = () => {
-      if (this.blocked() || epoch !== this.actionEpoch) return
-      this.seatTween = undefined; this.finishMotion = undefined; this.motionReturn = undefined
-      this.player.setPosition(target.x, target.y); this.pose = 'walking'; this.seat = null; this.notice = undefined
-      this.facing = 'front'; this.flip = false; this.drawPlayer(); this.publish(); this.updatePrompt(true); after?.()
-    }
-    this.finishMotion = complete; this.publish()
-    if (this.reducedMotion.matches) { complete(); return }
-    this.seatTween = this.tweens.add({ targets: this.player, x: target.x, y: target.y, duration: 350, ease: 'Sine.easeInOut', onComplete: complete })
+    if (this.blocked() || this.pose !== 'seated' || !this.canShare()) return
+    this.afterStand = after
+    const lifetime = this.lifetime
+    void this.room?.setSeat(null).then(ok => { if (!ok && lifetime === this.lifetime) this.afterStand = undefined })
   }
 
+  private canShare(): boolean { return !this.blocked() && this.connection.state === 'connected' && !this.connection.pending }
+
   private changeTV(action: 'tv-toggle' | 'tv-next'): void {
-    if (action === 'tv-next' && !this.television) return
-    if (action === 'tv-toggle') this.television = !this.television
-    else this.channel = ((this.channel + 1) % CHANNELS.length) as InteriorState['channel']
-    this.programStart = this.elapsed
-    const epoch = ++this.tvEpoch
-    this.tvTween?.stop(); this.tvTween = undefined
-    this.say(this.television ? `正在看「${CHANNELS[this.channel]}」。` : '关掉电视，留一会儿炉火声。')
-    if (this.reducedMotion.matches || !this.television) { this.screen.setAlpha(1); this.drawTV(); return }
-    if (action === 'tv-toggle') {
-      this.drawTV(); this.screen.setAlpha(0)
-      this.tvTween = this.tweens.add({ targets: this.screen, alpha: 1, duration: 400, onComplete: () => { if (!this.disposed && epoch === this.tvEpoch) this.tvTween = undefined } })
-    } else {
-      this.screen.setAlpha(1)
-      this.tvTween = this.tweens.add({ targets: this.screen, alpha: .75, duration: 100, yoyo: true, onYoyo: () => { if (!this.disposed && epoch === this.tvEpoch) this.drawTV() }, onComplete: () => { if (!this.disposed && epoch === this.tvEpoch) { this.tvTween = undefined; this.screen.setAlpha(1) } } })
+    if (!this.canShare() || (action === 'tv-next' && !this.television)) return
+    void this.room?.setTelevision(action === 'tv-toggle' ? 'toggle' : 'next')
+  }
+
+  private receive(snapshot: HomeSnapshot, timing: RoomTiming): void {
+    this.program.update(snapshot, timing)
+    const self = snapshot.members.find(m => m.account === (this.identity.account ?? this.identity.character))
+    if (!self) return
+    const previous = this.confirmedSeat
+    this.members = snapshot.members
+    this.confirmedSeat = self.seat
+    this.television = snapshot.television.powered; this.channel = snapshot.television.channel
+    if (previous !== this.confirmedSeat) this.applyConfirmedSeat(!this.panelOpen && !this.reducedMotion.matches, previous)
+    this.drawRemotes(); this.drawTV(); this.publish(); this.updatePrompt(true)
+  }
+
+  private applyConfirmedSeat(animate: boolean, previous: 0 | 1 | null = this.seat): void {
+    this.seatTween?.stop(); this.seatTween = undefined
+    this.path = []; this.arrival = undefined; this.destination.setVisible(false)
+    const seat = this.confirmedSeat
+    const target = seat !== null ? HOME_LAYOUT.seats[seat] : HOME_LAYOUT.standPoints[previous ?? 0]
+    const epoch = ++this.actionEpoch
+    const complete = () => {
+      if (this.disposed || this.leaving || epoch !== this.actionEpoch) return
+      this.finishMotion = undefined; this.seatTween = undefined; this.motionReturn = undefined
+      this.player.setPosition(target.x, target.y)
+      this.pose = seat === null ? 'walking' : 'seated'; this.seat = seat
+      this.facing = seat === null ? 'front' : 'back'; this.flip = false
+      this.drawPlayer(); this.publish(); this.updatePrompt(true)
+      const after = this.afterStand; this.afterStand = undefined
+      if (seat === null && !this.blocked()) after?.()
     }
-    this.publish()
+    this.pose = 'approaching'; this.seat = seat ?? previous
+    this.finishMotion = complete
+    if (!animate) { complete(); return }
+    this.seatTween = this.tweens.add({ targets: this.player, x: target.x, y: target.y,
+      duration: seat === null ? 350 : 460, ease: 'Sine.easeInOut', onComplete: complete })
+  }
+
+  private clearRemotes(): void {
+    this.remoteActors.forEach(actor => actor.destroy()); this.remoteActors.clear()
+  }
+
+  private drawRemotes(): void {
+    const visible = this.members.filter(m => m.account !== (this.identity.account ?? this.identity.character) && m.pose === 'seated' && m.seat !== null)
+    for (const [account, actor] of this.remoteActors) if (!visible.some(m => m.account === account)) {
+      actor.destroy(); this.remoteActors.delete(account)
+    }
+    for (const member of visible) {
+      const point = HOME_LAYOUT.seats[member.seat!]
+      let actor = this.remoteActors.get(member.account)
+      if (!actor) {
+        actor = this.add.image(point.x, point.y, CHARACTER_ATLAS, `${member.sprite}-sit-up`).setOrigin(CHARACTER_ORIGIN.x, CHARACTER_ORIGIN.y)
+        this.remoteActors.set(member.account, actor)
+      }
+      actor.setPosition(point.x, point.y).setDepth(200)
+    }
   }
 
   private say(message: string): void {
@@ -314,7 +378,7 @@ export class InteriorScene extends Phaser.Scene {
 
   private publish(): void {
     if (this.disposed || this.leaving) return
-    eventBus.emit('INTERIOR_STATE', { pose: this.pose, seat: this.seat, television: this.television, channel: this.channel, phase: this.phase, nearTelevision: !this.panelOpen && this.pose === 'walking' && distance(this.player, HOME_LAYOUT.tv) < 28, notice: this.notice })
+    eventBus.emit('INTERIOR_STATE', { connection: { state: this.connection.state, pending: this.connection.pending, message: this.connection.message }, members: this.members, companion: this.members.find(m => m.account !== (this.identity.account ?? this.identity.character)), pose: this.pose, seat: this.seat, television: this.television, channel: this.channel, phase: this.phase, nearSofa: !this.panelOpen && this.pose === 'walking' && HOME_LAYOUT.standPoints.some(point => distance(this.player, point) < 28), nearTelevision: !this.panelOpen && this.pose === 'walking' && distance(this.player, HOME_LAYOUT.tv) < 28, notice: this.notice })
   }
 
   private updatePrompt(force = false): void {
@@ -332,17 +396,18 @@ export class InteriorScene extends Phaser.Scene {
     this.prompt.setVisible(!!this.interaction)
     if (this.interaction) {
       this.promptText.setText(`${label} · E / 轻点`)
-      const width = this.promptText.width + 14
-      this.promptBg.clear().fillStyle(0x8a5a38).fillRoundedRect(-width / 2 - 1, -10, width + 2, 22, 2)
-        .fillStyle(0xfdf6e9).fillRoundedRect(-width / 2, -9, width, 19, 2).fillTriangle(-3, 9, 3, 9, 0, 12)
+      const width = this.promptText.width + 20
+      this.promptBg.clear().fillStyle(0x8a5a38).fillRoundedRect(-width / 2 - 1, -19, width + 2, 38, 3)
+        .fillStyle(0xfdf6e9).fillRoundedRect(-width / 2, -18, width, 36, 3).fillTriangle(-4, 18, 4, 18, 0, 23)
       const y = this.interaction.kind === 'fireplace' ? 45 : this.interaction.kind === 'tv' ? 35 : this.interaction.kind === 'sofa' ? 140 : this.interaction.point.y - 34
       // 短竖屏的回岛按钮占据顶部 70–114px；提示底板须完整留在它下方。
       const { width: viewWidth, height: viewHeight } = this.scale.gameSize
-      const safeY = viewWidth <= 600 ? this.cameraCenter.y + (138 - viewHeight / 2) / this.cameras.main.zoom : -Infinity
+      const safeY = viewWidth <= 600 ? this.cameraCenter.y + (166 - viewHeight / 2) / this.cameras.main.zoom : -Infinity
       this.prompt.setPosition(this.interaction.point.x, Math.max(y, safeY))
     }
     const near = !this.blocked() && this.pose === 'walking' && distance(this.player, HOME_LAYOUT.tv) < 28
-    if (near !== this.nearTV) { this.nearTV = near; this.publish() }
+    const nearSofa = !this.blocked() && this.pose === 'walking' && HOME_LAYOUT.standPoints.some(point => distance(this.player, point) < 28)
+    if (near !== this.nearTV || nearSofa !== this.nearSofa) { this.nearTV = near; this.nearSofa = nearSofa; this.publish() }
   }
 
   private readClock(): void {
@@ -358,12 +423,12 @@ export class InteriorScene extends Phaser.Scene {
     eventBus.emit('AUDIO_CONTEXT', { scene: 'interior', phase: this.phase, night: nightWeight(this.hour) })
   }
 
-  private drawTV(): void { paintInteriorTV(this, this.channel, this.elapsed - this.programStart, this.reducedMotion.matches, this.television) }
+  private drawTV(): void { paintInteriorTV(this, this.channel, this.program.read(performance.now()), this.reducedMotion.matches, this.television) }
   private drawPlayer(moving = false): void {
     if (!this.player) return
-    const step = moving && !this.reducedMotion.matches && Math.floor(this.elapsed / 170) % 2 ? '-step' : ''
-    this.player.setTexture(this.pose === 'seated' ? `home-${this.identity.character}-seated` : `islander-${this.identity.character}-${this.facing}${step}`)
-      .setFlipX(this.pose === 'seated' ? false : this.flip).setDepth(this.player.y)
+    const facing = this.facing === 'front' ? 'down' : this.facing === 'back' ? 'up' : this.flip ? 'left' : 'right'
+    this.player.setTexture(CHARACTER_ATLAS, this.pose === 'seated' ? `${this.identity.character}-sit-up` : actorFrame(this.identity.character, facing, moving && !this.reducedMotion.matches, this.elapsed))
+      .setFlipX(false).setDepth(this.pose === 'seated' ? 200 : this.player.y)
     this.shadow?.setPosition(this.player.x, this.player.y - 1).setVisible(this.pose !== 'seated')
   }
 
@@ -371,18 +436,23 @@ export class InteriorScene extends Phaser.Scene {
     const { width, height } = this.scale.gameSize
     const zoom = this.cameras.main.zoom, visible = width / zoom
     // 短竖屏行走时为底部摇杆/互动按钮留出空间，门口人物不能藏在按钮后。
-    const y = width <= 600 && this.pose !== 'seated'
-      ? Math.max(120, this.player.y - (height / 2 - 150) / zoom) : 120
+    const landscape = width > height && height <= 500
+    const compact = width <= 600 || landscape || HOME_LAYOUT.height * zoom > height - 220
+    const desiredFootY = this.pose === 'seated' ? Math.min(height * .60, height - 210)
+      : Math.min(height * .64, height - (landscape && width > 700 ? 130 : 190))
+    const y = landscape && this.pose === 'seated' ? Math.min(120, HOME_LAYOUT.tvScreen.y - (84 - height / 2) / zoom)
+      : compact ? Math.max(120, this.player.y - (desiredFootY - height / 2) / zoom) : 120
     if (visible >= HOME_LAYOUT.width) return { x: 160, y }
-    const x = this.pose === 'seated' ? 134 : Phaser.Math.Clamp(this.player.x, visible / 2, HOME_LAYOUT.width - visible / 2)
+    const x = this.pose === 'seated' ? 165 : Phaser.Math.Clamp(this.player.x, visible / 2, HOME_LAYOUT.width - visible / 2)
     return { x, y }
   }
 
   private fitView(): void {
     this.clearInput()
     const { width, height } = this.scale.gameSize
-    const zoom = Math.max(2, Math.min(4, Math.floor(width / HOME_LAYOUT.width), Math.floor((height - 96) / HOME_LAYOUT.height)))
+    const zoom = worldZoom(width, height)
     this.cameras.main.setZoom(zoom)
+    this.prompt?.setScale(screenTextScale(zoom))
     this.cameraCenter = this.viewFocus(); this.cameras.main.centerOn(this.cameraCenter.x, this.cameraCenter.y)
   }
 
@@ -419,8 +489,8 @@ export class InteriorScene extends Phaser.Scene {
     this.cameraCenter.x += (target.x - this.cameraCenter.x) * amount; this.cameraCenter.y += (target.y - this.cameraCenter.y) * amount
     this.cameras.main.centerOn(this.cameraCenter.x, this.cameraCenter.y)
     const boosted = !this.reducedMotion.matches && this.elapsed < this.fireBoostUntil
-    const frame = this.reducedMotion.matches ? 0 : Math.floor(this.elapsed / (boosted ? 190 : 310)) % 4
-    this.fire.setTexture(`home-fire-${frame}`)
+    const frame = this.reducedMotion.matches ? 0 : Math.floor(this.elapsed / (boosted ? 150 : 200)) % 4
+    this.fire.setTexture(HOME_ATLAS, `fire-${frame}-${this.phase === 'night' ? 'night' : 'day'}`)
     this.fireGlow.setAlpha(this.reducedMotion.matches ? .08 : boosted ? .15 : .075 + Math.sin(this.elapsed / 1600) * .015)
     this.clockTimer += delta; this.tvTimer += delta
     if (this.clockTimer >= 1000) { this.clockTimer = 0; this.readClock(); this.publish() }

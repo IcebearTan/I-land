@@ -1,0 +1,37 @@
+✔ Phaser accepts the Tiled room layers and every image has native day/night atlas frames (1.54725ms)
+✔ door can reach television and return with safe feet throughout (1.369833ms)
+✔ door can reach fireplace and return with safe feet throughout (9.742459ms)
+✔ door can reach left sofa stand point and return with safe feet throughout (0.07075ms)
+✔ door can reach right sofa stand point and return with safe feet throughout (0.055417ms)
+✔ walking from below the sofa to its front takes a real detour (1.19925ms)
+✔ feet cannot diagonally cut the lower sofa corner (0.096042ms)
+✔ a short fractional movement cannot slip between collision samples at the sofa corner (0.189209ms)
+✔ furniture, walls and a foot over the room boundary cannot become destinations (0.092875ms)
+✔ nonfinite coordinates are rejected by every navigation entry point (0.07775ms)
+✔ a full-width partition returns null rather than a path through an unreachable room (9.702042ms)
+✔ interior starts from the server snapshot and does not invent a companion (2.261458ms)
+✔ sofa arrival, sitting and standing use dedicated poses and safe points without reviving earlier movement (0.884125ms)
+✔ panel opened during sitting finishes the confirmed seat and closing does not restore pending keys or actions (0.275667ms)
+✔ blur and visibility cancel old movement and sitting without late animation resurrection (0.279958ms)
+✔ interrupting a stand clears its progress notice and lands safely for either seat (0.725208ms)
+✔ clicking clear floor from either seat stands first then routes around the sofa (7.433375ms)
+✔ reduced motion skips sofa/TV tweens and changing the preference ends the current visual arrival (0.300583ms)
+✔ TV and seats change only after server confirmation and preserve personal audio (0.117875ms)
+✔ remote standing members are present but only confirmed seats produce a remote actor (0.11875ms)
+✔ focused React controls block held movement keys and E/Space/Escape game actions (0.155833ms)
+✔ television commands require a seat or proximity, and renaming preserves the seat and channel (0.127542ms)
+✔ held keyboard movement cannot clip the sofa even with fractional positions and long frames (0.419083ms)
+✔ short portrait TV and fireplace prompts stay below the return control (0.145208ms)
+✔ portrait camera keeps door and stand points above the walking controls (0.087542ms)
+✔ interior audio and day ticks use real time and do not respond to accelerated seaside clock controls (0.080792ms)
+✔ a fireplace notice still expires after ordinary walking and a newer notice ignores the older timer (0.179542ms)
+✔ travel and repeated shutdown clean all listeners; same-instance reentry rejects prior animation and timer callbacks (0.26025ms)
+✔ landscape doorway keeps feet clear of the bottom operation area (0.077042ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 249.286125

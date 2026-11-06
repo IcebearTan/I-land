@@ -1,8 +1,10 @@
 import Phaser from 'phaser'
+import { worldZoom } from '../../visual/layout'
+import { CHARACTER_ATLAS, CHARACTER_ORIGIN, actorFrame } from '../../visual/artV2'
 import { eventBus, type GameEvents, type IslandIdentity, type SeasideState } from '../EventBus'
-import { createSeasideArt, paintSeaside, seasideLayout, seasideActorPosition, SEASIDE_BACKDROP, SEASIDE_MAX } from '../art/seaside'
+import { createSeasideArt, paintSeaside, seasideLayout, seasideActorPosition, SEASIDE_BACKDROP } from '../art/seaside'
 import { LocalSceneryClock, type SceneryClock } from '../../seaside/clock'
-import { RoomClient } from '../../seaside/room'
+import { RoomClient } from '../rooms/SeasideClient'
 import { SharedSceneryClock } from '../../seaside/roomClock'
 import type { RoomAccount, RoomMember, RoomSnapshot, RoomTiming, RoomView } from '../../seaside/types'
 
@@ -149,7 +151,7 @@ export class SeasideScene extends Phaser.Scene {
       const companionChanged = previousMembers.find(other => other.account !== member.account)?.pose !== this.members.find(other => other.account !== member.account)?.pose
       if (!actor) {
         const layout = seasideLayout(this.width, this.height)
-        actor = { member, arriving: false, generation: 0, image: this.add.image(layout.seats[member.seat] + 22, layout.seatY + 46, `seaside-${member.sprite}-standing`).setOrigin(.5, 1).setDepth(10 + member.seat) }
+        actor = { member, arriving: false, generation: 0, image: this.add.image(layout.seats[member.seat] + 22, layout.seatY + 46, CHARACTER_ATLAS, actorFrame(member.sprite, 'up')).setOrigin(CHARACTER_ORIGIN.x, CHARACTER_ORIGIN.y).setDepth(10 + member.seat) }
         this.actors.set(member.account, actor)
         if (member.pose === 'seated' && !this.reducedMotion.matches) { this.arrive(actor, 1400); continue }
       }
@@ -169,7 +171,7 @@ export class SeasideScene extends Phaser.Scene {
 
   private fit(): void {
     const { width, height } = this.scale.gameSize
-    const zoom = Math.max(2, Math.ceil(width / SEASIDE_MAX), Math.ceil(height / SEASIDE_MAX))
+    const zoom = worldZoom(width, height)
     this.width = Math.max(1, Math.ceil(width / zoom)); this.height = Math.max(1, Math.ceil(height / zoom))
     this.cameras.main.setZoom(zoom).centerOn(this.width / 2, this.height / 2)
   }
@@ -180,15 +182,15 @@ export class SeasideScene extends Phaser.Scene {
   private place(actor: ActorVisual, animate = false): void {
     const companion = this.members.find(member => member.account !== actor.member.account)
     const { x, y } = seasideActorPosition(this.width, this.height, actor.member.seat, actor.member.pose, companion?.pose)
-    const texture = actor.member.pose === 'leaning' ? `seaside-${actor.member.sprite}-leaning-${actor.member.seat === 0 ? 'left' : 'right'}` : `seaside-${actor.member.sprite}-${actor.member.pose}`
+    const texture = actor.member.pose === 'leaning' ? `${actor.member.sprite}-lean-${actor.member.seat === 0 ? 'right' : 'left'}-1` : actor.member.pose === 'seated' ? `${actor.member.sprite}-sit-up` : actorFrame(actor.member.sprite, 'up')
     if (animate && !this.reducedMotion.matches) {
       const generation = actor.generation
-      actor.image.setTexture(actor.member.pose === 'leaning' ? `${texture}-settling` : texture)
+      actor.image.setTexture(CHARACTER_ATLAS, actor.member.pose === 'leaning' ? texture.replace(/-1$/, '-0') : texture)
       actor.tween = this.tweens.add({ targets: actor.image, x, y, duration: 420, ease: 'Sine.easeInOut', onComplete: () => {
         if (generation !== actor.generation || this.disposed || this.travelling || this.actors.get(actor.member.account) !== actor) return
-        actor.tween = undefined; actor.image.setTexture(texture)
+        actor.tween = undefined; actor.image.setTexture(CHARACTER_ATLAS, texture)
       } })
-    } else actor.image.setPosition(x, y).setTexture(texture)
+    } else actor.image.setPosition(x, y).setTexture(CHARACTER_ATLAS, texture)
   }
   private arrive(actor: ActorVisual, duration: number): void {
     this.stopActor(actor); actor.arriving = true
@@ -222,7 +224,7 @@ export class SeasideScene extends Phaser.Scene {
   }
   update(_time: number, delta: number): void {
     this.elapsed += Math.min(delta, 100)
-    for (const actor of this.actors.values()) if (actor.arriving && !this.reducedMotion.matches) actor.image.setTexture(`seaside-${actor.member.sprite}-standing${Math.floor(this.elapsed / 180) % 2 ? '-step' : ''}`)
+    for (const actor of this.actors.values()) if (actor.arriving && !this.reducedMotion.matches) actor.image.setTexture(CHARACTER_ATLAS, actorFrame(actor.member.sprite, 'up', true, this.elapsed))
     this.paintTimer += delta; this.stateTimer += delta
     if (this.paintTimer > (this.reducedMotion.matches ? 3000 : 500)) { this.paintTimer = 0; this.paint() }
     if (this.stateTimer > 500) { this.stateTimer = 0; this.publish() }

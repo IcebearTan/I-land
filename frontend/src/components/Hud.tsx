@@ -78,7 +78,7 @@ export function Hud({ user, onLogout, quiet = false }: { user: User; onLogout: (
       </div>
       <div className="hud-presence">
         <CharacterPortrait character={companion} size={30} />
-        <div><strong>{islanders[companion]}的足迹</strong>
+        <div className="hud-presence-copy"><strong>{islanders[companion]}的足迹</strong>
           <span>{presenceError ? '暂时无法读取足迹' : presence === undefined ? '看看对方的足迹…' : visitCopy(presence)}</span>
           {presence?.action_note && <span className="presence-note">{presence.action_note}</span>}
         </div>
@@ -94,7 +94,7 @@ export function Hud({ user, onLogout, quiet = false }: { user: User; onLogout: (
         )}
         <div className="hud-user">
           <CharacterPortrait character={character} size={28} />
-          {user.account === 'bear' || user.account === 'her' ? islanders[user.account] : user.display}
+          <span className="hud-user-name">{user.account === 'bear' || user.account === 'her' ? islanders[user.account] : user.display}</span>
           <button className="btn btn-mini" onClick={() => eventBus.emit('OPEN_SETTINGS', {})} aria-label="打开小岛设置">
             设置
           </button>

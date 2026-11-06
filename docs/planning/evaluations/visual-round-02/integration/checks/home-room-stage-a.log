@@ -1,0 +1,32 @@
+✔ home accepts standing members without seats and rejects duplicate or inconsistent seats (0.833417ms)
+✔ home waits for a complete WS frame and commands use owned lease and latest TV version (1.900042ms)
+✔ TV CAS and seat conflict adopt full current state and preserve retryable connection (0.219792ms)
+✔ late home responses cannot overwrite newer WS television or seats (0.213333ms)
+✔ home rejects wrong-room frames and takeover does not silently reacquire a seat (0.201125ms)
+✔ shared programme uses real monotonic milliseconds, half RTT and 24-second loops (0.15125ms)
+✔ cross-room entry sequence stays stable for reconnect and advances on travel and explicit retry (0.087042ms)
+✔ interior starts from the server snapshot and does not invent a companion (2.319125ms)
+✔ sofa arrival, sitting and standing use dedicated poses and safe points without reviving earlier movement (0.893208ms)
+✔ panel opened during sitting finishes the confirmed seat and closing does not restore pending keys or actions (0.289208ms)
+✔ blur and visibility cancel old movement and sitting without late animation resurrection (0.261167ms)
+✔ interrupting a stand clears its progress notice and lands safely for either seat (0.695375ms)
+✔ clicking clear floor from either seat stands first then routes around the sofa (6.818667ms)
+✔ reduced motion skips sofa/TV tweens and changing the preference ends the current visual arrival (0.302333ms)
+✔ TV and seats change only after server confirmation and preserve personal audio (0.14075ms)
+✔ remote standing members are present but only confirmed seats produce a remote actor (0.138625ms)
+✔ focused React controls block held movement keys and E/Space/Escape game actions (0.170542ms)
+✔ television commands require a seat or proximity, and renaming preserves the seat and channel (0.141666ms)
+✔ held keyboard movement cannot clip the sofa even with fractional positions and long frames (0.47325ms)
+✔ short portrait TV and fireplace prompts stay below the return control (0.149958ms)
+✔ portrait camera keeps door and stand points above the walking controls (0.095166ms)
+✔ interior audio and day ticks use real time and do not respond to accelerated seaside clock controls (0.081458ms)
+✔ a fireplace notice still expires after ordinary walking and a newer notice ignores the older timer (0.189084ms)
+✔ travel and repeated shutdown clean all listeners; same-instance reentry rejects prior animation and timer callbacks (0.263834ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 255.203083

@@ -18,7 +18,7 @@ from .routers import (
     world_router,
     rooms_router,
 )
-from .room_runtime import room_runtime
+from .room_runtime import room_runtimes
 from .seed import seed
 
 
@@ -28,15 +28,18 @@ async def lifespan(_: FastAPI):
     with Session(engine) as db:
         seed(db)
     UPLOADS_DIR.mkdir(parents=True, exist_ok=True)  # 全新数据卷首次启动即建目录
-    room_runtime.start()
-    room_watch = asyncio.create_task(room_runtime.watch())
+    for runtime in room_runtimes.values():
+        runtime.start()
+    room_watches = [asyncio.create_task(runtime.watch()) for runtime in room_runtimes.values()]
     try:
         yield
     finally:
-        room_watch.cancel()
+        for watch in room_watches:
+            watch.cancel()
         with suppress(asyncio.CancelledError):
-            await room_watch
-        room_runtime.stop()
+            await asyncio.gather(*room_watches, return_exceptions=True)
+        for runtime in room_runtimes.values():
+            runtime.stop()
 
 
 app = FastAPI(title="I-land API", version="0.2.0", lifespan=lifespan)

@@ -1,0 +1,39 @@
+✔ interior starts from the server snapshot and does not invent a companion (2.287209ms)
+✔ sofa arrival, sitting and standing use dedicated poses and safe points without reviving earlier movement (0.899ms)
+✔ panel opened during sitting finishes the confirmed seat and closing does not restore pending keys or actions (0.283625ms)
+✔ blur and visibility cancel old movement and sitting without late animation resurrection (0.282833ms)
+✔ interrupting a stand clears its progress notice and lands safely for either seat (0.716625ms)
+✔ clicking clear floor from either seat stands first then routes around the sofa (7.843208ms)
+✔ reduced motion skips sofa/TV tweens and changing the preference ends the current visual arrival (0.319ms)
+✔ TV and seats change only after server confirmation and preserve personal audio (0.119458ms)
+✔ remote standing members are present but only confirmed seats produce a remote actor (0.121709ms)
+✔ focused React controls block held movement keys and E/Space/Escape game actions (0.148167ms)
+✔ television commands require a seat or proximity, and renaming preserves the seat and channel (0.126833ms)
+✔ held keyboard movement cannot clip the sofa even with fractional positions and long frames (0.3875ms)
+✔ short portrait TV and fireplace prompts stay below the return control (0.13525ms)
+✔ portrait camera keeps door and stand points above the walking controls (0.086ms)
+✔ interior audio and day ticks use real time and do not respond to accelerated seaside clock controls (0.074625ms)
+✔ a fireplace notice still expires after ordinary walking and a newer notice ignores the older timer (0.177459ms)
+✔ travel and repeated shutdown clean all listeners; same-instance reentry rejects prior animation and timer callbacks (0.238791ms)
+✔ landscape doorway keeps feet clear of the bottom operation area (0.067708ms)
+✔ joining leaves both seats empty until a server-confirmed member supplies its seat and identity (3.127209ms)
+✔ two confirmed arrivals use independent actors and animations, including reversed seat assignments (0.454ms)
+✔ pose requests wait for shared server facts and pending requests cannot promise a fake successful action (0.21425ms)
+✔ server-confirmed single and mutual leaning use side-specific settling frames and reflow both actors (0.342167ms)
+✔ a partner departure clears its actor and footprints, and cannot revive through a late animation callback (0.155542ms)
+✔ disconnect clears online people, blocks actions, and only explicit retry asks the room to rejoin (0.134209ms)
+✔ panels block pose, scenery, retry and keyboard API calls without restoring island movement or key capture (0.155ms)
+✔ clock controls issue shared API requests and only confirmed anchors affect scenery, never date ticks or playback speed (0.160708ms)
+✔ resize and reduced motion preserve confirmed members, assigned seats and clock without repeating the join (0.17275ms)
+✔ enabling reduced motion ends only visual arrivals and keeps confirmed seated or leaning facts intact (0.23175ms)
+✔ shutdown, destroy and same-instance reentry clean up once and reject all callbacks from the previous room lifetime (0.202375ms)
+✔ rapid travel releases a pending room or active seat and late joins or animations cannot place anyone back (0.110625ms)
+✔ shared world zoom preserves integer pixels and covers the island without changing scene scale (0.580291ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 272.866125

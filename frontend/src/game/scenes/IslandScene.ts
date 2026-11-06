@@ -1,4 +1,7 @@
 import Phaser from 'phaser'
+import { worldZoom } from '../../visual/layout'
+import { CHARACTER_ATLAS, CHARACTER_ORIGIN, CHARACTER_FOOT, actorFrame } from '../../visual/artV2'
+import { SCREEN_BODY_PX, SCREEN_LABEL_PX, screenTextScale } from '../../visual/screenText'
 import { eventBus, type Phase, type IslandIdentity, type IslandEntry, type SceneState } from '../EventBus'
 import { makeTexture } from '../pixels'
 import { hash2 } from '../art'
@@ -68,7 +71,9 @@ export class IslandScene extends Phaser.Scene {
   private secondTimer = 0
   private audioTimer = 0
   private facing = 'front'
+  private facingLeft = false
   private prompt!: Phaser.GameObjects.Container
+  private sceneLabels: Phaser.GameObjects.Text[] = []
   private promptText!: Phaser.GameObjects.Text
   private promptBg!: Phaser.GameObjects.Graphics
   private promptTarget: Interactable | null = null
@@ -98,6 +103,7 @@ export class IslandScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.sceneLabels = []
     this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.audioTimer = 0; this.decorations = []; this.previous = { ...this.spawn }
     this.cameras.main.setBounds(0, 0, WORLD.width, WORLD.height)
     this.physics.world.setBounds(0, 0, WORLD.width, WORLD.height)
@@ -105,9 +111,9 @@ export class IslandScene extends Phaser.Scene {
     this.add.image(0, 0, 'island-ground-v3').setOrigin(0).setDepth(0)
     this.placeScenery()
     this.setupLights()
-    this.shadow = this.add.ellipse(this.spawn.x, this.spawn.y + 6, 13, 5, 0x345b40, .24).setDepth(1)
-    this.player = this.physics.add.sprite(this.spawn.x, this.spawn.y, `islander-${this.identity.character}-front`)
-    this.player.setSize(10, 5).setOffset(3, 10).setCollideWorldBounds(true)
+    this.shadow = this.add.ellipse(this.spawn.x, this.spawn.y - 1, 12, 4, 0x345b40, .24).setDepth(1)
+    this.player = this.physics.add.sprite(this.spawn.x, this.spawn.y, CHARACTER_ATLAS, actorFrame(this.identity.character, 'down')).setOrigin(CHARACTER_ORIGIN.x, CHARACTER_ORIGIN.y)
+    this.player.setSize(CHARACTER_FOOT.width, CHARACTER_FOOT.height).setOffset(CHARACTER_FOOT.offsetX, CHARACTER_FOOT.offsetY).setCollideWorldBounds(true)
     this.cameras.main.startFollow(this.player, true, 1, 1, 0, 65)
     this.fitZoom()
     this.destination = this.add.graphics().setDepth(2).setVisible(false)
@@ -126,12 +132,12 @@ export class IslandScene extends Phaser.Scene {
     this.input.on('pointerdown', onPointer)
     this.promptBg = this.add.graphics()
     this.promptText = this.add.text(0, 0, '', {
-      fontFamily: 'system-ui, sans-serif', fontSize: '8px', color: '#4a3b55', resolution: 3,
+      fontFamily: 'system-ui, sans-serif', fontSize: SCREEN_BODY_PX, color: '#4a3b55', resolution: 3,
     }).setOrigin(.5)
-    const zone = this.add.zone(0, 0, 125, 26).setInteractive({ useHandCursor: true })
+    const zone = this.add.zone(0, 0, 170, 44).setInteractive({ useHandCursor: true })
     const onPrompt = () => this.tryInteract()
     zone.on('pointerdown', onPrompt)
-    this.prompt = this.add.container(0, 0, [this.promptBg, this.promptText, zone]).setDepth(9000).setVisible(false)
+    this.prompt = this.add.container(0, 0, [this.promptBg, this.promptText, zone]).setDepth(9000).setVisible(false).setScale(screenTextScale(this.cameras.main.zoom))
     this.tintOverlay = this.add.rectangle(0, 0, WORLD.width, WORLD.height, 0xffffff)
       .setOrigin(0).setDepth(5000).setBlendMode(Phaser.BlendModes.MULTIPLY)
     const onMove = (input: { x: number; y: number }) => {
@@ -203,7 +209,9 @@ export class IslandScene extends Phaser.Scene {
     // 可视区域（视口÷zoom）任一轴超出 640×480 世界纹理，就会在超出侧露出
     // 无波纹的平底背景色 #3f6f9e（看起来是一块突兀的蓝色空白）。
     const { width, height } = this.scale.gameSize
-    this.cameras.main.setZoom(Math.max(2, Math.ceil(width / WORLD.width), Math.ceil(height / WORLD.height)))
+    this.cameras.main.setZoom(worldZoom(width, height))
+    const scale = screenTextScale(this.cameras.main.zoom)
+    this.prompt?.setScale(scale); this.sceneLabels.forEach(label => label.setScale(scale))
   }
 
   private placeScenery(): void {
@@ -224,13 +232,13 @@ export class IslandScene extends Phaser.Scene {
     object(SEASIDE_ENTRY.x, SEASIDE_ENTRY.y, 'seaside-waymark', 18)
     this.add.image(SEASIDE_ENTRY.x + 17, SEASIDE_ENTRY.y + 2, 'seaside-cushion').setOrigin(.5, 1).setDepth(2)
     this.add.image(SEASIDE_ENTRY.x + 28, SEASIDE_ENTRY.y - 7, 'seaside-shell').setDepth(2)
-    this.add.text(SEASIDE_ENTRY.x, SEASIDE_ENTRY.y - 11, '看海', {
-      fontFamily: 'system-ui, sans-serif', fontSize: '6px', color: '#f5eee2', resolution: 3,
-    }).setOrigin(.5).setDepth(SEASIDE_ENTRY.y + 1)
+    this.sceneLabels.push(this.add.text(SEASIDE_ENTRY.x, SEASIDE_ENTRY.y - 11, '看海', {
+      fontFamily: 'system-ui, sans-serif', fontSize: SCREEN_LABEL_PX, color: '#f5eee2', resolution: 3,
+    }).setOrigin(.5).setDepth(SEASIDE_ENTRY.y + 1))
     // 位置标识在场景中使用清晰的小字，不烘焙进像素素材。
     for (const [x, y, text] of [[HOME.x, 254, '我们的家'], [164, 324, '慢慢开花'], [TOWER.x, 277, '记忆灯塔']] as const) {
-      this.add.text(x, y, text, { fontFamily: 'system-ui, sans-serif', fontSize: '7px', color: '#4a3b55',
-        backgroundColor: '#f0d9a8', padding: { x: 4, y: 2 }, resolution: 3 }).setOrigin(.5).setDepth(2)
+      this.sceneLabels.push(this.add.text(x, y, text, { fontFamily: 'system-ui, sans-serif', fontSize: SCREEN_LABEL_PX, color: '#4a3b55',
+        backgroundColor: '#f0d9a8', padding: { x: 4, y: 2 }, resolution: 3 }).setOrigin(.5).setDepth(2))
     }
     makeTexture(this, 'ripple-v3', ['....ww......', '..ww..ww....', 'ww......wwww'], { w: '#b4d7df' })
     for (let i = 0; i < 38; i++) {
@@ -279,16 +287,15 @@ export class IslandScene extends Phaser.Scene {
     }
     const norm = Math.hypot(dx, dy)
     this.player.setVelocity(norm ? dx / norm * 72 : 0, norm ? dy / norm * 72 : 0)
-    this.player.setDepth(this.player.y + 7)
+    this.player.setDepth(this.player.y)
     if (norm) {
       this.facing = Math.abs(dx) > Math.abs(dy) ? 'side' : dy < 0 ? 'back' : 'front'
-      this.player.setFlipX(this.facing === 'side' && dx < 0)
+      this.facingLeft = this.facing === 'side' && dx < 0
     }
-    // 四方向、两帧走路节奏，不拉伸角色；减少动态时保持静态。
-    const step = !this.reducedMotion.matches && norm && Math.floor(time / 160) % 2 ? '-step' : ''
-    this.player.setTexture(`islander-${this.identity.character}-${this.facing}${step}`)
+    const facing = this.facing === 'front' ? 'down' : this.facing === 'back' ? 'up' : this.facingLeft ? 'left' : 'right'
+    this.player.setTexture(CHARACTER_ATLAS, actorFrame(this.identity.character, facing, !this.reducedMotion.matches && norm > 0, time)).setFlipX(false)
     this.destination.setVisible(!!this.tapTarget && !this.panelOpen && !this.leaving)
-    this.shadow.setPosition(this.player.x, this.player.y + 6)
+    this.shadow.setPosition(this.player.x, this.player.y - 1)
     for (let i = 0; i < this.decorations.length; i++) {
       const water = this.decorations[i]
       water.setAlpha(this.reducedMotion.matches ? .8 : .8 + Math.floor((time + i * 173) / 800) % 2 * .15)
@@ -313,8 +320,8 @@ export class IslandScene extends Phaser.Scene {
 
   private walkable(x: number, y: number): boolean {
     const onDock = x > DOCK.left + 4 && x < DOCK.right - 4 && y >= DOCK.top - 8 && y < DOCK.bottom - 6
-    if (!onDock && landDistance(x, y + 5) > .967) return false
-    return !OBSTACLES.some(o => x + 4 > o.x && x - 4 < o.x + o.w && y + 6 > o.y && y + 2 < o.y + o.h)
+    if (!onDock && landDistance(x, y - 1) > .967) return false
+    return !OBSTACLES.some(o => x + 4 > o.x && x - 4 < o.x + o.w && y > o.y && y - 4 < o.y + o.h)
   }
   private resolveMovement(): void {
     const { x, y } = this.player
@@ -335,10 +342,10 @@ export class IslandScene extends Phaser.Scene {
     this.prompt.setVisible(!!this.promptTarget && !this.panelOpen)
     if (!this.promptTarget) return
     this.promptText.setText(`${this.promptTarget.label}  ·  E / 轻点`)
-    const width = this.promptText.width + 14
-    this.promptBg.clear().fillStyle(0x8a5a38).fillRoundedRect(-width / 2 - 1, -11, width + 2, 22, 2)
-      .fillStyle(0xfdf6e9).fillRoundedRect(-width / 2, -10, width, 19, 2)
-      .fillTriangle(-3, 9, 3, 9, 0, 13)
+    const width = this.promptText.width + 20
+    this.promptBg.clear().fillStyle(0x8a5a38).fillRoundedRect(-width / 2 - 1, -19, width + 2, 38, 3)
+      .fillStyle(0xfdf6e9).fillRoundedRect(-width / 2, -18, width, 36, 3)
+      .fillTriangle(-4, 18, 4, 18, 0, 23)
     this.prompt.setPosition(this.promptTarget.x, this.promptTarget.y - 44)
   }
   private tryInteract(): void {

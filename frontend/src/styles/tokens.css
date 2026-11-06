@@ -1,0 +1,59 @@
+/* UI-01 · DOM tokens。尺寸均为最终 CSS px，不随游戏相机缩放。 */
+:root {
+  color-scheme: only light;
+  --ui-font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --ui-font-number: ui-monospace, 'SF Mono', Menlo, monospace;
+  --ui-text-body: 16px;
+  --ui-text-control: 14px;
+  --ui-text-meta: 12px;
+  --ui-text-title: 24px;
+  --ui-text-section: 20px;
+  --ui-leading-body: 1.6;
+  --ui-leading-control: 1.4;
+  --ui-touch: 44px;
+  --ui-space-1: 4px;
+  --ui-space-2: 8px;
+  --ui-space-3: 12px;
+  --ui-space-4: 16px;
+  --ui-space-5: 24px;
+  --ui-space-6: 32px;
+  --ui-radius: 4px;
+  --ui-radius-panel: 8px;
+  --ui-paper: #fdf6e9;
+  --ui-paper-raised: #fffaf1;
+  --ui-paper-inset: #f0e4cc;
+  --ui-wood: #8a5a38;
+  --ui-wood-dark: #6e4529;
+  --ui-border: #c8ad8b;
+  --ui-divider: #e0ceb0;
+  --ui-ink: #4a3b55;
+  --ui-muted: #6d5e7a;
+  --ui-on-dark: #f5eee2;
+  --ui-accent: #326860;
+  --ui-accent-hover: #28584f;
+  --ui-accent-soft: #e3eee3;
+  --ui-danger: #98465c;
+  --ui-danger-soft: #f7dce0;
+  --ui-shadow-control: 0 2px 0 #6e45292b;
+  --ui-shadow-panel: 0 4px 0 #6e45294d, 0 16px 40px #2b1b4526;
+  --ui-focus: 2px solid var(--ui-accent);
+  --ui-inset-top: max(12px, env(safe-area-inset-top));
+  --ui-inset-bottom: max(12px, env(safe-area-inset-bottom));
+  --ui-inset-left: max(12px, env(safe-area-inset-left));
+  --ui-inset-right: max(12px, env(safe-area-inset-right));
+  /* 供场景整合者据此预留取景空间；CSS 不读取/修改 canvas。 */
+  --ui-room-mobile-back-top: 80px;
+  --ui-room-mobile-walk-bottom: 156px;
+  --ui-room-mobile-seated-bottom: 160px;
+  --ui-shore-mobile-bottom: 200px;
+  /* 保留已有主题/组件引用的名称。 */
+  --cream: var(--ui-paper);
+  --wood: #e8c48f;
+  --beam: var(--ui-wood);
+  --beam-dark: var(--ui-wood-dark);
+  --ink: var(--ui-ink);
+  --ink-soft: var(--ui-muted);
+  --heart: #e8637c;
+  --warm: #ffd98a;
+  --night: #0e1030;
+}

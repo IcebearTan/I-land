@@ -1,0 +1,25 @@
+{
+  "temporary": "/var/folders/dp/6_g0zg313vsfyr61ppk7v8lc0000gn/T/iland-home02-K82DkX",
+  "port": 8031,
+  "pid": 14183,
+  "browser": "151.0.7922.34",
+  "isolation": "temporary SQLite/uploads; separate browser contexts",
+  "baselineDist": "index-Cu29tXA8.js",
+  "closed_on": "2026-11-07",
+  "closed_at_utc": "2026-11-06T17:33:02.021Z",
+  "server_stopped": true,
+  "browsers_closed": true,
+  "native_browser_pid": 10420,
+  "native_visibility_method": "Chromium default context connected with noDefaults:true; actual tab visibility hidden/visible",
+  "final_build": {
+    "js": "index-DJ8N_jWk.js",
+    "css": "index-CqiWzKrh.css",
+    "modules": 90,
+    "post_browser_change": "Tiled equivalent layout extraction; 29 targeted checks and build passed"
+  },
+  "server_exit_signal": "SIGTERM",
+  "last_browser_build": {
+    "js": "index-DkDxhB-s.js",
+    "scope": "large-screen scale verification; earlier critical flows retained where unchanged"
+  }
+}

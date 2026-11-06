@@ -1,0 +1,857 @@
+{
+  "frames": {
+    "shell-day": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 320,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 240
+      }
+    },
+    "shell-night": {
+      "frame": {
+        "x": 326,
+        "y": 2,
+        "w": 320,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 240
+      }
+    },
+    "fireplace-day": {
+      "frame": {
+        "x": 650,
+        "y": 2,
+        "w": 76,
+        "h": 86
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 76,
+        "h": 86
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 86
+      }
+    },
+    "fireplace-night": {
+      "frame": {
+        "x": 730,
+        "y": 2,
+        "w": 76,
+        "h": 86
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 76,
+        "h": 86
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 86
+      }
+    },
+    "tv-case-day": {
+      "frame": {
+        "x": 810,
+        "y": 2,
+        "w": 60,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 60,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 64
+      }
+    },
+    "tv-case-night": {
+      "frame": {
+        "x": 874,
+        "y": 2,
+        "w": 60,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 60,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 64
+      }
+    },
+    "tv-screen-day": {
+      "frame": {
+        "x": 938,
+        "y": 2,
+        "w": 27,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 27,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 27,
+        "h": 20
+      }
+    },
+    "tv-screen-night": {
+      "frame": {
+        "x": 969,
+        "y": 2,
+        "w": 27,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 27,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 27,
+        "h": 20
+      }
+    },
+    "tv-screen-off-day": {
+      "frame": {
+        "x": 2,
+        "y": 246,
+        "w": 27,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 27,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 27,
+        "h": 20
+      }
+    },
+    "tv-screen-off-night": {
+      "frame": {
+        "x": 33,
+        "y": 246,
+        "w": 27,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 27,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 27,
+        "h": 20
+      }
+    },
+    "window-frame-day": {
+      "frame": {
+        "x": 64,
+        "y": 246,
+        "w": 60,
+        "h": 74
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 60,
+        "h": 74
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 74
+      }
+    },
+    "window-frame-night": {
+      "frame": {
+        "x": 128,
+        "y": 246,
+        "w": 60,
+        "h": 74
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 60,
+        "h": 74
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 74
+      }
+    },
+    "window-view-day": {
+      "frame": {
+        "x": 192,
+        "y": 246,
+        "w": 39,
+        "h": 49
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 39,
+        "h": 49
+      },
+      "sourceSize": {
+        "w": 39,
+        "h": 49
+      }
+    },
+    "window-view-night": {
+      "frame": {
+        "x": 235,
+        "y": 246,
+        "w": 39,
+        "h": 49
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 39,
+        "h": 49
+      },
+      "sourceSize": {
+        "w": 39,
+        "h": 49
+      }
+    },
+    "rug-day": {
+      "frame": {
+        "x": 278,
+        "y": 246,
+        "w": 112,
+        "h": 68
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 112,
+        "h": 68
+      },
+      "sourceSize": {
+        "w": 112,
+        "h": 68
+      }
+    },
+    "rug-night": {
+      "frame": {
+        "x": 394,
+        "y": 246,
+        "w": 112,
+        "h": 68
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 112,
+        "h": 68
+      },
+      "sourceSize": {
+        "w": 112,
+        "h": 68
+      }
+    },
+    "sofa-base-day": {
+      "frame": {
+        "x": 510,
+        "y": 246,
+        "w": 80,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 48
+      }
+    },
+    "sofa-base-night": {
+      "frame": {
+        "x": 594,
+        "y": 246,
+        "w": 80,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 48
+      }
+    },
+    "sofa-front-day": {
+      "frame": {
+        "x": 678,
+        "y": 246,
+        "w": 80,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 48
+      }
+    },
+    "sofa-front-night": {
+      "frame": {
+        "x": 762,
+        "y": 246,
+        "w": 80,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 48
+      }
+    },
+    "door-day": {
+      "frame": {
+        "x": 846,
+        "y": 246,
+        "w": 30,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 30,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 30,
+        "h": 40
+      }
+    },
+    "door-night": {
+      "frame": {
+        "x": 880,
+        "y": 246,
+        "w": 30,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 30,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 30,
+        "h": 40
+      }
+    },
+    "cup-cream-day": {
+      "frame": {
+        "x": 914,
+        "y": 246,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      }
+    },
+    "cup-cream-night": {
+      "frame": {
+        "x": 926,
+        "y": 246,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      }
+    },
+    "side-table-day": {
+      "frame": {
+        "x": 938,
+        "y": 246,
+        "w": 24,
+        "h": 25
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 25
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 25
+      }
+    },
+    "side-table-night": {
+      "frame": {
+        "x": 966,
+        "y": 246,
+        "w": 24,
+        "h": 25
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 25
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 25
+      }
+    },
+    "plant-day": {
+      "frame": {
+        "x": 994,
+        "y": 246,
+        "w": 24,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 38
+      }
+    },
+    "plant-night": {
+      "frame": {
+        "x": 2,
+        "y": 324,
+        "w": 24,
+        "h": 38
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 38
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 38
+      }
+    },
+    "logs-day": {
+      "frame": {
+        "x": 30,
+        "y": 324,
+        "w": 24,
+        "h": 19
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 19
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 19
+      }
+    },
+    "logs-night": {
+      "frame": {
+        "x": 58,
+        "y": 324,
+        "w": 24,
+        "h": 19
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 19
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 19
+      }
+    },
+    "fire-0-day": {
+      "frame": {
+        "x": 86,
+        "y": 324,
+        "w": 28,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 28,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 28,
+        "h": 28
+      }
+    },
+    "fire-0-night": {
+      "frame": {
+        "x": 118,
+        "y": 324,
+        "w": 28,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 28,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 28,
+        "h": 28
+      }
+    },
+    "fire-1-day": {
+      "frame": {
+        "x": 150,
+        "y": 324,
+        "w": 28,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 28,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 28,
+        "h": 28
+      }
+    },
+    "fire-1-night": {
+      "frame": {
+        "x": 182,
+        "y": 324,
+        "w": 28,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 28,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 28,
+        "h": 28
+      }
+    },
+    "fire-2-day": {
+      "frame": {
+        "x": 214,
+        "y": 324,
+        "w": 28,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 28,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 28,
+        "h": 28
+      }
+    },
+    "fire-2-night": {
+      "frame": {
+        "x": 246,
+        "y": 324,
+        "w": 28,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 28,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 28,
+        "h": 28
+      }
+    },
+    "fire-3-day": {
+      "frame": {
+        "x": 278,
+        "y": 324,
+        "w": 28,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 28,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 28,
+        "h": 28
+      }
+    },
+    "fire-3-night": {
+      "frame": {
+        "x": 310,
+        "y": 324,
+        "w": 28,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 28,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 28,
+        "h": 28
+      }
+    },
+    "fireplace-shadow-day": {
+      "frame": {
+        "x": 342,
+        "y": 324,
+        "w": 76,
+        "h": 12
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 76,
+        "h": 12
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 12
+      }
+    },
+    "fireplace-shadow-night": {
+      "frame": {
+        "x": 422,
+        "y": 324,
+        "w": 76,
+        "h": 12
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 76,
+        "h": 12
+      },
+      "sourceSize": {
+        "w": 76,
+        "h": 12
+      }
+    },
+    "tv-shadow-day": {
+      "frame": {
+        "x": 502,
+        "y": 324,
+        "w": 60,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 60,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 10
+      }
+    },
+    "tv-shadow-night": {
+      "frame": {
+        "x": 566,
+        "y": 324,
+        "w": 60,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 60,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 10
+      }
+    }
+  },
+  "meta": {
+    "app": "I-land ART-02",
+    "version": "art-v2.1.0",
+    "image": "home-atlas.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1024,
+      "h": 368
+    },
+    "scale": "1",
+    "padding": 2,
+    "extrude": 1
+  }
+}

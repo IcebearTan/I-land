@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-07",
+  "kind": "static-source-review-not-browser-layout-test",
+  "parsedCss": [
+    "src/styles/tokens.css",
+    "src/styles/global.css",
+    "src/styles/seaside.css",
+    "src/components/interior.css",
+    "src/calendar/calendar.css"
+  ],
+  "uiTokenCount": 44,
+  "undefinedUiTokens": [],
+  "explicitFontLiteralsBelow12px": [],
+  "preservedInteractions": [
+    {
+      "file": "src/components/Hud.tsx",
+      "handlersUnchanged": true,
+      "apiAndBusCallsUnchanged": true,
+      "inputMarkupUnchanged": true
+    },
+    {
+      "file": "src/components/SeasideControls.tsx",
+      "handlersUnchanged": true,
+      "apiAndBusCallsUnchanged": true,
+      "inputMarkupUnchanged": true
+    },
+    {
+      "file": "src/calendar/CalendarFeature.tsx",
+      "handlersUnchanged": true,
+      "apiAndBusCallsUnchanged": true,
+      "inputMarkupUnchanged": true
+    },
+    {
+      "file": "src/calendar/HolidayDateField.tsx",
+      "handlersUnchanged": true,
+      "apiAndBusCallsUnchanged": true,
+      "inputMarkupUnchanged": true
+    },
+    {
+      "file": "src/calendar/MemoryCards.tsx",
+      "handlersUnchanged": true,
+      "apiAndBusCallsUnchanged": true,
+      "inputMarkupUnchanged": true
+    }
+  ],
+  "calendarThemesUnchanged": true
+}

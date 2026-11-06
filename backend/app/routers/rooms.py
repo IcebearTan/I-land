@@ -1,4 +1,4 @@
-"""私人海边房间：Cookie 身份，REST 动作，WS 只推送完整快照。"""
+"""私人房间：Cookie 身份，REST 动作，WS 只推送完整快照。"""
 
 import asyncio
 import os
@@ -13,7 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from starlette.requests import HTTPConnection
 
 from ..config import SESSION_COOKIE
-from ..room_runtime import room_runtime
+from ..room_runtime import room_runtime, home_runtime, room_runtimes
 
 router = APIRouter(prefix="/api/rooms", tags=["rooms"])
 
@@ -40,10 +40,27 @@ class JoinIn(RoomIn):
     client_id: UUID
     connection_generation: int | None = Field(default=None, strict=True, ge=1)
     expected_account: Literal["bear", "her"] | None = None
+    page_id: UUID | None = None
+    entry_generation: int | None = Field(default=None, strict=True, ge=1)
+
+    @model_validator(mode="after")
+    def paired_entry(self):
+        if (self.page_id is None) != (self.entry_generation is None):
+            raise ValueError("page_id 与 entry_generation 必须一起提供")
+        return self
 
 
 class LeaseIn(RoomIn):
     lease_id: UUID
+
+
+class SeatIn(LeaseIn):
+    seat: int | None = Field(strict=True, ge=0, le=1)
+
+
+class TelevisionIn(LeaseIn):
+    version: int = Field(strict=True, ge=1)
+    action: Literal["toggle", "next"]
 
 
 class PoseIn(LeaseIn):
@@ -90,7 +107,7 @@ def check_source(connection: HTTPConnection, *, websocket: bool = False):
     source = connection.headers.get("origin")
     if not source:
         if websocket or connection.headers.get("sec-fetch-site") == "cross-site":
-            raise HTTPException(403, "请从小岛自己的页面进入海边")
+            raise HTTPException(403, "请从小岛自己的页面进入房间")
         return  # 本地工具/无 Origin 的同源 GET 仍走严格 Cookie 身份校验
     scheme = {"ws": "http", "wss": "https"}.get(connection.url.scheme, connection.url.scheme)
     expected = _origin(f"{scheme}://{connection.url.netloc}")
@@ -99,31 +116,38 @@ def check_source(connection: HTTPConnection, *, websocket: bool = False):
         _origin(value.strip()) for value in os.getenv("ILAND_ROOM_ORIGINS", "").split(",")
     )))
     if _origin(source) not in allowed or _origin(source) is None:
-        raise HTTPException(403, "海边请求来源不匹配")
+        raise HTTPException(403, "房间请求来源不匹配")
 
 
-@router.get("/seaside")
-def get_seaside(request: Request, iland_session: str | None = Cookie(default=None)):
+def get_runtime(room: str):
+    if room not in room_runtimes:
+        raise HTTPException(404, "房间不存在")
+    return room_runtimes[room]
+
+
+@router.get("/{room}")
+def get_room(room: str, request: Request, iland_session: str | None = Cookie(default=None)):
     check_source(request)
-    return room_runtime.snapshot(iland_session)
+    return get_runtime(room).snapshot(iland_session)
 
 
-@router.post("/seaside/join")
-def join_seaside(body: JoinIn, request: Request, iland_session: str | None = Cookie(default=None)):
+@router.post("/{room}/join")
+def join_room(room: str, body: JoinIn, request: Request, iland_session: str | None = Cookie(default=None)):
     check_source(request)
-    return room_runtime.join(iland_session, str(body.client_id), body.connection_generation, body.expected_account)
+    return get_runtime(room).join(iland_session, str(body.client_id), body.connection_generation, body.expected_account,
+                                  str(body.page_id) if body.page_id else None, body.entry_generation)
 
 
-@router.post("/seaside/heartbeat")
-def heartbeat_seaside(body: LeaseIn, request: Request, iland_session: str | None = Cookie(default=None)):
+@router.post("/{room}/heartbeat")
+def heartbeat_room(room: str, body: LeaseIn, request: Request, iland_session: str | None = Cookie(default=None)):
     check_source(request)
-    return room_runtime.heartbeat(iland_session, str(body.lease_id))
+    return get_runtime(room).heartbeat(iland_session, str(body.lease_id))
 
 
-@router.post("/seaside/leave")
-def leave_seaside(body: LeaseIn, request: Request, iland_session: str | None = Cookie(default=None)):
+@router.post("/{room}/leave")
+def leave_room(room: str, body: LeaseIn, request: Request, iland_session: str | None = Cookie(default=None)):
     check_source(request)
-    return room_runtime.leave(iland_session, str(body.lease_id))
+    return get_runtime(room).leave(iland_session, str(body.lease_id))
 
 
 @router.put("/seaside/pose")
@@ -141,13 +165,26 @@ def clock_seaside(body: ClockIn, request: Request, iland_session: str | None = C
     )
 
 
-@router.websocket("/seaside/events")
-async def events_seaside(websocket: WebSocket, lease_id: str = ""):
+@router.put("/interior/seat")
+def seat_interior(body: SeatIn, request: Request, iland_session: str | None = Cookie(default=None)):
+    check_source(request)
+    return home_runtime.change_seat(iland_session, str(body.lease_id), body.seat)
+
+
+@router.put("/interior/television")
+def television_interior(body: TelevisionIn, request: Request, iland_session: str | None = Cookie(default=None)):
+    check_source(request)
+    return home_runtime.change_television(iland_session, str(body.lease_id), body.version, body.action)
+
+
+@router.websocket("/{room}/events")
+async def events_room(room: str, websocket: WebSocket, lease_id: str = ""):
     try:
+        runtime = get_runtime(room)
         check_source(websocket, websocket=True)
         lease_id = str(UUID(lease_id))
         token = websocket.cookies.get(SESSION_COOKIE)
-        binding = room_runtime.connect(token, lease_id, asyncio.get_running_loop())
+        binding = runtime.connect(token, lease_id, asyncio.get_running_loop())
     except (HTTPException, ValueError) as error:
         code = (4401 if isinstance(error, HTTPException) and error.status_code == 401 else
                 4403 if isinstance(error, HTTPException) and error.status_code == 403 else
@@ -183,7 +220,7 @@ async def events_seaside(websocket: WebSocket, lease_id: str = ""):
         pass
     finally:
         # 先同步释放，再等待子任务；ASGI server 的取消不会跳过租约清理。
-        room_runtime.disconnect(token, lease_id, binding)
+        runtime.disconnect(token, lease_id, binding)
         for task in tasks:
             task.cancel()
         if tasks:

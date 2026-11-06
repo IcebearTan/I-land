@@ -25,6 +25,11 @@ export function SeasideControls({ transitioning }: { transitioning: boolean }) {
   const [state, setState] = useState<SeasideState | null>(null)
   const [panelOpen, setPanelOpen] = useState(false)
   const [showTime, setShowTime] = useState(false)
+  const [welcome, setWelcome] = useState(true)
+  useEffect(() => {
+    const timer = window.setTimeout(() => setWelcome(false), 4000)
+    return () => window.clearTimeout(timer)
+  }, [])
   useEffect(() => {
     const onState = (value: SeasideState) => setState(value)
     const onOpen = () => setPanelOpen(true), onClose = () => setPanelOpen(false)
@@ -54,7 +59,7 @@ export function SeasideControls({ transitioning }: { transitioning: boolean }) {
     : state?.connection.message ?? '暂时没连上海边，可以再试一次。'
   const rate = state?.clock.rate ?? 1
   if (panelOpen) return null
-  return <div className="seaside-ui" data-phase={state?.clock.phase} data-seaside-pose={state?.pose} data-scenery-rate={state?.clock.rate} data-scenery-time={state?.clock.time}
+  return <div className="seaside-ui" data-welcome={welcome} data-phase={state?.clock.phase} data-seaside-pose={state?.pose} data-scenery-rate={state?.clock.rate} data-scenery-time={state?.clock.time}
     data-room-state={connection} data-room-members={state?.members.map(member => `${member.account}:${member.seat}:${member.pose}`).join(',')} data-scenery-virtual-ms={state?.clock.virtualMs} data-time-open={showTime}>
     <header className="shore-caption">
       <span className="shore-eyebrow"><ShoreIcon kind="wave" /> 海边 · 一小片安静</span>
@@ -87,6 +92,7 @@ export function SeasideControls({ transitioning }: { transitioning: boolean }) {
             <ShoreIcon kind="clock" /><span className="shore-label-wide">{showTime ? '收起时间' : '景色时间'}</span><span className="shore-label-short">景色</span><span className="shore-rate">{rate === 0 ? '暂停' : `${rate}×`}</span>
           </button>
         </div>
+        {connection === 'connected' && !canLean && <p className="shore-action-hint">两个人都坐下后，就能靠一会儿。</p>}
       </section>
       <p className="shore-small-note" role="status">{state?.notice || state?.connection.message || '海风一直在，想待多久都可以。'}</p>
     </div>

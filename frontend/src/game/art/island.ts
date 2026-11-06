@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import { hash2 } from '../art'
 import { makeTexture } from '../pixels'
-import { CHARACTERS } from '../../characters'
+import { HOME_ATLAS } from '../../visual/artV2'
 
 export const WORLD = { width: 640, height: 480, cx: 320, cy: 236, rx: 252, ry: 167 }
 export const HOME = { x: 266, y: 230 }
@@ -220,6 +220,13 @@ function cottage(scene: Phaser.Scene): void {
   // 门前盆栽。
   for (const x of [31, 83]) { p.rect(x, 97, 8, 7, '#ae7056'); p.rect(x - 1, 96, 10, 2, '#d49870'); flower(p, x + 4, 93, C.cream) }
   p.texture(scene, 'cottage-v3')
+  // 扩大门洞为 ART-02 的 22×32，保留屋檐和原入口坐标。
+  const frame = scene.textures.getFrame(HOME_ATLAS, 'door-day')
+  const texture = scene.textures.get('cottage-v3') as Phaser.Textures.CanvasTexture
+  const context = texture.getContext()
+  context.save(); context.beginPath(); context.rect(44, 65, 30, 36); context.clip()
+  context.drawImage(frame.source.image as HTMLImageElement, frame.cutX, frame.cutY, frame.width, frame.height, 44, 61, frame.width, frame.height)
+  context.restore(); texture.refresh()
 }
 
 function lighthouse(scene: Phaser.Scene): void {
@@ -232,7 +239,7 @@ function lighthouse(scene: Phaser.Scene): void {
     p.rect(29 - half, y, 3, 1, red ? '#e09a7c' : C.cream)
     p.rect(25 + half, y, 3, 1, red ? '#a55e58' : '#c8b79a')
   }
-  p.rect(22, 84, 12, 16, C.woodDark); p.rect(24, 85, 8, 14, '#ac8256'); p.rect(29, 92, 2, 2, C.warm)
+  p.rect(15, 65, 26, 35, C.woodDark); p.rect(17, 67, 22, 32, '#ac8256'); p.rect(18, 68, 2, 29, '#c79a65'); p.rect(34, 85, 2, 2, C.warm)
   p.rect(25, 55, 5, 8, '#547484'); p.rect(26, 55, 1, 7, '#bdd5cc')
   p.rect(10, 34, 36, 4, C.woodDark); p.rect(12, 33, 32, 2, '#d2ae81')
   p.rect(12, 27, 32, 1, C.woodDark)
@@ -317,11 +324,5 @@ export function createIslandArt(scene: Phaser.Scene): void {
   makeTexture(scene, 'seaside-shell', [
     '..www..', '.wcwcw.', 'wcwcwcw', 'wwcccww', '.wwwww.', '..www..',
   ], { w: '#f5eee2', c: '#d5ac90' })
-  for (const id of ['bear', 'her'] as const) {
-    const character = CHARACTERS[id]
-    for (const direction of ['front', 'back', 'side'] as const) {
-      makeTexture(scene, `islander-${id}-${direction}`, character.frames[direction], character.palette)
-      makeTexture(scene, `islander-${id}-${direction}-step`, character.steps[direction], character.palette)
-    }
-  }
+
 }

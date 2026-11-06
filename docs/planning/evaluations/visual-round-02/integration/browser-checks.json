@@ -1,0 +1,703 @@
+{
+  "date": "2026-11-07",
+  "checks": [
+    {
+      "name": "independent Cookie entry and seating",
+      "pass": true
+    },
+    {
+      "name": "both identities operate shared television",
+      "pass": true
+    },
+    {
+      "name": "standing releases seat but stays in room",
+      "pass": true,
+      "observed": {
+        "members": 2,
+        "remoteActors": 0
+      }
+    },
+    {
+      "name": "same-seat race through real UI with synchronized requests",
+      "pass": true,
+      "statuses": [
+        409,
+        200
+      ]
+    },
+    {
+      "name": "shared television concurrent CAS through real UI",
+      "pass": true,
+      "statuses": [
+        200,
+        409
+      ]
+    },
+    {
+      "name": "shared TV preserves independent mute settings",
+      "pass": true,
+      "observed": [
+        {
+          "settings": {
+            "music_enabled": true,
+            "ambience_enabled": true,
+            "music_volume": 0.35,
+            "muted": true,
+            "ambience_volume": 0.55
+          }
+        },
+        {
+          "settings": {
+            "music_enabled": true,
+            "ambience_enabled": true,
+            "muted": false,
+            "music_volume": 0.35,
+            "ambience_volume": 0.55
+          }
+        }
+      ]
+    },
+    {
+      "name": "network loss removes companion and reconnects without phantom seat",
+      "pass": true,
+      "observed": {
+        "pose": "walking",
+        "seat": null,
+        "television": true,
+        "channel": 0
+      }
+    },
+    {
+      "name": "server restart persists television but never resurrects room members",
+      "pass": true,
+      "observed": {
+        "members": [],
+        "television": {
+          "anchor_utc_ms": 1793982437874,
+          "powered": true,
+          "channel": 0,
+          "changed_by": "her",
+          "position_ms": 0,
+          "version": 5
+        }
+      }
+    },
+    {
+      "name": "same-account takeover is terminal until explicit retry; stale tab cannot steal back",
+      "pass": true
+    },
+    {
+      "name": "native Chromium tab background releases seat and return reconfirms without restoring old pose",
+      "pass": true,
+      "scope": "real headed Chromium tab visibility, isolated profile; CDP connection has no forced foreground override",
+      "observed": {
+        "nativeBeforeSeat": "0",
+        "realAway": {
+          "visibility": "hidden",
+          "state": "away"
+        },
+        "realReturn": {
+          "pose": "walking",
+          "seat": "none"
+        }
+      }
+    },
+    {
+      "name": "visibility-change lifecycle releases lease and reconfirms on return",
+      "pass": true,
+      "scope": "synthetic document visibility in actual Chromium, not native mobile background"
+    },
+    {
+      "name": "seaside mutual leaning and shared pause/rate/reset preserve existing protocol",
+      "pass": true
+    },
+    {
+      "name": "calendar manual date, local picker scroll, Escape focus, themes and save",
+      "pass": true,
+      "observed": {
+        "dateLayout": {
+          "client": 246,
+          "scroll": 308,
+          "page": 320
+        },
+        "focusAfterEscape": "展开日期小挂历"
+      }
+    },
+    {
+      "name": "memory photo failure/retry, reorder/remove/re-add and long-text save",
+      "pass": true,
+      "observed": {
+        "photoOrder": [
+          "acceptance-1.png",
+          "acceptance-2.png"
+        ],
+        "reordered": [
+          "acceptance-2.png",
+          "acceptance-1.png"
+        ],
+        "photoTargets": [
+          {
+            "label": "前移一张",
+            "width": 63,
+            "height": 44
+          },
+          {
+            "label": "后移一张",
+            "width": 63,
+            "height": 44
+          },
+          {
+            "label": "移除 acceptance-1.png",
+            "width": 63,
+            "height": 44
+          },
+          {
+            "label": "前移一张",
+            "width": 63,
+            "height": 44
+          },
+          {
+            "label": "后移一张",
+            "width": 63,
+            "height": 44
+          },
+          {
+            "label": "移除 acceptance-2.png",
+            "width": 63,
+            "height": 44
+          },
+          {
+            "label": "添加照片",
+            "width": 126,
+            "height": 160
+          }
+        ]
+      }
+    },
+    {
+      "name": "large photo navigation and Escape return to calendar",
+      "pass": true
+    },
+    {
+      "name": "mailbox long title/author, two pages and independent zoom scrolling",
+      "pass": true,
+      "observed": {
+        "height": 363.515625,
+        "width": 260,
+        "scrollWidth": 648,
+        "documentWidth": 320,
+        "page": 900
+      }
+    },
+    {
+      "name": "landscape doorway and sofa controls avoid characters",
+      "pass": true,
+      "observed": {
+        "door844": {
+          "viewport": {
+            "width": 844,
+            "height": 390
+          },
+          "documentWidth": 844,
+          "scene": "interior",
+          "controls": {
+            "top": 339,
+            "bottom": 378,
+            "left": 552,
+            "right": 832
+          },
+          "player": {
+            "footX": 646,
+            "footY": 250,
+            "top": 202,
+            "frame": "bear-idle-down",
+            "scale": 1
+          },
+          "buttons": [
+            {
+              "text": "设置",
+              "font": "14px",
+              "width": 50,
+              "height": 44
+            },
+            {
+              "text": "下岛",
+              "font": "14px",
+              "width": 50,
+              "height": 44
+            },
+            {
+              "text": "回到小岛",
+              "font": "14px",
+              "width": 110,
+              "height": 44
+            }
+          ]
+        },
+        "seat844": {
+          "viewport": {
+            "width": 844,
+            "height": 390
+          },
+          "documentWidth": 844,
+          "scene": "interior",
+          "controls": {
+            "top": 255.8125,
+            "bottom": 378,
+            "left": 552,
+            "right": 832
+          },
+          "player": {
+            "footX": 404,
+            "footY": 296,
+            "top": 248,
+            "frame": "bear-sit-up",
+            "scale": 1
+          },
+          "buttons": [
+            {
+              "text": "设置",
+              "font": "14px",
+              "width": 50,
+              "height": 44
+            },
+            {
+              "text": "下岛",
+              "font": "14px",
+              "width": 50,
+              "height": 44
+            },
+            {
+              "text": "回到小岛",
+              "font": "14px",
+              "width": 110,
+              "height": 44
+            },
+            {
+              "text": "起身",
+              "font": "14px",
+              "width": 80.625,
+              "height": 61.1875
+            },
+            {
+              "text": "关电视",
+              "font": "14px",
+              "width": 96.75,
+              "height": 61.1875
+            },
+            {
+              "text": "换台",
+              "font": "14px",
+              "width": 80.625,
+              "height": 61.1875
+            }
+          ]
+        },
+        "seat568": {
+          "viewport": {
+            "width": 568,
+            "height": 320
+          },
+          "documentWidth": 568,
+          "scene": "interior",
+          "controls": {
+            "top": 191,
+            "bottom": 308,
+            "left": 356,
+            "right": 556
+          },
+          "player": {
+            "footX": 256,
+            "footY": 278,
+            "top": 230,
+            "frame": "bear-sit-up",
+            "scale": 1
+          },
+          "buttons": [
+            {
+              "text": "设置",
+              "font": "14px",
+              "width": 44,
+              "height": 44
+            },
+            {
+              "text": "下岛",
+              "font": "14px",
+              "width": 44,
+              "height": 44
+            },
+            {
+              "text": "回岛",
+              "font": "14px",
+              "width": 82,
+              "height": 44
+            },
+            {
+              "text": "起身",
+              "font": "14px",
+              "width": 58.125,
+              "height": 60
+            },
+            {
+              "text": "关电视",
+              "font": "14px",
+              "width": 69.75,
+              "height": 60
+            },
+            {
+              "text": "换台",
+              "font": "14px",
+              "width": 58.125,
+              "height": 60
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "final short landscape keeps TV below HUD and sofa clear of controls; full sofa visual is tappable",
+      "pass": true,
+      "observed": {
+        "tvTop": 84,
+        "tvBottom": 124,
+        "hudBottom": 70,
+        "actorFoot": 302,
+        "actorX": 256,
+        "controlsLeft": 356,
+        "viewport": {
+          "w": 568,
+          "h": 320
+        }
+      }
+    },
+    {
+      "name": "final 320px scenery panel does not cover character heads",
+      "pass": true,
+      "observed": {
+        "panelBottom": 268.390625,
+        "actorTop": 280
+      }
+    },
+    {
+      "name": "final login 320/390 has scrollable long names, 16px inputs and unified 32px portrait source",
+      "pass": true,
+      "observed": {
+        "viewport": 320,
+        "document": 320,
+        "button": {
+          "top": 397.53125,
+          "bottom": 445.53125,
+          "height": 48
+        },
+        "inputs": [
+          {
+            "font": "16px",
+            "height": 48
+          },
+          {
+            "font": "16px",
+            "height": 48
+          }
+        ],
+        "avatars": [
+          {
+            "natural": [
+              32,
+              32
+            ],
+            "display": [
+              64,
+              64
+            ]
+          },
+          {
+            "natural": [
+              32,
+              32
+            ],
+            "display": [
+              64,
+              64
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "calendar and settings responsive layouts at 390px and desktop",
+      "pass": true,
+      "observed": {
+        "width": 1280,
+        "document": 1280,
+        "bodyFont": "16px",
+        "dateCells": [
+          {
+            "w": 94.5625,
+            "h": 59
+          },
+          {
+            "w": 94.578125,
+            "h": 59
+          },
+          {
+            "w": 94.5625,
+            "h": 59
+          },
+          {
+            "w": 94.578125,
+            "h": 59
+          },
+          {
+            "w": 94.5625,
+            "h": 59
+          },
+          {
+            "w": 94.578125,
+            "h": 59
+          },
+          {
+            "w": 94.5625,
+            "h": 59
+          }
+        ]
+      }
+    },
+    {
+      "name": "four-direction four-frame movement uses common foot anchor and reduced-motion idle",
+      "pass": true,
+      "observed": {
+        "walkFrames": {
+          "ArrowLeft": [
+            "bear-walk-left-0",
+            "bear-walk-left-2",
+            "bear-walk-left-3",
+            "bear-walk-left-0"
+          ],
+          "ArrowUp": [
+            "bear-walk-up-2",
+            "bear-walk-up-3",
+            "bear-walk-up-0",
+            "bear-walk-up-1"
+          ],
+          "ArrowRight": [
+            "bear-walk-right-3",
+            "bear-walk-right-0",
+            "bear-walk-right-1",
+            "bear-walk-right-2"
+          ],
+          "ArrowDown": [
+            "bear-walk-down-0",
+            "bear-walk-down-1",
+            "bear-walk-down-2",
+            "bear-walk-down-3"
+          ]
+        },
+        "physics": {
+          "frame": "bear-idle-down",
+          "atlas": "art-v2-characters",
+          "width": 32,
+          "height": 32,
+          "scale": 1,
+          "origin": [
+            0.5,
+            0.90625
+          ],
+          "body": [
+            8,
+            4,
+            12,
+            25
+          ],
+          "position": [
+            266,
+            293.99999999999955
+          ]
+        },
+        "reducedFrame": "bear-idle-down"
+      }
+    },
+    {
+      "name": "actual browser reduced-motion toggle freezes fire and TV keyframes and restores normal animation",
+      "pass": true,
+      "observed": {
+        "reducedVisual": {
+          "tvUnchanged": true,
+          "fireUnchanged": true,
+          "fire": "fire-0-night",
+          "preference": true
+        },
+        "motionVisual": {
+          "tvChanged": true,
+          "fireFrames": [
+            "fire-2-night",
+            "fire-3-night",
+            "fire-0-night",
+            "fire-1-night"
+          ],
+          "preference": false
+        }
+      }
+    },
+    {
+      "name": "20-character name and walking from sofa around furniture to fireplace",
+      "pass": true,
+      "observed": {
+        "length": 20,
+        "layout": {
+          "viewport": {
+            "width": 320,
+            "height": 568
+          },
+          "documentWidth": 320,
+          "scene": "interior",
+          "controls": {
+            "top": 373,
+            "bottom": 412,
+            "left": 12,
+            "right": 308
+          },
+          "player": {
+            "footX": 146,
+            "footY": 296,
+            "top": 248,
+            "frame": "bear-idle-up",
+            "scale": 1
+          },
+          "buttons": [
+            {
+              "text": "设置",
+              "font": "14px",
+              "width": 44,
+              "height": 44
+            },
+            {
+              "text": "下岛",
+              "font": "14px",
+              "width": 44,
+              "height": 44
+            },
+            {
+              "text": "回岛",
+              "font": "14px",
+              "width": 82,
+              "height": 44
+            },
+            {
+              "text": "＋",
+              "font": "12px",
+              "width": 88,
+              "height": 88
+            },
+            {
+              "text": "✦\n拨一拨炉火",
+              "font": "14px",
+              "width": 136,
+              "height": 64.78125
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "1470x782 and 1920x1080 use the same camera scale in island, home and seaside",
+      "pass": true,
+      "observed": [
+        {
+          "scene": "Island",
+          "viewport": [
+            1470,
+            782
+          ],
+          "zoom": 3,
+          "frame": "bear-idle-down",
+          "frameSize": [
+            32,
+            32
+          ],
+          "scale": 1,
+          "nominalStandingCssPx": 72
+        },
+        {
+          "scene": "Interior",
+          "viewport": [
+            1470,
+            782
+          ],
+          "zoom": 3,
+          "frame": "bear-sit-up",
+          "frameSize": [
+            32,
+            32
+          ],
+          "scale": 1,
+          "nominalStandingCssPx": 72
+        },
+        {
+          "scene": "Interior",
+          "viewport": [
+            1920,
+            1080
+          ],
+          "zoom": 3,
+          "frame": "bear-sit-up",
+          "frameSize": [
+            32,
+            32
+          ],
+          "scale": 1,
+          "nominalStandingCssPx": 72
+        },
+        {
+          "scene": "Island",
+          "viewport": [
+            1920,
+            1080
+          ],
+          "zoom": 3,
+          "frame": "bear-idle-down",
+          "frameSize": [
+            32,
+            32
+          ],
+          "scale": 1,
+          "nominalStandingCssPx": 72
+        },
+        {
+          "scene": "Seaside",
+          "viewport": [
+            1920,
+            1080
+          ],
+          "zoom": 3,
+          "frame": "bear-sit-up",
+          "frameSize": [
+            32,
+            32
+          ],
+          "scale": 1,
+          "nominalStandingCssPx": 72
+        },
+        {
+          "scene": "Seaside",
+          "viewport": [
+            1470,
+            782
+          ],
+          "zoom": 3,
+          "frame": "bear-sit-up",
+          "frameSize": [
+            32,
+            32
+          ],
+          "scale": 1,
+          "nominalStandingCssPx": 72
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "passed": 25,
+  "failed": 0,
+  "pending": 0
+}

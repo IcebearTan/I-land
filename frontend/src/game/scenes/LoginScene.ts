@@ -1,9 +1,8 @@
 import Phaser from 'phaser'
+import { CHARACTER_ATLAS, CHARACTER_ORIGIN } from '../../visual/artV2'
 import { eventBus } from '../EventBus'
 import { bayer, colorAt, ditherMix, hash2, lerpRGB, type RGB } from '../art'
 import {
-  BEAR_PALETTE,
-  BEAR_ROWS,
   BIRD_A,
   BIRD_B,
   BIRD_PALETTE,
@@ -99,6 +98,7 @@ export class LoginScene extends Phaser.Scene {
   private elapsed = 0
   private vh = VH_MAX
   private leaving = false
+  private readonly reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
   constructor() {
     super('Login')
@@ -154,10 +154,17 @@ export class LoginScene extends Phaser.Scene {
     }
     this.input.on('pointermove', onPointer)
 
+    const onMotion = () => {
+      this.time.paused = this.reducedMotion.matches
+      if (this.reducedMotion.matches) this.tweens.pauseAll()
+      else this.tweens.resumeAll()
+    }
+    this.reducedMotion.addEventListener('change', onMotion); onMotion()
     let disposed = false
     const cleanup = () => {
       if (disposed) return
       disposed = true; this.leaving = true
+      this.reducedMotion.removeEventListener('change', onMotion)
       this.input.off('pointermove', onPointer)
       this.scale.off('resize', this.relayout, this)
       this.events.off(Phaser.Scenes.Events.SHUTDOWN, cleanup)
@@ -167,7 +174,7 @@ export class LoginScene extends Phaser.Scene {
     this.events.once(Phaser.Scenes.Events.DESTROY, cleanup)
     this.scale.on('resize', this.relayout, this)
 
-    this.cameras.main.fadeIn(420, 0, 0, 0)
+    if (!this.reducedMotion.matches) this.cameras.main.fadeIn(420, 0, 0, 0)
     eventBus.emit('SCENE_READY', { scene: 'login' })
     eventBus.emit('GAME_READY', {})
   }
@@ -341,14 +348,13 @@ export class LoginScene extends Phaser.Scene {
 
     // 近山山脊上的小熊 + 飘心（站在剪影表面，跟随视差）
     if (depth === 'near') {
-      makeTexture(this, 'login-bear', BEAR_ROWS, BEAR_PALETTE)
       const bearX = 352
       const surface = heights[Math.floor(bearX / 4)]
-      const bear = this.add.image(bearX, surface, 'login-bear').setOrigin(0.5, 1)
+      const bear = this.add.image(bearX, surface, CHARACTER_ATLAS, 'bear-idle-down').setOrigin(CHARACTER_ORIGIN.x, CHARACTER_ORIGIN.y)
       container.add(bear)
       this.tweens.add({
         targets: bear,
-        scaleY: 0.95,
+        y: surface - 1,
         duration: 620,
         yoyo: true,
         repeat: -1,
@@ -360,7 +366,7 @@ export class LoginScene extends Phaser.Scene {
         loop: true,
         callback: () => {
           const heart = this.add
-            .image(bearX + Phaser.Math.Between(-4, 4), surface - 18, 'login-heart')
+            .image(bearX + Phaser.Math.Between(-4, 4), surface - 30, 'login-heart')
             .setOrigin(0.5)
             .setAlpha(0)
           container.add(heart)
@@ -439,6 +445,7 @@ export class LoginScene extends Phaser.Scene {
 
   // ─── 每帧：视差趋近 + 云漂移 ───────────────────────────────
   update(_time: number, delta: number): void {
+    if (this.reducedMotion.matches) return
     this.elapsed += delta
     const drift = Math.sin(this.elapsed * 0.00013) * 0.32
     const target = Phaser.Math.Clamp(this.pointerNorm * 0.9 + drift, -1.3, 1.3)
