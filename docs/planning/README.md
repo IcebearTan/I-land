@@ -6,6 +6,8 @@
 
 ## 阅读入口
 
+2026-11-07 自动推进已启用：主对话定期检查现有任务，定向验收通过后派发下一轮；禁止重置卡、交付哈希验证与全量回归。执行约定见 [AUTONOMOUS_RUN](AUTONOMOUS_RUN.md)，进度见 [AUTONOMOUS_STATE](AUTONOMOUS_STATE.json)。
+
 2026-11-06：用户确认全部讨论方向进入项目，并要求“分内容排期，有时间就做”。[双人玩法与美术方案](designs/2026-11-06-coop-gameplay-and-art.md)提供产品细节，[内容任务清单](NEXT_STAGE_COOP.md)提供执行顺序、任务编号和完成条件。
 
 上一轮 BASE-01、BASE-02、ART-01 已交付并本地提交。当前继续三个独立对话推进 [第二轮视觉一致性与双人客厅](VISUAL_ROUND_02.md)：UI-01、ART-02、HOME-02/场景联合接入；文件归属及对话标识见 [并行分工](PARALLEL_TASKS.md)。

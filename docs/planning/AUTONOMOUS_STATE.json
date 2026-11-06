@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "authorized_on": "2026-11-07",
+  "timezone": "Asia/Shanghai",
+  "status": "monitoring",
+  "stop_reason": null,
+  "automation_id": "i-land",
+  "round": "visual-02-home-02",
+  "phase": "art-ready-wait-ui-and-integration",
+  "last_action": "ART-02 art-v2.1.0 已交付冻结，已传达无交付哈希/无全量回归；本轮尚未联合验收",
+  "next_action": "检查UI READY，通知HOME整合已冻结素材；本轮关键验收通过后才进入合作暖饮",
+  "limits": {
+    "sha256_delivery_checks": false,
+    "full_regression": false,
+    "quota_reset_cards": false,
+    "quota_purchase_or_bypass": false,
+    "auto_deploy": false
+  },
+  "threads": [
+    {
+      "role": "ui",
+      "threadId": "01a1b16c-9462-7610-84fd-e4a090c33035",
+      "hostId": "local",
+      "cursor": "0b78f7f8-2107-423f-97dc-11669ec1a133:4"
+    },
+    {
+      "role": "home-integration",
+      "threadId": "01a1b16c-95df-71e0-a7fa-b7a1fd5ca412",
+      "hostId": "local",
+      "cursor": "875ed64d-2ba2-43de-bba4-07d1c4438285:4"
+    },
+    {
+      "role": "art",
+      "threadId": "01a1b16c-974d-7200-9f31-b2ee1d5fd24b",
+      "hostId": "local",
+      "cursor": "786d4573-f849-4b7e-8fab-3dd79d2f9439:5",
+      "delivery_status": "ready-frozen"
+    }
+  ],
+  "poll_interval_minutes": 10
+}
