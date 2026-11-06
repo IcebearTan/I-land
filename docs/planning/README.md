@@ -6,6 +6,8 @@
 
 ## 阅读入口
 
+第二轮视觉统一与真实双人客厅已本地验收并提交 `9593286`，见[验收记录](evaluations/2026-11-07-visual-round-02-review.md)。当前执行入口为 [第三轮合作暖饮](WARM_DRINK_ROUND_03.md)，其文件分工覆盖之前的并行分工。
+
 2026-11-07 自动推进已启用：主对话定期检查现有任务，定向验收通过后派发下一轮；禁止重置卡、交付哈希验证与全量回归。执行约定见 [AUTONOMOUS_RUN](AUTONOMOUS_RUN.md)，进度见 [AUTONOMOUS_STATE](AUTONOMOUS_STATE.json)。
 
 2026-11-06：用户确认全部讨论方向进入项目，并要求“分内容排期，有时间就做”。[双人玩法与美术方案](designs/2026-11-06-coop-gameplay-and-art.md)提供产品细节，[内容任务清单](NEXT_STAGE_COOP.md)提供执行顺序、任务编号和完成条件。

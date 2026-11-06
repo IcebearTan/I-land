@@ -5,10 +5,10 @@
   "status": "monitoring",
   "stop_reason": null,
   "automation_id": "i-land",
-  "round": "visual-02-home-02",
-  "phase": "art-ready-wait-ui-and-integration",
-  "last_action": "ART-02 art-v2.1.0 已交付冻结，已传达无交付哈希/无全量回归；本轮尚未联合验收",
-  "next_action": "检查UI READY，通知HOME整合已冻结素材；本轮关键验收通过后才进入合作暖饮",
+  "round": "warm-drink-03",
+  "phase": "parallel-implementation",
+  "last_action": "第二轮验收通过并提交9593286；已向原三个对话发出第三轮热可可任务，均实际开始运行；自动监视已更新为跟随状态文件",
+  "next_action": "关注玩法PROTOCOL与UI/素材READY，冻结后由唯一整合者完成真实合作暖饮和定向验收",
   "limits": {
     "sha256_delivery_checks": false,
     "full_regression": false,
@@ -21,21 +21,92 @@
       "role": "ui",
       "threadId": "01a1b16c-9462-7610-84fd-e4a090c33035",
       "hostId": "local",
-      "cursor": "0b78f7f8-2107-423f-97dc-11669ec1a133:4"
+      "cursor": "0b78f7f8-2107-423f-97dc-11669ec1a133:7",
+      "delivery_status": "in-progress"
     },
     {
       "role": "home-integration",
       "threadId": "01a1b16c-95df-71e0-a7fa-b7a1fd5ca412",
       "hostId": "local",
-      "cursor": "875ed64d-2ba2-43de-bba4-07d1c4438285:4"
+      "cursor": "875ed64d-2ba2-43de-bba4-07d1c4438285:16",
+      "delivery_status": "in-progress"
     },
     {
       "role": "art",
       "threadId": "01a1b16c-974d-7200-9f31-b2ee1d5fd24b",
       "hostId": "local",
-      "cursor": "786d4573-f849-4b7e-8fab-3dd79d2f9439:5",
-      "delivery_status": "ready-frozen"
+      "cursor": "786d4573-f849-4b7e-8fab-3dd79d2f9439:6",
+      "delivery_status": "in-progress"
     }
   ],
-  "poll_interval_minutes": 10
+  "poll_interval_minutes": 10,
+  "last_heartbeat_at": "2026-11-06T17:48:29.636Z",
+  "quota_exhaustion_observed": false,
+  "completed_rounds": [
+    {
+      "round": "visual-02-home-02",
+      "accepted_on": "2026-11-07",
+      "commit": "9593286",
+      "review": "docs/planning/evaluations/2026-11-07-visual-round-02-review.md",
+      "checks": "53项后端房间专项、最终29项Tiled/路径/客厅、必要构建、25项浏览器证据；未重复全量或交付哈希",
+      "limits": "真机、线上、公网弱网、主观听感未验"
+    }
+  ],
+  "previous_round_deliveries": {
+    "ui": {
+      "version": "ui-01-v1",
+      "status": "ready-frozen",
+      "ready": "docs/planning/evaluations/visual-round-02/ui/READY.json",
+      "review": "交付清单文件存在、字号与布局接口说明已核对；静态/相关检查已完成，浏览器联合验收尚待整合者"
+    },
+    "art": {
+      "version": "art-v2.1.0",
+      "status": "ready-frozen",
+      "ready": "docs/planning/evaluations/visual-round-02/art/READY.json"
+    },
+    "home-integration": {
+      "status": "in-progress",
+      "stage": "B",
+      "checkpoint": "docs/planning/evaluations/visual-round-02/integration/STAGE_A.md",
+      "visual_precheck": {
+        "reviewed_screenshots": [
+          "07-two-seated-shared-moon-desktop.png",
+          "09-two-seated-320.png",
+          "41-home-568-landscape-seated.png",
+          "42-after-seaside-clock-panel-320.png",
+          "60-home-1920-shared-scale.png",
+          "61-seaside-1920-shared-scale.png"
+        ],
+        "result": "已实看桌面/320px/短横屏/海边面板/1920大桌面图，跨场景比例一致且操作可见；等待Tiled最后收尾"
+      },
+      "pending_acceptance": [
+        "客厅Tiled对象层收尾及布局读取/相关场景/构建检查",
+        "最终REPORT/READY一致并冻结交接"
+      ],
+      "known_limitations": [
+        "桌面独立Chromium原生后台释放已有证据，真实移动设备后台/锁屏与线上仍待验"
+      ],
+      "browser_checks": {
+        "passed": 25,
+        "failed": 0,
+        "pending": 0,
+        "source": "docs/planning/evaluations/visual-round-02/integration/browser-checks.json",
+        "scope": "整合者实际记录，非主对话重跑",
+        "subsequent_change": "大桌面共用倍率已定向复验；随后追加既定客厅Tiled对象层，布局读取与相关场景仍待收尾"
+      },
+      "report": "docs/planning/evaluations/visual-round-02/integration/REPORT.md"
+    }
+  },
+  "deliveries": {
+    "ui": {
+      "status": "in-progress"
+    },
+    "home-integration": {
+      "status": "in-progress"
+    },
+    "art": {
+      "status": "in-progress"
+    }
+  },
+  "plan": "docs/planning/WARM_DRINK_ROUND_03.md"
 }
