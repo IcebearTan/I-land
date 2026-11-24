@@ -1,0 +1,196 @@
+{
+  "kind": "isolated-offline-component-render-not-live-game",
+  "date": "2026-11-07",
+  "cases": [
+    {
+      "screen": "idle",
+      "viewport": [
+        390,
+        844
+      ],
+      "documentWidth": 390,
+      "panel": {
+        "x": 12,
+        "y": 154.421875,
+        "width": 366,
+        "height": 535.15625,
+        "scrollHeight": 533,
+        "clientHeight": 533
+      },
+      "bodyFont": "16px",
+      "smallTargets": [],
+      "prototypeLabel": true
+    },
+    {
+      "screen": "preparing",
+      "viewport": [
+        320,
+        568
+      ],
+      "documentWidth": 320,
+      "panel": {
+        "x": 12,
+        "y": 12,
+        "width": 296,
+        "height": 544,
+        "scrollHeight": 1137,
+        "clientHeight": 542
+      },
+      "bodyFont": "16px",
+      "smallTargets": [],
+      "prototypeLabel": true
+    },
+    {
+      "screen": "brewing",
+      "viewport": [
+        390,
+        844
+      ],
+      "documentWidth": 390,
+      "panel": {
+        "x": 12,
+        "y": 12,
+        "width": 366,
+        "height": 820,
+        "scrollHeight": 957,
+        "clientHeight": 818
+      },
+      "bodyFont": "16px",
+      "smallTargets": [],
+      "prototypeLabel": true
+    },
+    {
+      "screen": "paused",
+      "viewport": [
+        320,
+        568
+      ],
+      "documentWidth": 320,
+      "panel": {
+        "x": 12,
+        "y": 12,
+        "width": 296,
+        "height": 544,
+        "scrollHeight": 1139,
+        "clientHeight": 542
+      },
+      "bodyFont": "16px",
+      "smallTargets": [],
+      "prototypeLabel": true
+    },
+    {
+      "screen": "pouring",
+      "viewport": [
+        320,
+        568
+      ],
+      "documentWidth": 320,
+      "panel": {
+        "x": 12,
+        "y": 12,
+        "width": 296,
+        "height": 544,
+        "scrollHeight": 825,
+        "clientHeight": 542
+      },
+      "bodyFont": "16px",
+      "smallTargets": [],
+      "prototypeLabel": true
+    },
+    {
+      "screen": "offer",
+      "viewport": [
+        390,
+        844
+      ],
+      "documentWidth": 390,
+      "panel": {
+        "x": 12,
+        "y": 12,
+        "width": 366,
+        "height": 820,
+        "scrollHeight": 894,
+        "clientHeight": 818
+      },
+      "bodyFont": "16px",
+      "smallTargets": [],
+      "prototypeLabel": true
+    },
+    {
+      "screen": "collection",
+      "viewport": [
+        1024,
+        900
+      ],
+      "documentWidth": 1024,
+      "panel": {
+        "x": 152,
+        "y": 265.515625,
+        "width": 720,
+        "height": 368.96875,
+        "scrollHeight": 367,
+        "clientHeight": 367
+      },
+      "bodyFont": "16px",
+      "smallTargets": [],
+      "prototypeLabel": true
+    },
+    {
+      "screen": "swap",
+      "viewport": [
+        320,
+        568
+      ],
+      "documentWidth": 320,
+      "panel": {
+        "x": 12,
+        "y": 12,
+        "width": 296,
+        "height": 544,
+        "scrollHeight": 1125,
+        "clientHeight": 542
+      },
+      "bodyFont": "16px",
+      "smallTargets": [],
+      "prototypeLabel": true
+    },
+    {
+      "screen": "cheers",
+      "viewport": [
+        390,
+        844
+      ],
+      "documentWidth": 390,
+      "panel": {
+        "x": 12,
+        "y": 12,
+        "width": 366,
+        "height": 820,
+        "scrollHeight": 906,
+        "clientHeight": 818
+      },
+      "bodyFont": "16px",
+      "smallTargets": [],
+      "prototypeLabel": true
+    },
+    {
+      "screen": "offline",
+      "viewport": [
+        320,
+        568
+      ],
+      "documentWidth": 320,
+      "panel": {
+        "x": 12,
+        "y": 12,
+        "width": 296,
+        "height": 544,
+        "scrollHeight": 1069,
+        "clientHeight": 542
+      },
+      "bodyFont": "16px",
+      "smallTargets": [],
+      "prototypeLabel": true
+    }
+  ]
+}

@@ -7,7 +7,8 @@ const url = s => 'data:text/javascript;base64,' + Buffer.from(s).toString('base6
 const types = url(compile('../src/seaside/types.ts'))
 const entry = url(compile('../src/game/rooms/entry.ts'))
 const shared = url(compile('../src/game/rooms/SharedRoomClient.ts').replace(/from ['"]\.\.\/\.\.\/seaside\/types['"]/g, `from '${types}'`))
-const home = url(compile('../src/interior/room.ts').replace(/from ['"]\.\.\/game\/rooms\/SharedRoomClient['"]/g, `from '${shared}'`).replace(/from ['"]\.\.\/game\/rooms\/entry['"]/g, `from '${entry}'`))
+const cocoaTypes = url(compile('../src/cocoa/types.ts'))
+const home = url(compile('../src/interior/room.ts').replace(/from ['"]\.\.\/cocoa\/types['"]/g, `from '${cocoaTypes}'`).replace(/from ['"]\.\.\/game\/rooms\/SharedRoomClient['"]/g, `from '${shared}'`).replace(/from ['"]\.\.\/game\/rooms\/entry['"]/g, `from '${entry}'`))
 const { HomeRoomClient, SharedProgramClock, isHomeSnapshot } = await import(home)
 const { roomEntryFetch } = await import(entry)
 const stamp = 1_800_000_000_000

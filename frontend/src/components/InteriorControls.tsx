@@ -59,7 +59,7 @@ export function InteriorControls({ transitioning }: { transitioning: boolean }) 
   const sofaNearby = state?.pose === 'walking' && state.nearSofa && !televisionNearby && !transitioning
   const showActions = seated || televisionNearby || sofaNearby
   const companion = state?.companion
-  const presence = companion ? (companion.pose === 'seated' ? `${companion.display}在沙发上。` : `${companion.display}也在屋里，暂时没坐下。`) : null
+  const presence = companion?.station ? `${companion.display}在料理台${companion.station === 'heat' ? '控温' : '轻搅'}。` : companion ? (companion.pose === 'seated' ? `${companion.display}在沙发上。` : `${companion.display}也在屋里，暂时没坐下。`) : null
   const message = notice || state?.connection.message || (state?.pose === 'approaching' ? '慢慢坐好，或起身走走…' : presence || (state?.television ? CHANNELS[state.channel] : null))
 
   return <div className="interior-ui" data-interior-pose={state?.pose} data-interior-seat={state?.seat ?? 'none'}

@@ -16,6 +16,12 @@ const object = (layer: string, name: string): MapObject => {
   if (!found) throw new Error(`客厅 Tiled 地图缺少 ${layer}/${name}`)
   return found
 }
+export const homeMapObject = object
+export const homeMapImage = (name: string): MapLayer => {
+  const layer = map.layers.find(item => item.type === 'imagelayer' && item.name === name)
+  if (!layer) throw new Error(`客厅 Tiled 地图缺少图像层 ${name}`)
+  return layer
+}
 const rect = (o: MapObject): Rect => ({ x: o.x, y: o.y, w: o.width, h: o.height })
 const anchor = (name: string): Point => { const o = object('anchors', name); return { x: o.x, y: o.y } }
 
@@ -34,7 +40,7 @@ export const HOME_LAYOUT = {
 }
 
 /** Tiled 图像层用于编辑预览，运行时读取其帧名与脚底深度并使用同一图集。 */
-export const HOME_LAYERS: readonly [string, number, number, number][] = map.layers.filter(layer => layer.type === 'imagelayer').map(layer => {
+export const HOME_LAYERS: readonly [string, number, number, number][] = map.layers.filter(layer => layer.type === 'imagelayer' && !layer.properties?.some(p => p.name === 'runtimeOwner' && p.value === 'cocoa')).map(layer => {
   const frame = layer.properties?.find(p => p.name === 'atlasFrame')?.value
   const depth = layer.properties?.find(p => p.name === 'depth')?.value
   if (typeof frame !== 'string' || typeof depth !== 'number') throw new Error(`客厅图层 ${layer.name} 缺少图集帧或深度`)

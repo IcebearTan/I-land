@@ -2,13 +2,13 @@
   "schema": 1,
   "authorized_on": "2026-11-07",
   "timezone": "Asia/Shanghai",
-  "status": "monitoring",
-  "stop_reason": null,
+  "status": "stopped",
+  "stop_reason": "user_cancelled",
   "automation_id": "i-land",
   "round": "warm-drink-03",
-  "phase": "parallel-implementation",
-  "last_action": "第二轮验收通过并提交9593286；已向原三个对话发出第三轮热可可任务，均实际开始运行；自动监视已更新为跟随状态文件",
-  "next_action": "关注玩法PROTOCOL与UI/素材READY，冻结后由唯一整合者完成真实合作暖饮和定向验收",
+  "phase": "integration-browser-acceptance",
+  "last_action": "用户要求取消持续任务，Codex 已确认删除 i-land 自动任务。暖饮整合对话此前因额度上限停止，现有改动与过程证据保留。",
+  "next_action": "等待用户明确要求恢复。届时先复验 320px 小屏浮层黑区及人物可见性，再完成单人、双人制作与恢复、成果保存及递杯碰杯验收。",
   "limits": {
     "sha256_delivery_checks": false,
     "full_regression": false,
@@ -21,27 +21,27 @@
       "role": "ui",
       "threadId": "01a1b16c-9462-7610-84fd-e4a090c33035",
       "hostId": "local",
-      "cursor": "0b78f7f8-2107-423f-97dc-11669ec1a133:7",
-      "delivery_status": "in-progress"
+      "cursor": "0b78f7f8-2107-423f-97dc-11669ec1a133:12",
+      "delivery_status": "ready-frozen"
     },
     {
       "role": "home-integration",
       "threadId": "01a1b16c-95df-71e0-a7fa-b7a1fd5ca412",
       "hostId": "local",
-      "cursor": "875ed64d-2ba2-43de-bba4-07d1c4438285:16",
-      "delivery_status": "in-progress"
+      "cursor": "669cc379-663b-429d-8cdc-5d13284d30f5:1",
+      "delivery_status": "interrupted"
     },
     {
       "role": "art",
       "threadId": "01a1b16c-974d-7200-9f31-b2ee1d5fd24b",
       "hostId": "local",
-      "cursor": "786d4573-f849-4b7e-8fab-3dd79d2f9439:6",
-      "delivery_status": "in-progress"
+      "cursor": "786d4573-f849-4b7e-8fab-3dd79d2f9439:8",
+      "delivery_status": "ready-frozen"
     }
   ],
   "poll_interval_minutes": 10,
-  "last_heartbeat_at": "2026-11-06T17:48:29.636Z",
-  "quota_exhaustion_observed": false,
+  "last_heartbeat_at": "2026-11-06T19:30:30.914Z",
+  "quota_exhaustion_observed": true,
   "completed_rounds": [
     {
       "round": "visual-02-home-02",
@@ -65,7 +65,7 @@
       "ready": "docs/planning/evaluations/visual-round-02/art/READY.json"
     },
     "home-integration": {
-      "status": "in-progress",
+      "status": "accepted-committed",
       "stage": "B",
       "checkpoint": "docs/planning/evaluations/visual-round-02/integration/STAGE_A.md",
       "visual_precheck": {
@@ -79,10 +79,7 @@
         ],
         "result": "已实看桌面/320px/短横屏/海边面板/1920大桌面图，跨场景比例一致且操作可见；等待Tiled最后收尾"
       },
-      "pending_acceptance": [
-        "客厅Tiled对象层收尾及布局读取/相关场景/构建检查",
-        "最终REPORT/READY一致并冻结交接"
-      ],
+      "pending_acceptance": [],
       "known_limitations": [
         "桌面独立Chromium原生后台释放已有证据，真实移动设备后台/锁屏与线上仍待验"
       ],
@@ -92,21 +89,51 @@
         "pending": 0,
         "source": "docs/planning/evaluations/visual-round-02/integration/browser-checks.json",
         "scope": "整合者实际记录，非主对话重跑",
-        "subsequent_change": "大桌面共用倍率已定向复验；随后追加既定客厅Tiled对象层，布局读取与相关场景仍待收尾"
+        "subsequent_change": "Tiled同坐标迁移已完成29项定向检查和构建，第二轮最终验收通过"
       },
-      "report": "docs/planning/evaluations/visual-round-02/integration/REPORT.md"
+      "report": "docs/planning/evaluations/visual-round-02/integration/REPORT.md",
+      "commit": "9593286"
     }
   },
   "deliveries": {
     "ui": {
-      "status": "in-progress"
+      "status": "ready-frozen",
+      "version": "cocoa-ui-v1.1",
+      "protocol_version": "cocoa-protocol-v1.1",
+      "ready": "docs/planning/evaluations/warm-drink-03/ui/READY.json",
+      "review": "清单文件存在；已读报告并实看制作390px离线原型；9项相关组件检查及独立构建证据有效，实际游戏仍待整合"
     },
     "home-integration": {
-      "status": "in-progress"
+      "status": "interrupted-quota",
+      "coordination": "两份READY已到齐并通知接管；注意历史领取/实时手持、停止续期与制作时场景可视区",
+      "protocol": "docs/planning/evaluations/warm-drink-03/integration/PROTOCOL.md",
+      "protocol_version": "cocoa-protocol-v1.1",
+      "progress": "场景接入与构建已报告通过，开始实际双账号一局",
+      "reported_checks": {
+        "related_cocoa_home_stage": 39,
+        "latest_cocoa_after_two_new_cases": 24,
+        "scope": "整合者进度报告，两个阶段不合并为总数，待最终证据"
+      },
+      "visual_precheck": {
+        "reviewed": [
+          "04-brewing-two-desktop.png",
+          "05-paused-swapped-320.png"
+        ],
+        "result": "桌面台面人物可见；320px过程图出现黑区/人物不可见，已请整合者确认并提供最终复验图，不据此宣称通过"
+      },
+      "pending_acceptance": [
+        "确认/修复320px过程图黑区及工位人物可见性",
+        "实际双人/单人制作、恢复、成果与递杯碰杯流程"
+      ]
     },
     "art": {
-      "status": "in-progress"
+      "status": "ready-frozen",
+      "version": "cocoa-art-1.0.0",
+      "ready": "docs/planning/evaluations/warm-drink-03/art/READY.json",
+      "scope": "236帧和23类素材定向检查，实际玩法/可达性仍待整合验收",
+      "visual_review": "已查看递杯/碰杯双人接触预览；非真实联机证据"
     }
   },
-  "plan": "docs/planning/WARM_DRINK_ROUND_03.md"
+  "plan": "docs/planning/WARM_DRINK_ROUND_03.md",
+  "automation_status": "deleted"
 }

@@ -1,0 +1,183 @@
+{
+  "round": "warm-drink-03",
+  "status": "ready",
+  "version": "cocoa-ui-v1.1",
+  "protocol_version": "cocoa-protocol-v1.1",
+  "delivered_on": "2026-11-07",
+  "timezone": "Asia/Shanghai",
+  "frozen": true,
+  "next_owner": "HOME-02 / cocoa integration",
+  "entry": "frontend/src/cocoa/ui/index.ts",
+  "prototype": "docs/planning/designs/cocoa-03-ui/index.html",
+  "report": "docs/planning/evaluations/warm-drink-03/ui/REPORT.md",
+  "adapter_guide": "docs/planning/designs/cocoa-03-ui/README.md",
+  "files": [
+    "docs/planning/designs/cocoa-03-ui/README.md",
+    "docs/planning/designs/cocoa-03-ui/build/preview.css",
+    "docs/planning/designs/cocoa-03-ui/build/preview.js",
+    "docs/planning/designs/cocoa-03-ui/index.html",
+    "docs/planning/designs/cocoa-03-ui/previews/brewing-390-bottom.png",
+    "docs/planning/designs/cocoa-03-ui/previews/brewing-390.png",
+    "docs/planning/designs/cocoa-03-ui/previews/cheers-390.png",
+    "docs/planning/designs/cocoa-03-ui/previews/collection-1024.png",
+    "docs/planning/designs/cocoa-03-ui/previews/idle-390.png",
+    "docs/planning/designs/cocoa-03-ui/previews/layout-evidence.json",
+    "docs/planning/designs/cocoa-03-ui/previews/offer-390-bottom.png",
+    "docs/planning/designs/cocoa-03-ui/previews/offer-390.png",
+    "docs/planning/designs/cocoa-03-ui/previews/offline-320.png",
+    "docs/planning/designs/cocoa-03-ui/previews/paused-320.png",
+    "docs/planning/designs/cocoa-03-ui/previews/pouring-320.png",
+    "docs/planning/designs/cocoa-03-ui/previews/preparing-320-bottom.png",
+    "docs/planning/designs/cocoa-03-ui/previews/preparing-320.png",
+    "docs/planning/designs/cocoa-03-ui/previews/swap-320.png",
+    "docs/planning/designs/cocoa-03-ui/prototype-model.ts",
+    "docs/planning/designs/cocoa-03-ui/prototype.css",
+    "docs/planning/designs/cocoa-03-ui/prototype.tsx",
+    "docs/planning/designs/cocoa-03-ui/render-previews.mjs",
+    "docs/planning/designs/cocoa-03-ui/tsconfig.json",
+    "docs/planning/evaluations/warm-drink-03/ui/REPORT.md",
+    "docs/planning/evaluations/warm-drink-03/ui/tests.txt",
+    "frontend/src/cocoa/ui/CocoaCupIcon.tsx",
+    "frontend/src/cocoa/ui/CocoaPanel.tsx",
+    "frontend/src/cocoa/ui/cocoa-panel.test.mjs",
+    "frontend/src/cocoa/ui/cocoa.css",
+    "frontend/src/cocoa/ui/index.ts",
+    "frontend/src/cocoa/ui/types.ts"
+  ],
+  "props": {
+    "component": "CocoaPanel",
+    "required": [
+      "open: boolean",
+      "state: CocoaPanelState",
+      "onAction: (action: CocoaAction) => void"
+    ],
+    "optional": "mode: live | prototype (default live)",
+    "controlled": "All members, phase, choices, temperatures, progress, recipe draft, view, offers, results and permissions come from props. No fetch, storage, ticking or optimistic success in the component.",
+    "phase_values": [
+      "idle",
+      "preparing",
+      "brewing",
+      "paused",
+      "pouring",
+      "complete"
+    ],
+    "choice_contract": "Own fixed recipient only; cream/teal; ingredients are 0–3 distinct values from marshmallow/cocoa/cinnamon. Empty means original/plain.",
+    "input_contract": "inputMode is a controller-managed intention: gentle/heat/stir/stop. It is not authoritative progress or a confirmed scene animation.",
+    "cup_contract": "claimed is durable; heldBy is only the currently confirmed in-room holder. Never derive current holding/online state merely from historical claimed=true."
+  },
+  "actions": {
+    "network_intents": [
+      "start",
+      "join",
+      "choose-station",
+      "set-cup",
+      "set-ingredients",
+      "begin",
+      "pause",
+      "resume",
+      "set-input",
+      "swap-stations",
+      "respond-invitation",
+      "cancel-invitation",
+      "portion",
+      "claim",
+      "offer",
+      "accept-offer",
+      "decline-offer",
+      "cancel-offer",
+      "toast",
+      "leave",
+      "refresh"
+    ],
+    "local_presentation": [
+      "show-activity",
+      "show-collection",
+      "select-recipe",
+      "select-cup",
+      "set-choices-open",
+      "change-recipe-name"
+    ],
+    "lifecycle": [
+      "close",
+      "release-input"
+    ],
+    "mapping_notes": [
+      "UI phase is already pouring; no portioning alias is required.",
+      "portion maps to finish; swap-stations/toast map to swap/cheers offers; pass responses use the exact cup/offer IDs.",
+      "join must map to a real explicit station/join operation, not a local participant insertion.",
+      "The controller owns 500ms input renewal and seq; stop must cancel renewal immediately and bypass ordinary pending.",
+      "release-input includes the captured sessionId and account for blur, hidden, cleanup and close. Bind it to the correct old lease/generation; late cleanup must not stop a new one.",
+      "All confirmed results, makers, real creation dates and toast feedback remain server-owned."
+    ]
+  },
+  "layout": {
+    "body_and_inputs_css_px": 16,
+    "controls_css_px": 14,
+    "metadata_css_px": 12,
+    "min_touch_css_px": 44,
+    "panel_max_width": 720,
+    "small_screen_horizontal_margin": 12,
+    "scrolled_panel": "Long steps scroll inside the panel; no whole-UI scaling.",
+    "preview_viewports": [
+      [
+        320,
+        568
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        1024,
+        900
+      ]
+    ],
+    "offline_scenarios": 10,
+    "preview_pngs": 13,
+    "offline_evidence": "docs/planning/designs/cocoa-03-ui/previews/layout-evidence.json"
+  },
+  "checks": [
+    {
+      "command": "node --test frontend/src/cocoa/ui/cocoa-panel.test.mjs",
+      "status": "passed",
+      "passed": 9,
+      "failed": 0,
+      "scope": "Controlled SSR, invitation/input lifecycle and explicitly local rule prototype; not backend/real-session tests."
+    },
+    {
+      "command": "frontend/node_modules/.bin/tsc -p docs/planning/designs/cocoa-03-ui/tsconfig.json --noEmit",
+      "status": "passed"
+    },
+    {
+      "command": "esbuild prototype.tsx --bundle --jsx=automatic --minify",
+      "status": "passed",
+      "output": "docs/planning/designs/cocoa-03-ui/build/"
+    },
+    {
+      "command": "npm run build -- --outDir /tmp/iland-cocoa-ui-03-ready",
+      "status": "passed",
+      "modules": 90,
+      "notes": "Project typecheck passed; CocoaPanel is not mounted in App yet. Dedicated prototype bundle includes the component. Shared frontend/dist untouched; existing large-chunk warning remains."
+    },
+    {
+      "kind": "isolated offline component render",
+      "status": "passed",
+      "scenarios": 10,
+      "body_font": "16px",
+      "small_touch_targets": 0,
+      "horizontal_page_overflow_cases": 0,
+      "notes": "Temporary headless profile, file:// prototype only; no application browser or real DB/uploads."
+    },
+    {
+      "command": "git diff --check on the three owned directories",
+      "status": "passed"
+    }
+  ],
+  "limitations": [
+    "READY hands over a controlled component package, not completed server gameplay.",
+    "Real two-cookie collaboration, lease/seq/renewal, saves/restarts/idempotency and authority checks belong to the integrator.",
+    "Local rule prototype does not emulate authentication, WebSocket, database transactions or network lease expiry.",
+    "Application scene placement, artwork, actual actor animation, input blocking via EventBus and real mobile keyboard/safe-area remain unverified here.",
+    "No delivery hashes, full regression, real data use, git staging/commit/push, deployment, reset cards or quota purchases."
+  ]
+}

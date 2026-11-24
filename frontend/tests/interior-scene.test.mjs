@@ -9,7 +9,11 @@ const url = code => 'data:text/javascript;base64,' + Buffer.from(code).toString(
 const audioUrl = url(compile('../src/audio/types.ts')), navigationUrl = url(compile('../src/interior/navigation.ts')), charactersUrl = url(compile('../src/characters.ts'));
 const mapText = fs.readFileSync(new URL('../public/art-v2/home-room.tmj', import.meta.url), 'utf8');
 const mapCode = compile('../src/interior/layout.ts').replace(/import tiledRoom from ['"][^'"]+['"];?/, `const tiledRoom = ${JSON.stringify(mapText)};`);
-const { HOME_LAYOUT } = await import(url(mapCode));
+const mapUrl = url(mapCode);
+const { HOME_LAYOUT } = await import(mapUrl);
+const cocoaLayoutUrl = url(compile('../src/cocoa/layout.ts').replace(/from ['"]\.\.\/interior\/layout['"]/, `from '${mapUrl}'`));
+const cocoaInputUrl = url(compile('../src/cocoa/input.ts'));
+const { COCOA_LAYOUT } = await import(cocoaLayoutUrl);
 const bus = new EventEmitter(), RealDate = Date, baseRealMs = RealDate.parse('2026-10-02T14:00:00.000Z');
 let realNow = baseRealMs;
 class FixedDate extends RealDate {
@@ -112,7 +116,7 @@ class Scene {
 }
 globalThis.__homeTestBus = bus;
 globalThis.__homeTestPhaser = { Scene, Math: { Clamp: (value, min, max) => Math.max(min, Math.min(max, value)) }, Scenes: { Events: { SHUTDOWN: 'shutdown', DESTROY: 'destroy' } } };
-globalThis.__homeTestArt = { HOME_LAYOUT, createInteriorArt: scene => { scene.artCreates = (scene.artCreates ?? 0) + 1; }, paintInteriorBackdrop: (scene, hour) => scene.backdrops.push(hour), paintInteriorTV: (scene, ...args) => scene.programs.push(args) };
+globalThis.__homeTestArt = { HOME_LAYOUT, interiorNight: hour => hour >= 20 ? 1 : 0, createInteriorArt: scene => { scene.artCreates = (scene.artCreates ?? 0) + 1; }, paintInteriorBackdrop: (scene, hour) => scene.backdrops.push(hour), paintInteriorTV: (scene, ...args) => scene.programs.push(args) };
 globalThis.__homeTestTexture = (scene, key) => scene.textureCreates.push(key);
 const clients = [];
 const member = (account, seat = null) => ({ user_id: account === 'bear' ? 1 : 2, account, sprite: account, display: account, seat, pose: seat === null ? 'standing' : 'seated' });
@@ -150,11 +154,15 @@ class MockProgramClock {
     read() { return this.tv?.powered ? this.tv.position_ms + realNow - this.anchor : this.tv?.position_ms ?? 0; }
 }
 globalThis.__homeTestRoom = { HomeRoomClient: MockHomeClient, SharedProgramClock: MockProgramClock };
+globalThis.__homeTestCocoaVisuals = class { clear() {} update(members) { this.members = members.filter(m => m.station); } };
 
 const textUrl = url(compile('../src/visual/screenText.ts'));
 const v2Url = url(compile('../src/visual/artV2.ts'));
 const layoutUrl = url(compile('../src/visual/layout.ts'));
 const source = compile('../src/game/scenes/InteriorScene.ts')
+  .replace(/import \{ CocoaVisuals \} from ['"]\.\.\/\.\.\/cocoa\/art['"];?/, 'const CocoaVisuals = globalThis.__homeTestCocoaVisuals;')
+  .replace(/from ['"]\.\.\/\.\.\/cocoa\/layout['"]/, `from '${cocoaLayoutUrl}'`)
+  .replace(/from ['"]\.\.\/\.\.\/cocoa\/input['"]/, `from '${cocoaInputUrl}'`)
   .replace(/from ['"]\.\.\/\.\.\/visual\/layout['"]/, `from '${layoutUrl}'`)
     .replace(/from ['"]\.\.\/\.\.\/visual\/artV2['"]/, `from '${v2Url}'`)
     .replace(/from ['"]\.\.\/\.\.\/visual\/screenText['"]/, `from '${textUrl}'`)

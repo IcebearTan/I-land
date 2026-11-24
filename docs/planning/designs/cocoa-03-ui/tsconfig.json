@@ -1,0 +1,13 @@
+{
+  "extends": "../../../../frontend/tsconfig.json",
+  "compilerOptions": {
+    "types": [],
+    "baseUrl": "../../../../frontend",
+    "paths": {
+      "react": ["node_modules/@types/react"],
+      "react/jsx-runtime": ["node_modules/@types/react/jsx-runtime"],
+      "react-dom/client": ["node_modules/@types/react-dom/client"]
+    }
+  },
+  "include": ["prototype.tsx", "prototype-model.ts"]
+}

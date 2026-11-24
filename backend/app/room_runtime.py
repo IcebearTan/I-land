@@ -47,6 +47,9 @@ class Member:
     connection_generation: int = 1
     pose: str = "seated"
     socket: SocketBinding | None = None
+    station: str | None = None
+    held_cup_id: int | None = None
+    cocoa_seq: int = 0
 
 
 class RoomCoordinator:
@@ -95,6 +98,7 @@ class RoomRuntime:
         self.retired: deque[tuple[int, str]] = deque(maxlen=64)
         self.retired_leases: deque[tuple[int, str]] = deque(maxlen=64)
         self.starts = 0
+        self.cocoa = None  # 仅 interior 注册料理运行时，避免房间与玩法模块循环导入。
 
     def start(self):
         with self.lock:
@@ -163,10 +167,13 @@ class RoomRuntime:
             "room": self.room, "epoch": self.epoch, "revision": self.revision,
             "server_now_ms": self.utc_ms(),
             **state,
+            **({"cocoa": self.cocoa.snapshot(db)} if self.cocoa else {}),
             "members": [{
                 "user_id": member.user_id, "account": member.account,
                 "display": member.display, "sprite": member.sprite,
                 "seat": member.seat, "pose": member.pose,
+                **({"station": member.station, "held_cup_id": member.held_cup_id,
+                    "cocoa_pose": self.cocoa.member_pose(member)} if self.cocoa else {}),
             } for member in sorted(self.members.values(), key=lambda item: (
                 item.seat if item.seat is not None else 2, item.user_id))],
         }
@@ -215,6 +222,8 @@ class RoomRuntime:
                 user = None
                 invalid = True
             if invalid or member.expires_mono <= now:
+                if self.cocoa:
+                    self.cocoa.member_left(db, member)
                 self.members.pop(user_id)
                 self._notify(member.socket, 4401 if invalid else 4410)
                 changed = True
@@ -264,17 +273,21 @@ class RoomRuntime:
             current = self.members.get(user.id)
             own = {"user_id": user.id, "account": user.name}
             if current and current.client_id == client_id and current.session_token == token:
+                cocoa_changed = False
                 generation = connection_generation if connection_generation is not None else current.connection_generation
                 if generation < current.connection_generation:
                     raise self._lost("ended")  # 旧迟到 join 不可重新旋转新连接的租约
                 if generation > current.connection_generation:
+                    if self.cocoa:
+                        cocoa_changed = self.cocoa.member_left(db, current)
                     previous = current.socket
                     current.socket = None
                     current.lease_id = str(uuid4())
+                    current.cocoa_seq = 0
                     current.connection_generation = generation
                     self._notify(previous, 4410)
                 current.expires_mono = self.monotonic_seconds() + LEASE_SECONDS
-                return {"snapshot": self._snapshot(db), "lease_id": current.lease_id, "self": own}
+                return {"snapshot": self._publish(db) if cocoa_changed else self._snapshot(db), "lease_id": current.lease_id, "self": own}
             if (user.id, client_id) in self.retired:
                 raise self._lost("taken_over")
             if current and current.client_id == client_id and current.session_token != token:
@@ -285,6 +298,8 @@ class RoomRuntime:
                     continue
                 previous = other.members.pop(user.id, None)
                 if previous:
+                    if other.cocoa:
+                        other.cocoa.member_left(db, previous)
                     other.retired.append((user.id, previous.client_id))
                     other.retired_leases.append((user.id, previous.lease_id))
                     other._notify(previous.socket, 4409)
@@ -293,6 +308,8 @@ class RoomRuntime:
             occupied = {member.seat for member in self.members.values() if member.user_id != user.id}
             seat = (current.seat if current else next(seat for seat in (0, 1) if seat not in occupied)) if self.room == "seaside" else None
             if current:
+                if self.cocoa:
+                    self.cocoa.member_left(db, current)
                 self.retired.append((current.user_id, current.client_id))
                 self.retired_leases.append((current.user_id, current.lease_id))
                 self._notify(current.socket, 4409)
@@ -324,6 +341,8 @@ class RoomRuntime:
             user = self._auth(db, token)
             member = self.members.get(user.id)
             if member and member.lease_id == lease_id and member.session_token == token:
+                if self.cocoa:
+                    self.cocoa.member_left(db, member)
                 self.members.pop(user.id)
                 self._notify(member.socket, 4410)
                 self._end_leaning()
@@ -351,6 +370,9 @@ class RoomRuntime:
             self._clean(db)
             user = self._auth(db, token)
             member = self._member(user, token, lease_id)
+            if seat is not None and member.station is not None:
+                raise HTTPException(409, {"code": "activity_busy", "message": "先从料理台退开，再坐到沙发上。",
+                                          "snapshot": self._snapshot(db)})
             if seat is not None and any(other.user_id != user.id and other.seat == seat
                                         for other in self.members.values()):
                 raise HTTPException(409, {"code": "seat_occupied", "message": "这个位置有人坐着，选另一个吧。",
@@ -440,6 +462,8 @@ class RoomRuntime:
             # token 可能已经失效，清理仍需执行；所有代数都必须匹配。
             member = next((item for item in self.members.values() if item.lease_id == lease_id), None)
             if member and member.session_token == token and member.socket is binding:
+                if self.cocoa:
+                    self.cocoa.member_left(db, member)
                 self.members.pop(member.user_id)
                 self._end_leaning()
                 self._publish(db)

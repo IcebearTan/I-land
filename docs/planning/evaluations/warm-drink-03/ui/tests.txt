@@ -1,0 +1,17 @@
+✔ controlled rendering labels prototype and never invents another maker or completion (7.812042ms)
+✔ disconnect blocks brewing, while a pending ordinary request cannot trap stop input (2.314583ms)
+✔ swaps and cheers require visible confirmation; only confirmed feedback is celebrated (1.131375ms)
+✔ single operator can warm then stir without adding the absent reserved-cup owner as a maker (0.813459ms)
+✔ the same warming input changes temperature differently with a real local stir operator (0.13675ms)
+✔ temperature excursions only wait; pause and long gaps never farm offline progress (0.191666ms)
+✔ choices belong to the actor and joining alone does not create a contribution (0.1355ms)
+✔ cancelling a pass leaves the reserved cup, and old offer responses cannot claim it (0.269958ms)
+✔ release intents preserve the old session/account and remove listeners after teardown (1.79425ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 227.625625

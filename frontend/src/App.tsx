@@ -13,6 +13,7 @@ import { ComingSoonPanel } from './components/panels/ComingSoonPanel'
 import { SettingsPanel } from './components/SettingsPanel'
 import { useIslandAudio } from './audio/useIslandAudio'
 import { SeasideControls } from './components/SeasideControls'
+import { CocoaFeature } from './cocoa/CocoaFeature'
 import { InteriorControls } from './components/InteriorControls'
 
 function islandIdentity(user: User): IslandIdentity {
@@ -110,6 +111,7 @@ export default function App() {
           {scene.scene === 'island' && !scene.transitioning && <IslandControls />}
           {scene.scene === 'seaside' && <SeasideControls transitioning={scene.transitioning} />}
           {scene.scene === 'interior' && <InteriorControls transitioning={scene.transitioning} />}
+          {(user.account === 'bear' || user.account === 'her') && <CocoaFeature account={user.account} />}
           <MailboxPanel />
           <ComingSoonPanel />
           <CalendarFeature />

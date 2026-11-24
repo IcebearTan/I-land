@@ -17,8 +17,10 @@ from .routers import (
     uploads_router,
     world_router,
     rooms_router,
+    cocoa_router,
 )
 from .room_runtime import room_runtimes
+from .cocoa_runtime import cocoa_runtime
 from .seed import seed
 
 
@@ -30,7 +32,9 @@ async def lifespan(_: FastAPI):
     UPLOADS_DIR.mkdir(parents=True, exist_ok=True)  # 全新数据卷首次启动即建目录
     for runtime in room_runtimes.values():
         runtime.start()
+    cocoa_runtime.start()
     room_watches = [asyncio.create_task(runtime.watch()) for runtime in room_runtimes.values()]
+    room_watches.append(asyncio.create_task(cocoa_runtime.watch()))
     try:
         yield
     finally:
@@ -38,6 +42,7 @@ async def lifespan(_: FastAPI):
             watch.cancel()
         with suppress(asyncio.CancelledError):
             await asyncio.gather(*room_watches, return_exceptions=True)
+        cocoa_runtime.stop()
         for runtime in room_runtimes.values():
             runtime.stop()
 
@@ -53,6 +58,7 @@ app.include_router(memories_router)
 app.include_router(uploads_router)
 app.include_router(settings_router)
 app.include_router(rooms_router)
+app.include_router(cocoa_router)
 
 # 照片、信纸等私人内容一律走登录校验的 /api 接口（见 routers/uploads.py），
 # uploads 目录不做公开静态挂载。

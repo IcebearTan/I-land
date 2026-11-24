@@ -1,4 +1,8 @@
 import Phaser from 'phaser'
+import { CocoaVisuals } from '../../cocoa/art'
+import { COCOA_LAYOUT, cocoaFocus } from '../../cocoa/layout'
+import { CocoaInputController } from '../../cocoa/input'
+import type { CocoaCommand, CocoaSnapshot, CocoaStation } from '../../cocoa/types'
 import { worldZoom } from '../../visual/layout'
 import { SCREEN_BODY_PX, screenTextScale } from '../../visual/screenText'
 import { HomeRoomClient, SharedProgramClock } from '../../interior/room'
@@ -7,16 +11,24 @@ import type { RoomTiming } from '../../seaside/types'
 import { CHARACTER_ATLAS, CHARACTER_ORIGIN, HOME_ATLAS, actorFrame } from '../../visual/artV2'
 import { nightWeight } from '../../audio/types'
 import { homeRoute, homeSegmentClear, homeWalkable, type Point, type Rect } from '../../interior/navigation'
-import { eventBus, type GameEvents, type InteriorState, type IslandIdentity, type Phase, type SceneState } from '../EventBus'
-import { createInteriorArt, HOME_LAYOUT, paintInteriorBackdrop, paintInteriorTV } from '../art/interior'
+import { eventBus, type GameEvents, type InteriorState, type IslandIdentity, type Phase, type SceneState, type PanelName } from '../EventBus'
+import { createInteriorArt, HOME_LAYOUT, interiorNight, paintInteriorBackdrop, paintInteriorTV } from '../art/interior'
 
-type Interaction = { point: Point; label: string; kind: 'fireplace' | 'tv' | 'sofa' | 'door'; seat?: 0 | 1 }
+type Interaction = { point: Point; label: string; kind: 'fireplace' | 'tv' | 'sofa' | 'door' | 'cocoa'; seat?: 0 | 1 }
 const contains = (rect: Rect, p: Point) => p.x >= rect.x && p.x <= rect.x + rect.w && p.y >= rect.y && p.y <= rect.y + rect.h
 const distance = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.y - b.y)
 const inUI = (target: EventTarget | null) => target instanceof HTMLElement && !!target.closest('button, input, textarea, select, a, [contenteditable="true"], [role="button"]')
 
 /** 本地走动与服务器确认的沙发/电视共存，远端只显示已入座成员。 */
 export class InteriorScene extends Phaser.Scene {
+  private cocoaVisuals!: CocoaVisuals
+  private cocoaInput?: CocoaInputController
+  private cocoaState: CocoaSnapshot | null = null
+  private cocoaStation: CocoaStation | null = null
+  private cocoaApproaching = false
+  private cocoaCompact = false
+  private cocoaMembershipSeq = 0
+  private activePanel: PanelName | null = null
   private room?: HomeRoomClient
   private connection: HomeView = { state: 'joining', pending: false }
   private members: HomeMember[] = []
@@ -80,6 +92,7 @@ export class InteriorScene extends Phaser.Scene {
 
   create(): void {
     this.disposed = false; this.leaving = false; this.panelOpen = false
+    this.cocoaState = null; this.cocoaStation = null; this.cocoaApproaching = false; this.cocoaCompact = false; this.cocoaMembershipSeq = 0; this.activePanel = null
     this.pose = 'walking'; this.seat = null; this.television = false; this.channel = 0
     this.path = []; this.arrival = undefined; this.moveInput = { x: 0, y: 0 }
     this.notice = undefined; this.lastLabel = null; this.interaction = null; this.nearTV = false; this.nearSofa = false
@@ -92,6 +105,8 @@ export class InteriorScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#2b1b45')
     createInteriorArt(this)
     this.readClock()
+    this.cocoaVisuals = new CocoaVisuals(this)
+    this.cocoaVisuals.update([], null, 0, interiorNight(this.hour), this.reducedMotion.matches)
     this.screen = this.add.image(HOME_LAYOUT.tvScreen.x, HOME_LAYOUT.tvScreen.y, 'home-tv').setOrigin(0).setDepth(117.5)
     this.fire = this.add.image(HOME_LAYOUT.fire.x, HOME_LAYOUT.fire.y, HOME_ATLAS, 'fire-0-day').setOrigin(0).setDepth(117.5)
     this.fireGlow = this.add.ellipse(74, 123, 55, 20, 0xffd98a, .08).setDepth(1)
@@ -117,7 +132,7 @@ export class InteriorScene extends Phaser.Scene {
     }
     const onPrompt = () => this.tryInteract()
     const onMove = (value: { x: number; y: number }) => {
-      if (this.blocked() || this.pose === 'seated') return
+      if (this.blocked() || this.pose === 'seated' || this.cocoaStation) return
       const x = Number.isFinite(value.x) ? Phaser.Math.Clamp(value.x, -1, 1) : 0
       const y = Number.isFinite(value.y) ? Phaser.Math.Clamp(value.y, -1, 1) : 0
       if (x || y) this.cancelAction()
@@ -127,8 +142,8 @@ export class InteriorScene extends Phaser.Scene {
     const onState = () => { if (!this.disposed && !this.leaving) { this.publish(); this.updatePrompt(true) } }
     const onInteractionState = () => { if (!this.disposed) this.updatePrompt(true) }
     const onAction = (value: GameEvents['INTERIOR_ACTION']) => {
+      if (value.action === 'reconnect') { if (!this.disposed && !this.leaving && (!this.panelOpen || this.activePanel === 'cocoa')) this.room?.retry(); return }
       if (this.blocked()) return
-      if (value.action === 'reconnect') { this.room?.retry(); return }
       if (value.action === 'sit-left' || value.action === 'sit-right') {
         const seat = value.action === 'sit-left' ? 0 : 1
         this.goTo(HOME_LAYOUT.standPoints[seat], () => this.sit(seat), seat); return
@@ -136,23 +151,34 @@ export class InteriorScene extends Phaser.Scene {
       if (value.action === 'stand') this.stand()
       else if (this.pose === 'seated' || (this.pose === 'walking' && distance(this.player, HOME_LAYOUT.tv) < 28)) this.changeTV(value.action)
     }
-    const onOpen = () => {
+    const onOpen = ({ panel }: GameEvents['PANEL_OPENED']) => {
+      this.activePanel = panel; this.cocoaInput?.set('stop')
       this.panelOpen = true; this.clearInput(); this.cancelAction(); this.updatePrompt(true)
       this.input.keyboard!.enabled = false; this.input.keyboard!.disableGlobalCapture()
     }
-    const onClose = () => {
+    const onClose = ({ panel }: GameEvents['PANEL_CLOSED']) => {
+      if (this.activePanel !== panel) return
+      this.activePanel = null
       this.panelOpen = false; this.clearInput()
       if (!this.leaving) { this.input.keyboard!.enabled = true; this.publish(); this.updatePrompt(true) }
     }
-    const onBlur = () => { this.clearInput(); this.cancelAction() }
+    const onBlur = () => { this.cocoaInput?.set('stop'); this.clearInput(); this.cancelAction() }
     const onVisibility = () => { if (document.hidden) onBlur() }
     const onIdentity = (value: IslandIdentity) => { this.identity = { ...value }; this.drawPlayer(); this.publish() }
     const onScene = (value: SceneState) => {
       if (value.scene === 'interior' && value.transitioning) {
-        this.leaving = true; this.clearInput(); this.stopActivities(); this.room?.dispose(); this.updatePrompt(true)
+        this.leaving = true; this.clearInput(); this.stopActivities(); this.cocoaInput?.dispose(); this.room?.dispose(); this.updatePrompt(true)
         this.input.keyboard!.enabled = false; this.input.keyboard!.disableGlobalCapture()
       }
     }
+    const onCocoa = (command: CocoaCommand) => this.cocoaAction(command)
+    const onCocoaInput = (input: GameEvents['COCOA_INPUT']) => {
+      if (input.account === (this.identity.account ?? this.identity.character)) this.cocoaInput?.set(input.mode, input.sessionId)
+    }
+    const onCocoaState = () => this.publishCocoa()
+    const onCocoaLayout = ({ compact }: GameEvents['COCOA_LAYOUT']) => { this.cocoaCompact = compact }
+    eventBus.on('COCOA_ACTION', onCocoa); eventBus.on('COCOA_INPUT', onCocoaInput)
+    eventBus.on('COCOA_REQUEST_STATE', onCocoaState); eventBus.on('COCOA_LAYOUT', onCocoaLayout)
     const onKeyboard = (e: KeyboardEvent) => {
       if (this.blocked() || e.repeat || inUI(e.target)) return
       if (e.code === 'Escape') this.returnToIsland()
@@ -177,8 +203,8 @@ export class InteriorScene extends Phaser.Scene {
     eventBus.on('IDENTITY_CHANGED', onIdentity); eventBus.on('SCENE_CHANGED', onScene)
     const cleanup = () => {
       if (this.disposed) return
-      this.disposed = true; this.leaving = true; this.clearInput(); this.stopActivities(); this.room?.dispose()
-      this.clearRemotes()
+      this.disposed = true; this.leaving = true; this.clearInput(); this.stopActivities(); this.cocoaInput?.dispose(); this.room?.dispose()
+      this.clearRemotes(); this.cocoaVisuals.clear()
       this.noticeEpoch++
       this.noticeTimer?.remove(false); this.noticeTimer = undefined
       this.input.off('pointerdown', onPointer); promptZone.off('pointerdown', onPrompt)
@@ -192,6 +218,8 @@ export class InteriorScene extends Phaser.Scene {
       eventBus.off('INTERIOR_ACTION', onAction); eventBus.off('INTERIOR_REQUEST_STATE', onState)
       eventBus.off('PANEL_OPENED', onOpen); eventBus.off('PANEL_CLOSED', onClose)
       eventBus.off('IDENTITY_CHANGED', onIdentity); eventBus.off('SCENE_CHANGED', onScene)
+      eventBus.off('COCOA_ACTION', onCocoa); eventBus.off('COCOA_INPUT', onCocoaInput)
+      eventBus.off('COCOA_REQUEST_STATE', onCocoaState); eventBus.off('COCOA_LAYOUT', onCocoaLayout)
       eventBus.emit('INTERACTION_CHANGED', { label: null })
       this.events.off(Phaser.Scenes.Events.SHUTDOWN, cleanup); this.events.off(Phaser.Scenes.Events.DESTROY, cleanup)
     }
@@ -205,6 +233,9 @@ export class InteriorScene extends Phaser.Scene {
         this.connection = view
         if (view.state !== 'connected') {
           this.members = []; this.clearRemotes(); this.clearInput(); this.stopActivities()
+          this.cocoaInput?.suspend(); this.cocoaVisuals.clear()
+          if (this.cocoaStation) this.player.setPosition(COCOA_LAYOUT.stands[this.cocoaStation].x, COCOA_LAYOUT.stands[this.cocoaStation].y)
+          this.cocoaStation = null
           if (this.seat !== null) this.player.setPosition(HOME_LAYOUT.standPoints[this.seat].x, HOME_LAYOUT.standPoints[this.seat].y)
           this.pose = 'walking'; this.seat = null; this.confirmedSeat = null; this.afterStand = undefined
           this.drawPlayer()
@@ -216,6 +247,7 @@ export class InteriorScene extends Phaser.Scene {
         if (!this.disposed && !this.leaving && lifetime === this.lifetime) this.receive(snapshot, timing)
       },
     })
+    this.cocoaInput = new CocoaInputController(this.room, () => this.publishCocoa())
     this.room.start()
     eventBus.emit('SCENE_READY', { scene: 'interior', identity: { ...this.identity } })
   }
@@ -224,6 +256,7 @@ export class InteriorScene extends Phaser.Scene {
   private clearInput(): void { this.moveInput = { x: 0, y: 0 }; this.input.keyboard?.resetKeys() }
 
   private stopActivities(): void {
+    this.cocoaApproaching = false
     this.actionEpoch++; this.tvEpoch++; this.path = []; this.arrival = undefined
     this.seatTween?.stop(); this.seatTween = undefined; this.finishMotion = undefined
     this.tvTween?.stop(); this.tvTween = undefined
@@ -231,6 +264,7 @@ export class InteriorScene extends Phaser.Scene {
   }
 
   private cancelAction(): void {
+    this.cocoaApproaching = false
     const finish = this.finishMotion
     this.actionEpoch++; this.path = []; this.arrival = undefined
     this.seatTween?.stop(); this.seatTween = undefined; this.finishMotion = undefined
@@ -257,6 +291,7 @@ export class InteriorScene extends Phaser.Scene {
   }
 
   private clickedFurniture(point: Point): Interaction | null {
+    if (contains(COCOA_LAYOUT.visual, point)) return { kind: 'cocoa', point: COCOA_LAYOUT.interaction, label: '一起煮热可可' }
     if (contains(HOME_LAYOUT.sofaVisual, point)) {
       const seat: 0 | 1 = point.x < (HOME_LAYOUT.seats[0].x + HOME_LAYOUT.seats[1].x) / 2 ? 0 : 1
       return { kind: 'sofa', seat, point: HOME_LAYOUT.standPoints[seat], label: '坐一会儿' }
@@ -269,6 +304,7 @@ export class InteriorScene extends Phaser.Scene {
 
   private tryInteract(): void {
     if (this.blocked()) return
+    if (this.cocoaStation) { eventBus.emit('OPEN_COCOA', {}); return }
     if (this.pose === 'seated') { this.stand(); return }
     if (this.pose === 'approaching') return
     this.updatePrompt()
@@ -281,6 +317,7 @@ export class InteriorScene extends Phaser.Scene {
     if (value.kind === 'door') this.returnToIsland()
     else if (value.kind === 'fireplace') { this.fireBoostUntil = this.elapsed + 1600; this.say('炉火暖了一些，慢慢待着就好。') }
     else if (value.kind === 'tv') this.changeTV('tv-toggle')
+    else if (value.kind === 'cocoa') eventBus.emit('OPEN_COCOA', {})
     else this.sit(value.seat ?? 0)
   }
 
@@ -316,10 +353,22 @@ export class InteriorScene extends Phaser.Scene {
     if (!self) return
     const previous = this.confirmedSeat
     this.members = snapshot.members
+    this.cocoaState = snapshot.cocoa ?? null
+    const oldStation = this.cocoaStation
+    this.cocoaStation = self.station ?? null
+    if (this.cocoaStation && (oldStation !== this.cocoaStation || !this.cocoaApproaching)) {
+      const target = COCOA_LAYOUT.feet[this.cocoaStation]
+      this.cocoaApproaching = false; this.path = []; this.arrival = undefined
+      this.player.setPosition(target.x, target.y); this.pose = 'cooking'; this.clearInput()
+    } else if (oldStation && !this.cocoaStation) {
+      this.pose = 'walking'; this.cocoaApproaching = false
+      if (!this.panelOpen || this.activePanel === 'cocoa') this.cocoaPath(COCOA_LAYOUT.stands[oldStation], () => {})
+    }
+    this.cocoaInput?.synchronize({ runId: this.cocoaState?.run?.id ?? null, phase: this.cocoaState?.run?.phase ?? null, station: this.cocoaStation })
     this.confirmedSeat = self.seat
     this.television = snapshot.television.powered; this.channel = snapshot.television.channel
     if (previous !== this.confirmedSeat) this.applyConfirmedSeat(!this.panelOpen && !this.reducedMotion.matches, previous)
-    this.drawRemotes(); this.drawTV(); this.publish(); this.updatePrompt(true)
+    this.drawRemotes(); this.drawPlayer(); this.drawTV(); this.publish(); this.updatePrompt(true)
   }
 
   private applyConfirmedSeat(animate: boolean, previous: 0 | 1 | null = this.seat): void {
@@ -365,6 +414,48 @@ export class InteriorScene extends Phaser.Scene {
     }
   }
 
+  private cocoaPath(target: Point, action: () => void, waiting = false): void {
+    const path = homeRoute(HOME_LAYOUT, this.player, target)
+    if (!path) { this.say('从旁边空着的地板绕过去，再到料理台来。'); return }
+    this.clearInput(); this.path = path; this.cocoaApproaching = true
+    this.arrival = () => { this.cocoaApproaching = waiting; action(); this.publish() }
+    this.publish()
+  }
+
+  private cocoaAction(command: CocoaCommand): void {
+    if (this.disposed || this.leaving || !this.room || this.connection.state !== 'connected') return
+    const lifetime = this.lifetime
+    const send = () => {
+      const payload = ['start','station','leave'].includes(command.action) ? { ...command, activity_seq: ++this.cocoaMembershipSeq } : command
+      const operation = command.action === 'leave' ? this.room!.sendIntent('cocoa/action', payload) : this.room!.command('cocoa/action', payload)
+      void operation.then(ok => {
+        if (this.disposed || this.leaving || lifetime !== this.lifetime) return
+        if (command.action !== 'leave' || !this.path.length) this.cocoaApproaching = false
+        if (this.cocoaStation) { const foot = COCOA_LAYOUT.feet[this.cocoaStation]; this.player.setPosition(foot.x, foot.y) }
+        this.drawPlayer(); this.publish()
+        eventBus.emit('COCOA_OPERATION', { ok, account: this.identity.account ?? this.identity.character })
+      })
+    }
+    if (command.action === 'leave') { this.cocoaInput?.set('stop'); this.cancelAction(); send(); return }
+    if (this.activePanel !== 'cocoa' || this.connection.pending || this.cocoaApproaching) return
+    this.notice = undefined
+    if (command.action === 'start' || command.action === 'station') {
+      this.cocoaInput?.set('stop')
+      const station = command.action === 'station' ? command.station : this.cocoaStation ?? (this.members.some(m => m.station === 'heat') ? 'stir' : 'heat')
+      this.cocoaPath(COCOA_LAYOUT.feet[station], send, true)
+    } else send()
+  }
+
+  private publishCocoa(): void {
+    if (this.disposed || this.leaving) return
+    eventBus.emit('COCOA_STATE', {
+      account: this.identity.account ?? this.identity.character, display: this.identity.display,
+      members: this.members, cocoa: this.cocoaState,
+      connection: { state: this.connection.state, pending: this.connection.pending, message: this.connection.message ?? this.notice },
+      inputMode: this.cocoaInput?.mode ?? 'stop', sessionId: this.cocoaInput?.scope ?? null, approaching: this.cocoaApproaching,
+    })
+  }
+
   private say(message: string): void {
     this.noticeTimer?.remove(false); this.notice = message; this.publish()
     const epoch = ++this.noticeEpoch
@@ -378,11 +469,13 @@ export class InteriorScene extends Phaser.Scene {
 
   private publish(): void {
     if (this.disposed || this.leaving) return
+    this.publishCocoa()
     eventBus.emit('INTERIOR_STATE', { connection: { state: this.connection.state, pending: this.connection.pending, message: this.connection.message }, members: this.members, companion: this.members.find(m => m.account !== (this.identity.account ?? this.identity.character)), pose: this.pose, seat: this.seat, television: this.television, channel: this.channel, phase: this.phase, nearSofa: !this.panelOpen && this.pose === 'walking' && HOME_LAYOUT.standPoints.some(point => distance(this.player, point) < 28), nearTelevision: !this.panelOpen && this.pose === 'walking' && distance(this.player, HOME_LAYOUT.tv) < 28, notice: this.notice })
   }
 
   private updatePrompt(force = false): void {
     const options: Interaction[] = [
+      { kind: 'cocoa', point: COCOA_LAYOUT.interaction, label: '一起煮热可可' },
       { kind: 'fireplace', point: HOME_LAYOUT.fireplace, label: '拨一拨炉火' },
       { kind: 'tv', point: HOME_LAYOUT.tv, label: this.television ? '电视 · 关掉' : '电视 · 打开' },
       { kind: 'sofa', seat: 0, point: HOME_LAYOUT.standPoints[0], label: '沙发 · 坐一会儿' },
@@ -426,15 +519,17 @@ export class InteriorScene extends Phaser.Scene {
   private drawTV(): void { paintInteriorTV(this, this.channel, this.program.read(performance.now()), this.reducedMotion.matches, this.television) }
   private drawPlayer(moving = false): void {
     if (!this.player) return
+    this.player.setVisible(!this.cocoaStation || this.cocoaApproaching)
     const facing = this.facing === 'front' ? 'down' : this.facing === 'back' ? 'up' : this.flip ? 'left' : 'right'
     this.player.setTexture(CHARACTER_ATLAS, this.pose === 'seated' ? `${this.identity.character}-sit-up` : actorFrame(this.identity.character, facing, moving && !this.reducedMotion.matches, this.elapsed))
       .setFlipX(false).setDepth(this.pose === 'seated' ? 200 : this.player.y)
-    this.shadow?.setPosition(this.player.x, this.player.y - 1).setVisible(this.pose !== 'seated')
+    this.shadow?.setPosition(this.player.x, this.player.y - 1).setVisible(this.pose !== 'seated' && (!this.cocoaStation || this.cocoaApproaching))
   }
 
   private viewFocus(): Point {
     const { width, height } = this.scale.gameSize
     const zoom = this.cameras.main.zoom, visible = width / zoom
+    if (this.cocoaCompact && this.activePanel === 'cocoa') return cocoaFocus(width, height, zoom)
     // 短竖屏行走时为底部摇杆/互动按钮留出空间，门口人物不能藏在按钮后。
     const landscape = width > height && height <= 500
     const compact = width <= 600 || landscape || HOME_LAYOUT.height * zoom > height - 220
@@ -460,12 +555,12 @@ export class InteriorScene extends Phaser.Scene {
     if (!this.player?.active || this.disposed) return
     this.elapsed += delta
     let dx = 0, dy = 0, moving = false
-    if (!this.blocked() && this.pose !== 'seated' && !this.seatTween) {
-      if (!inUI(document.activeElement)) {
+    if (((!this.blocked() && !this.cocoaStation) || this.cocoaApproaching) && this.pose !== 'seated' && !this.seatTween) {
+      if (!this.cocoaApproaching && !inUI(document.activeElement)) {
         dx = Number(this.keys.D.isDown || this.keys.RIGHT.isDown) - Number(this.keys.A.isDown || this.keys.LEFT.isDown)
         dy = Number(this.keys.S.isDown || this.keys.DOWN.isDown) - Number(this.keys.W.isDown || this.keys.UP.isDown)
       }
-      if (!dx && !dy) { dx = this.moveInput.x; dy = this.moveInput.y }
+      if (!this.cocoaApproaching && !dx && !dy) { dx = this.moveInput.x; dy = this.moveInput.y }
       if (dx || dy) this.cancelAction()
       else if (this.path.length) {
         const next = this.path[0], d = distance(this.player, next), step = Math.min(80, delta) / 1000 * 58
@@ -485,6 +580,7 @@ export class InteriorScene extends Phaser.Scene {
       }
     }
     this.drawPlayer(moving || !!this.seatTween); this.updatePrompt()
+    this.cocoaVisuals.update(this.members.filter(m => !(this.cocoaApproaching && m.account === (this.identity.account ?? this.identity.character))), this.connection.state === 'connected' ? this.cocoaState : null, this.elapsed, interiorNight(this.hour), this.reducedMotion.matches)
     const target = this.viewFocus(), amount = this.reducedMotion.matches ? 1 : Math.min(1, delta / 180)
     this.cameraCenter.x += (target.x - this.cameraCenter.x) * amount; this.cameraCenter.y += (target.y - this.cameraCenter.y) * amount
     this.cameras.main.centerOn(this.cameraCenter.x, this.cameraCenter.y)

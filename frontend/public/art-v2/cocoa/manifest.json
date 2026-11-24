@@ -1,0 +1,8101 @@
+{
+  "version": "cocoa-art-1.0.0",
+  "round": "warm-drink-03",
+  "requiresBase": "art-v2.1.0",
+  "atlas": {
+    "key": "cocoa-art",
+    "png": "/art-v2/cocoa/atlas.png",
+    "json": "/art-v2/cocoa/atlas.json"
+  },
+  "scale": {
+    "frame": [
+      32,
+      32
+    ],
+    "visibleStandingHeight": 24,
+    "footAnchor": [
+      16,
+      29
+    ],
+    "origin": [
+      0.5,
+      0.90625
+    ],
+    "spriteScale": 1,
+    "tile": 16
+  },
+  "frames": {
+    "counter-base-day": {
+      "url": "/art-v2/cocoa/frames/counter-base-day.png",
+      "atlas": "cocoa-art",
+      "frame": "counter-base-day",
+      "size": [
+        72,
+        52
+      ],
+      "visibleBBox": [
+        1,
+        19,
+        71,
+        52
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "counter-base-night": {
+      "url": "/art-v2/cocoa/frames/counter-base-night.png",
+      "atlas": "cocoa-art",
+      "frame": "counter-base-night",
+      "size": [
+        72,
+        52
+      ],
+      "visibleBBox": [
+        1,
+        19,
+        71,
+        52
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "counter-front-day": {
+      "url": "/art-v2/cocoa/frames/counter-front-day.png",
+      "atlas": "cocoa-art",
+      "frame": "counter-front-day",
+      "size": [
+        72,
+        52
+      ],
+      "visibleBBox": [
+        4,
+        34,
+        67,
+        48
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "counter-front-night": {
+      "url": "/art-v2/cocoa/frames/counter-front-night.png",
+      "atlas": "cocoa-art",
+      "frame": "counter-front-night",
+      "size": [
+        72,
+        52
+      ],
+      "visibleBBox": [
+        4,
+        34,
+        67,
+        48
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "pot-day": {
+      "url": "/art-v2/cocoa/frames/pot-day.png",
+      "atlas": "cocoa-art",
+      "frame": "pot-day",
+      "size": [
+        26,
+        19
+      ],
+      "visibleBBox": [
+        0,
+        1,
+        26,
+        18
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "pot-night": {
+      "url": "/art-v2/cocoa/frames/pot-night.png",
+      "atlas": "cocoa-art",
+      "frame": "pot-night",
+      "size": [
+        26,
+        19
+      ],
+      "visibleBBox": [
+        0,
+        1,
+        26,
+        18
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "clink-glint-day": {
+      "url": "/art-v2/cocoa/frames/clink-glint-day.png",
+      "atlas": "cocoa-art",
+      "frame": "clink-glint-day",
+      "size": [
+        10,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        1,
+        9,
+        8
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "clink-glint-night": {
+      "url": "/art-v2/cocoa/frames/clink-glint-night.png",
+      "atlas": "cocoa-art",
+      "frame": "clink-glint-night",
+      "size": [
+        10,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        1,
+        9,
+        8
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "burner-0-day": {
+      "url": "/art-v2/cocoa/frames/burner-0-day.png",
+      "atlas": "cocoa-art",
+      "frame": "burner-0-day",
+      "size": [
+        26,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        1,
+        26,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "burner-0-night": {
+      "url": "/art-v2/cocoa/frames/burner-0-night.png",
+      "atlas": "cocoa-art",
+      "frame": "burner-0-night",
+      "size": [
+        26,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        1,
+        26,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "burner-1-day": {
+      "url": "/art-v2/cocoa/frames/burner-1-day.png",
+      "atlas": "cocoa-art",
+      "frame": "burner-1-day",
+      "size": [
+        26,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        1,
+        26,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "burner-1-night": {
+      "url": "/art-v2/cocoa/frames/burner-1-night.png",
+      "atlas": "cocoa-art",
+      "frame": "burner-1-night",
+      "size": [
+        26,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        1,
+        26,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "burner-2-day": {
+      "url": "/art-v2/cocoa/frames/burner-2-day.png",
+      "atlas": "cocoa-art",
+      "frame": "burner-2-day",
+      "size": [
+        26,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        1,
+        26,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "burner-2-night": {
+      "url": "/art-v2/cocoa/frames/burner-2-night.png",
+      "atlas": "cocoa-art",
+      "frame": "burner-2-night",
+      "size": [
+        26,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        1,
+        26,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "knob-0-day": {
+      "url": "/art-v2/cocoa/frames/knob-0-day.png",
+      "atlas": "cocoa-art",
+      "frame": "knob-0-day",
+      "size": [
+        14,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        2,
+        13,
+        9
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "knob-0-night": {
+      "url": "/art-v2/cocoa/frames/knob-0-night.png",
+      "atlas": "cocoa-art",
+      "frame": "knob-0-night",
+      "size": [
+        14,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        2,
+        13,
+        9
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "knob-1-day": {
+      "url": "/art-v2/cocoa/frames/knob-1-day.png",
+      "atlas": "cocoa-art",
+      "frame": "knob-1-day",
+      "size": [
+        14,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        2,
+        13,
+        9
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "knob-1-night": {
+      "url": "/art-v2/cocoa/frames/knob-1-night.png",
+      "atlas": "cocoa-art",
+      "frame": "knob-1-night",
+      "size": [
+        14,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        2,
+        13,
+        9
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "knob-2-day": {
+      "url": "/art-v2/cocoa/frames/knob-2-day.png",
+      "atlas": "cocoa-art",
+      "frame": "knob-2-day",
+      "size": [
+        14,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        2,
+        13,
+        9
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "knob-2-night": {
+      "url": "/art-v2/cocoa/frames/knob-2-night.png",
+      "atlas": "cocoa-art",
+      "frame": "knob-2-night",
+      "size": [
+        14,
+        10
+      ],
+      "visibleBBox": [
+        1,
+        2,
+        13,
+        9
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "steam-0-day": {
+      "url": "/art-v2/cocoa/frames/steam-0-day.png",
+      "atlas": "cocoa-art",
+      "frame": "steam-0-day",
+      "size": [
+        24,
+        24
+      ],
+      "visibleBBox": [
+        2,
+        3,
+        21,
+        23
+      ],
+      "role": "prop",
+      "origin": [
+        0.08333333333333333,
+        1
+      ],
+      "lighting": "base-day",
+      "emissionAnchor": [
+        2,
+        24
+      ],
+      "recommendedOpacity": 0.8
+    },
+    "steam-0-night": {
+      "url": "/art-v2/cocoa/frames/steam-0-night.png",
+      "atlas": "cocoa-art",
+      "frame": "steam-0-night",
+      "size": [
+        24,
+        24
+      ],
+      "visibleBBox": [
+        2,
+        3,
+        21,
+        23
+      ],
+      "role": "prop",
+      "origin": [
+        0.08333333333333333,
+        1
+      ],
+      "lighting": "prebaked-night",
+      "emissionAnchor": [
+        2,
+        24
+      ],
+      "recommendedOpacity": 0.8
+    },
+    "steam-1-day": {
+      "url": "/art-v2/cocoa/frames/steam-1-day.png",
+      "atlas": "cocoa-art",
+      "frame": "steam-1-day",
+      "size": [
+        24,
+        24
+      ],
+      "visibleBBox": [
+        2,
+        2,
+        20,
+        23
+      ],
+      "role": "prop",
+      "origin": [
+        0.08333333333333333,
+        1
+      ],
+      "lighting": "base-day",
+      "emissionAnchor": [
+        2,
+        24
+      ],
+      "recommendedOpacity": 0.8
+    },
+    "steam-1-night": {
+      "url": "/art-v2/cocoa/frames/steam-1-night.png",
+      "atlas": "cocoa-art",
+      "frame": "steam-1-night",
+      "size": [
+        24,
+        24
+      ],
+      "visibleBBox": [
+        2,
+        2,
+        20,
+        23
+      ],
+      "role": "prop",
+      "origin": [
+        0.08333333333333333,
+        1
+      ],
+      "lighting": "prebaked-night",
+      "emissionAnchor": [
+        2,
+        24
+      ],
+      "recommendedOpacity": 0.8
+    },
+    "steam-2-day": {
+      "url": "/art-v2/cocoa/frames/steam-2-day.png",
+      "atlas": "cocoa-art",
+      "frame": "steam-2-day",
+      "size": [
+        24,
+        24
+      ],
+      "visibleBBox": [
+        2,
+        4,
+        21,
+        23
+      ],
+      "role": "prop",
+      "origin": [
+        0.08333333333333333,
+        1
+      ],
+      "lighting": "base-day",
+      "emissionAnchor": [
+        2,
+        24
+      ],
+      "recommendedOpacity": 0.8
+    },
+    "steam-2-night": {
+      "url": "/art-v2/cocoa/frames/steam-2-night.png",
+      "atlas": "cocoa-art",
+      "frame": "steam-2-night",
+      "size": [
+        24,
+        24
+      ],
+      "visibleBBox": [
+        2,
+        4,
+        21,
+        23
+      ],
+      "role": "prop",
+      "origin": [
+        0.08333333333333333,
+        1
+      ],
+      "lighting": "prebaked-night",
+      "emissionAnchor": [
+        2,
+        24
+      ],
+      "recommendedOpacity": 0.8
+    },
+    "steam-3-day": {
+      "url": "/art-v2/cocoa/frames/steam-3-day.png",
+      "atlas": "cocoa-art",
+      "frame": "steam-3-day",
+      "size": [
+        24,
+        24
+      ],
+      "visibleBBox": [
+        2,
+        3,
+        22,
+        23
+      ],
+      "role": "prop",
+      "origin": [
+        0.08333333333333333,
+        1
+      ],
+      "lighting": "base-day",
+      "emissionAnchor": [
+        2,
+        24
+      ],
+      "recommendedOpacity": 0.8
+    },
+    "steam-3-night": {
+      "url": "/art-v2/cocoa/frames/steam-3-night.png",
+      "atlas": "cocoa-art",
+      "frame": "steam-3-night",
+      "size": [
+        24,
+        24
+      ],
+      "visibleBBox": [
+        2,
+        3,
+        22,
+        23
+      ],
+      "role": "prop",
+      "origin": [
+        0.08333333333333333,
+        1
+      ],
+      "lighting": "prebaked-night",
+      "emissionAnchor": [
+        2,
+        24
+      ],
+      "recommendedOpacity": 0.8
+    },
+    "ingredient-marshmallow-day": {
+      "url": "/art-v2/cocoa/frames/ingredient-marshmallow-day.png",
+      "atlas": "cocoa-art",
+      "frame": "ingredient-marshmallow-day",
+      "size": [
+        20,
+        20
+      ],
+      "visibleBBox": [
+        2,
+        7,
+        19,
+        19
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "ingredient-marshmallow-night": {
+      "url": "/art-v2/cocoa/frames/ingredient-marshmallow-night.png",
+      "atlas": "cocoa-art",
+      "frame": "ingredient-marshmallow-night",
+      "size": [
+        20,
+        20
+      ],
+      "visibleBBox": [
+        2,
+        7,
+        19,
+        19
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "ingredient-cocoa-day": {
+      "url": "/art-v2/cocoa/frames/ingredient-cocoa-day.png",
+      "atlas": "cocoa-art",
+      "frame": "ingredient-cocoa-day",
+      "size": [
+        20,
+        20
+      ],
+      "visibleBBox": [
+        4,
+        3,
+        16,
+        17
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "ingredient-cocoa-night": {
+      "url": "/art-v2/cocoa/frames/ingredient-cocoa-night.png",
+      "atlas": "cocoa-art",
+      "frame": "ingredient-cocoa-night",
+      "size": [
+        20,
+        20
+      ],
+      "visibleBBox": [
+        4,
+        3,
+        16,
+        17
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "ingredient-cinnamon-day": {
+      "url": "/art-v2/cocoa/frames/ingredient-cinnamon-day.png",
+      "atlas": "cocoa-art",
+      "frame": "ingredient-cinnamon-day",
+      "size": [
+        20,
+        20
+      ],
+      "visibleBBox": [
+        2,
+        6,
+        19,
+        19
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day"
+    },
+    "ingredient-cinnamon-night": {
+      "url": "/art-v2/cocoa/frames/ingredient-cinnamon-night.png",
+      "atlas": "cocoa-art",
+      "frame": "ingredient-cinnamon-night",
+      "size": [
+        20,
+        20
+      ],
+      "visibleBBox": [
+        2,
+        6,
+        19,
+        19
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night"
+    },
+    "cup-cream-plain-day": {
+      "url": "/art-v2/cocoa/frames/cup-cream-plain-day.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-cream-plain-day",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        5,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-cream-plain-night": {
+      "url": "/art-v2/cocoa/frames/cup-cream-plain-night.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-cream-plain-night",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        5,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-cream-marshmallow-day": {
+      "url": "/art-v2/cocoa/frames/cup-cream-marshmallow-day.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-cream-marshmallow-day",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        3,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-cream-marshmallow-night": {
+      "url": "/art-v2/cocoa/frames/cup-cream-marshmallow-night.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-cream-marshmallow-night",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        3,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-cream-cocoa-day": {
+      "url": "/art-v2/cocoa/frames/cup-cream-cocoa-day.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-cream-cocoa-day",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        5,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-cream-cocoa-night": {
+      "url": "/art-v2/cocoa/frames/cup-cream-cocoa-night.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-cream-cocoa-night",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        5,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-cream-cinnamon-day": {
+      "url": "/art-v2/cocoa/frames/cup-cream-cinnamon-day.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-cream-cinnamon-day",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        2,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-cream-cinnamon-night": {
+      "url": "/art-v2/cocoa/frames/cup-cream-cinnamon-night.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-cream-cinnamon-night",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        2,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-teal-plain-day": {
+      "url": "/art-v2/cocoa/frames/cup-teal-plain-day.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-teal-plain-day",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        5,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-teal-plain-night": {
+      "url": "/art-v2/cocoa/frames/cup-teal-plain-night.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-teal-plain-night",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        5,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-teal-marshmallow-day": {
+      "url": "/art-v2/cocoa/frames/cup-teal-marshmallow-day.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-teal-marshmallow-day",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        3,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-teal-marshmallow-night": {
+      "url": "/art-v2/cocoa/frames/cup-teal-marshmallow-night.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-teal-marshmallow-night",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        3,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-teal-cocoa-day": {
+      "url": "/art-v2/cocoa/frames/cup-teal-cocoa-day.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-teal-cocoa-day",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        5,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-teal-cocoa-night": {
+      "url": "/art-v2/cocoa/frames/cup-teal-cocoa-night.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-teal-cocoa-night",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        5,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-teal-cinnamon-day": {
+      "url": "/art-v2/cocoa/frames/cup-teal-cinnamon-day.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-teal-cinnamon-day",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        2,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "base-day",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "cup-teal-cinnamon-night": {
+      "url": "/art-v2/cocoa/frames/cup-teal-cinnamon-night.png",
+      "atlas": "cocoa-art",
+      "frame": "cup-teal-cinnamon-night",
+      "size": [
+        12,
+        12
+      ],
+      "visibleBBox": [
+        3,
+        2,
+        10,
+        10
+      ],
+      "role": "prop",
+      "origin": [
+        0,
+        0
+      ],
+      "lighting": "prebaked-night",
+      "grip": [
+        8,
+        8
+      ],
+      "gripWhenFlipped": [
+        3,
+        8
+      ],
+      "floorAnchor": [
+        6,
+        10
+      ]
+    },
+    "bear-heat-down-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-heat-down-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-heat-down-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-heat-down-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-heat-down-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-heat-down-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        17,
+        26,
+        26
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-heat-down-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-heat-down-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-heat-down-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-heat-down-1-body": {
+      "url": "/art-v2/cocoa/frames/bear-heat-down-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-heat-down-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-heat-down-1-hands": {
+      "url": "/art-v2/cocoa/frames/bear-heat-down-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-heat-down-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        17,
+        26,
+        27
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-heat-down-1-pose": {
+      "url": "/art-v2/cocoa/frames/bear-heat-down-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-heat-down-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-heat-down-2-body": {
+      "url": "/art-v2/cocoa/frames/bear-heat-down-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-heat-down-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-heat-down-2-hands": {
+      "url": "/art-v2/cocoa/frames/bear-heat-down-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-heat-down-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        17,
+        26,
+        28
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-heat-down-2-pose": {
+      "url": "/art-v2/cocoa/frames/bear-heat-down-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-heat-down-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        26,
+        26
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-1-body": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-1-hands": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        26,
+        26
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-1-pose": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-2-body": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-2-hands": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        26,
+        27
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-2-pose": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-3-body": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-3-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-3-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-3-hands": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-3-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-3-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        26,
+        26
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-stir-down-3-pose": {
+      "url": "/art-v2/cocoa/frames/bear-stir-down-3-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-stir-down-3-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-down-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-hold-down-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-down-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-down-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-hold-down-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-down-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        27,
+        25
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-down-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-hold-down-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-down-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        27,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-up-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-hold-up-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-up-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-up-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-hold-up-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-up-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        28,
+        25
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-up-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-hold-up-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-up-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        28,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-right-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-hold-right-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-right-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-right-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-hold-right-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-right-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        16,
+        17,
+        24,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-right-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-hold-right-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-right-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-left-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-hold-left-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-left-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-left-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-hold-left-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-left-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        17,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-hold-left-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-hold-left-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-hold-left-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-right-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-offer-right-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-right-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-right-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-offer-right-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-right-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        24,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-right-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-offer-right-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-right-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-right-1-body": {
+      "url": "/art-v2/cocoa/frames/bear-offer-right-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-right-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-right-1-hands": {
+      "url": "/art-v2/cocoa/frames/bear-offer-right-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-right-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        25,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-right-1-pose": {
+      "url": "/art-v2/cocoa/frames/bear-offer-right-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-right-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        25,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-right-2-body": {
+      "url": "/art-v2/cocoa/frames/bear-offer-right-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-right-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-right-2-hands": {
+      "url": "/art-v2/cocoa/frames/bear-offer-right-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-right-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        26,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-right-2-pose": {
+      "url": "/art-v2/cocoa/frames/bear-offer-right-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-right-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-left-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-offer-left-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-left-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-left-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-offer-left-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-left-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        16,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-left-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-offer-left-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-left-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-left-1-body": {
+      "url": "/art-v2/cocoa/frames/bear-offer-left-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-left-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-left-1-hands": {
+      "url": "/art-v2/cocoa/frames/bear-offer-left-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-left-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-left-1-pose": {
+      "url": "/art-v2/cocoa/frames/bear-offer-left-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-left-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-left-2-body": {
+      "url": "/art-v2/cocoa/frames/bear-offer-left-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-left-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-left-2-hands": {
+      "url": "/art-v2/cocoa/frames/bear-offer-left-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-left-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-offer-left-2-pose": {
+      "url": "/art-v2/cocoa/frames/bear-offer-left-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-offer-left-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-right-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-receive-right-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-right-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-right-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-receive-right-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-right-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        26,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-right-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-receive-right-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-right-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-right-1-body": {
+      "url": "/art-v2/cocoa/frames/bear-receive-right-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-right-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-right-1-hands": {
+      "url": "/art-v2/cocoa/frames/bear-receive-right-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-right-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        29,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-right-1-pose": {
+      "url": "/art-v2/cocoa/frames/bear-receive-right-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-right-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        29,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-right-2-body": {
+      "url": "/art-v2/cocoa/frames/bear-receive-right-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-right-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-right-2-hands": {
+      "url": "/art-v2/cocoa/frames/bear-receive-right-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-right-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        30,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-right-2-pose": {
+      "url": "/art-v2/cocoa/frames/bear-receive-right-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-right-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        30,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-left-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-receive-left-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-left-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-left-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-receive-left-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-left-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        17,
+        16,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-left-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-receive-left-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-left-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-left-1-body": {
+      "url": "/art-v2/cocoa/frames/bear-receive-left-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-left-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-left-1-hands": {
+      "url": "/art-v2/cocoa/frames/bear-receive-left-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-left-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        4,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-left-1-pose": {
+      "url": "/art-v2/cocoa/frames/bear-receive-left-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-left-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        4,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-left-2-body": {
+      "url": "/art-v2/cocoa/frames/bear-receive-left-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-left-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-left-2-hands": {
+      "url": "/art-v2/cocoa/frames/bear-receive-left-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-left-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        3,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-receive-left-2-pose": {
+      "url": "/art-v2/cocoa/frames/bear-receive-left-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-receive-left-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        3,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        24,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-1-body": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-1-hands": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        24,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-1-pose": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-2-body": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-2-hands": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        24,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-2-pose": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-3-body": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-3-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-3-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-3-hands": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-3-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-3-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        24,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-right-3-pose": {
+      "url": "/art-v2/cocoa/frames/bear-clink-right-3-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-right-3-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-0-body": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-0-hands": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        16,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-0-pose": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-1-body": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-1-hands": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-1-pose": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-2-body": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-2-hands": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-2-pose": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-3-body": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-3-body.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-3-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-3-hands": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-3-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-3-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        16,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "bear-clink-left-3-pose": {
+      "url": "/art-v2/cocoa/frames/bear-clink-left-3-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "bear-clink-left-3-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-heat-down-0-body": {
+      "url": "/art-v2/cocoa/frames/her-heat-down-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-heat-down-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-heat-down-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-heat-down-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-heat-down-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        17,
+        26,
+        26
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-heat-down-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-heat-down-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-heat-down-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-heat-down-1-body": {
+      "url": "/art-v2/cocoa/frames/her-heat-down-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-heat-down-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-heat-down-1-hands": {
+      "url": "/art-v2/cocoa/frames/her-heat-down-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-heat-down-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        17,
+        26,
+        27
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-heat-down-1-pose": {
+      "url": "/art-v2/cocoa/frames/her-heat-down-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-heat-down-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-heat-down-2-body": {
+      "url": "/art-v2/cocoa/frames/her-heat-down-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-heat-down-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-heat-down-2-hands": {
+      "url": "/art-v2/cocoa/frames/her-heat-down-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-heat-down-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        17,
+        26,
+        28
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-heat-down-2-pose": {
+      "url": "/art-v2/cocoa/frames/her-heat-down-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-heat-down-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-0-body": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        26,
+        26
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-1-body": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-1-hands": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        26,
+        26
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-1-pose": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-2-body": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-2-hands": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        26,
+        27
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-2-pose": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-3-body": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-3-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-3-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-3-hands": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-3-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-3-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        26,
+        26
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-stir-down-3-pose": {
+      "url": "/art-v2/cocoa/frames/her-stir-down-3-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-stir-down-3-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-down-0-body": {
+      "url": "/art-v2/cocoa/frames/her-hold-down-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-down-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-down-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-hold-down-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-down-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        27,
+        25
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-down-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-hold-down-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-down-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        27,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-up-0-body": {
+      "url": "/art-v2/cocoa/frames/her-hold-up-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-up-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        25,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-up-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-hold-up-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-up-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        28,
+        25
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-up-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-hold-up-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-up-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        28,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-right-0-body": {
+      "url": "/art-v2/cocoa/frames/her-hold-right-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-right-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-right-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-hold-right-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-right-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        16,
+        17,
+        24,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-right-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-hold-right-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-right-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-left-0-body": {
+      "url": "/art-v2/cocoa/frames/her-hold-left-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-left-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-left-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-hold-left-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-left-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        17,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-hold-left-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-hold-left-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-hold-left-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-right-0-body": {
+      "url": "/art-v2/cocoa/frames/her-offer-right-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-right-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-right-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-offer-right-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-right-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        24,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-right-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-offer-right-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-right-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-right-1-body": {
+      "url": "/art-v2/cocoa/frames/her-offer-right-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-right-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-right-1-hands": {
+      "url": "/art-v2/cocoa/frames/her-offer-right-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-right-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        25,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-right-1-pose": {
+      "url": "/art-v2/cocoa/frames/her-offer-right-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-right-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        25,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-right-2-body": {
+      "url": "/art-v2/cocoa/frames/her-offer-right-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-right-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-right-2-hands": {
+      "url": "/art-v2/cocoa/frames/her-offer-right-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-right-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        26,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-right-2-pose": {
+      "url": "/art-v2/cocoa/frames/her-offer-right-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-right-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-left-0-body": {
+      "url": "/art-v2/cocoa/frames/her-offer-left-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-left-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-left-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-offer-left-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-left-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        16,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-left-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-offer-left-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-left-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-left-1-body": {
+      "url": "/art-v2/cocoa/frames/her-offer-left-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-left-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-left-1-hands": {
+      "url": "/art-v2/cocoa/frames/her-offer-left-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-left-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-left-1-pose": {
+      "url": "/art-v2/cocoa/frames/her-offer-left-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-left-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        8,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-left-2-body": {
+      "url": "/art-v2/cocoa/frames/her-offer-left-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-left-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-left-2-hands": {
+      "url": "/art-v2/cocoa/frames/her-offer-left-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-left-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-offer-left-2-pose": {
+      "url": "/art-v2/cocoa/frames/her-offer-left-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-offer-left-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-right-0-body": {
+      "url": "/art-v2/cocoa/frames/her-receive-right-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-right-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-right-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-receive-right-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-right-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        26,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-right-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-receive-right-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-right-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        26,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-right-1-body": {
+      "url": "/art-v2/cocoa/frames/her-receive-right-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-right-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-right-1-hands": {
+      "url": "/art-v2/cocoa/frames/her-receive-right-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-right-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        29,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-right-1-pose": {
+      "url": "/art-v2/cocoa/frames/her-receive-right-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-right-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        29,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-right-2-body": {
+      "url": "/art-v2/cocoa/frames/her-receive-right-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-right-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-right-2-hands": {
+      "url": "/art-v2/cocoa/frames/her-receive-right-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-right-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        30,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-right-2-pose": {
+      "url": "/art-v2/cocoa/frames/her-receive-right-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-right-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        30,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-left-0-body": {
+      "url": "/art-v2/cocoa/frames/her-receive-left-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-left-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-left-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-receive-left-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-left-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        17,
+        16,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-left-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-receive-left-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-left-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        7,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-left-1-body": {
+      "url": "/art-v2/cocoa/frames/her-receive-left-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-left-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-left-1-hands": {
+      "url": "/art-v2/cocoa/frames/her-receive-left-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-left-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        4,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-left-1-pose": {
+      "url": "/art-v2/cocoa/frames/her-receive-left-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-left-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        4,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-left-2-body": {
+      "url": "/art-v2/cocoa/frames/her-receive-left-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-left-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-left-2-hands": {
+      "url": "/art-v2/cocoa/frames/her-receive-left-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-left-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        3,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-receive-left-2-pose": {
+      "url": "/art-v2/cocoa/frames/her-receive-left-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-receive-left-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        3,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-0-body": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        24,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-1-body": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-1-hands": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        24,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-1-pose": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-2-body": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-2-hands": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        24,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-2-pose": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-3-body": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-3-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-3-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        23,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-3-hands": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-3-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-3-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        17,
+        17,
+        24,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-right-3-pose": {
+      "url": "/art-v2/cocoa/frames/her-clink-right-3-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-right-3-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-0-body": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-0-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-0-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-0-hands": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-0-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-0-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        16,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-0-pose": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-0-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-0-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-1-body": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-1-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-1-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-1-hands": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-1-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-1-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-1-pose": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-1-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-1-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-2-body": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-2-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-2-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-2-hands": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-2-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-2-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        16,
+        22
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-2-pose": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-2-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-2-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-3-body": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-3-body.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-3-body",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        10,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-3-hands": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-3-hands.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-3-hands",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        17,
+        16,
+        23
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    },
+    "her-clink-left-3-pose": {
+      "url": "/art-v2/cocoa/frames/her-clink-left-3-pose.png",
+      "atlas": "cocoa-art",
+      "frame": "her-clink-left-3-pose",
+      "size": [
+        32,
+        32
+      ],
+      "visibleBBox": [
+        9,
+        5,
+        24,
+        29
+      ],
+      "role": "actor-layer",
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "lighting": "neutral-follow-existing-actor-lighting"
+    }
+  },
+  "actions": {
+    "bear-heat-down-0": {
+      "body": "bear-heat-down-0-body",
+      "hands": "bear-heat-down-0-hands",
+      "pose": "bear-heat-down-0-pose",
+      "identity": "bear",
+      "direction": "down",
+      "action": "heat",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-down",
+      "hand": [
+        20,
+        24
+      ],
+      "cup": null
+    },
+    "bear-heat-down-1": {
+      "body": "bear-heat-down-1-body",
+      "hands": "bear-heat-down-1-hands",
+      "pose": "bear-heat-down-1-pose",
+      "identity": "bear",
+      "direction": "down",
+      "action": "heat",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-down",
+      "hand": [
+        21,
+        25
+      ],
+      "cup": null
+    },
+    "bear-heat-down-2": {
+      "body": "bear-heat-down-2-body",
+      "hands": "bear-heat-down-2-hands",
+      "pose": "bear-heat-down-2-pose",
+      "identity": "bear",
+      "direction": "down",
+      "action": "heat",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-down",
+      "hand": [
+        20,
+        26
+      ],
+      "cup": null
+    },
+    "bear-stir-down-0": {
+      "body": "bear-stir-down-0-body",
+      "hands": "bear-stir-down-0-hands",
+      "pose": "bear-stir-down-0-pose",
+      "identity": "bear",
+      "direction": "down",
+      "action": "stir",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-down",
+      "hand": [
+        20,
+        24
+      ],
+      "cup": null,
+      "spoonTip": [
+        15,
+        20
+      ]
+    },
+    "bear-stir-down-1": {
+      "body": "bear-stir-down-1-body",
+      "hands": "bear-stir-down-1-hands",
+      "pose": "bear-stir-down-1-pose",
+      "identity": "bear",
+      "direction": "down",
+      "action": "stir",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-down",
+      "hand": [
+        21,
+        24
+      ],
+      "cup": null,
+      "spoonTip": [
+        16,
+        21
+      ]
+    },
+    "bear-stir-down-2": {
+      "body": "bear-stir-down-2-body",
+      "hands": "bear-stir-down-2-hands",
+      "pose": "bear-stir-down-2-pose",
+      "identity": "bear",
+      "direction": "down",
+      "action": "stir",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-down",
+      "hand": [
+        20,
+        25
+      ],
+      "cup": null,
+      "spoonTip": [
+        17,
+        20
+      ]
+    },
+    "bear-stir-down-3": {
+      "body": "bear-stir-down-3-body",
+      "hands": "bear-stir-down-3-hands",
+      "pose": "bear-stir-down-3-pose",
+      "identity": "bear",
+      "direction": "down",
+      "action": "stir",
+      "phase": 3,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-down",
+      "hand": [
+        19,
+        24
+      ],
+      "cup": null,
+      "spoonTip": [
+        16,
+        19
+      ]
+    },
+    "bear-hold-down-0": {
+      "body": "bear-hold-down-0-body",
+      "hands": "bear-hold-down-0-hands",
+      "pose": "bear-hold-down-0-pose",
+      "identity": "bear",
+      "direction": "down",
+      "action": "hold",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-down",
+      "hand": [
+        25,
+        23
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-hold-up-0": {
+      "body": "bear-hold-up-0-body",
+      "hands": "bear-hold-up-0-hands",
+      "pose": "bear-hold-up-0-pose",
+      "identity": "bear",
+      "direction": "up",
+      "action": "hold",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-up",
+      "hand": [
+        26,
+        23
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-hold-right-0": {
+      "body": "bear-hold-right-0-body",
+      "hands": "bear-hold-right-0-hands",
+      "pose": "bear-hold-right-0-pose",
+      "identity": "bear",
+      "direction": "right",
+      "action": "hold",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-right",
+      "hand": [
+        22,
+        20
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-hold-left-0": {
+      "body": "bear-hold-left-0-body",
+      "hands": "bear-hold-left-0-hands",
+      "pose": "bear-hold-left-0-pose",
+      "identity": "bear",
+      "direction": "left",
+      "action": "hold",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-left",
+      "hand": [
+        10,
+        20
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-offer-right-0": {
+      "body": "bear-offer-right-0-body",
+      "hands": "bear-offer-right-0-hands",
+      "pose": "bear-offer-right-0-pose",
+      "identity": "bear",
+      "direction": "right",
+      "action": "offer",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-right",
+      "hand": [
+        22,
+        21
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-offer-right-1": {
+      "body": "bear-offer-right-1-body",
+      "hands": "bear-offer-right-1-hands",
+      "pose": "bear-offer-right-1-pose",
+      "identity": "bear",
+      "direction": "right",
+      "action": "offer",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-right",
+      "hand": [
+        24,
+        20
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-offer-right-2": {
+      "body": "bear-offer-right-2-body",
+      "hands": "bear-offer-right-2-hands",
+      "pose": "bear-offer-right-2-pose",
+      "identity": "bear",
+      "direction": "right",
+      "action": "offer",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-right",
+      "hand": [
+        25,
+        20
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-offer-left-0": {
+      "body": "bear-offer-left-0-body",
+      "hands": "bear-offer-left-0-hands",
+      "pose": "bear-offer-left-0-pose",
+      "identity": "bear",
+      "direction": "left",
+      "action": "offer",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-left",
+      "hand": [
+        10,
+        21
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-offer-left-1": {
+      "body": "bear-offer-left-1-body",
+      "hands": "bear-offer-left-1-hands",
+      "pose": "bear-offer-left-1-pose",
+      "identity": "bear",
+      "direction": "left",
+      "action": "offer",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-left",
+      "hand": [
+        8,
+        20
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-offer-left-2": {
+      "body": "bear-offer-left-2-body",
+      "hands": "bear-offer-left-2-hands",
+      "pose": "bear-offer-left-2-pose",
+      "identity": "bear",
+      "direction": "left",
+      "action": "offer",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-left",
+      "hand": [
+        7,
+        20
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-receive-right-0": {
+      "body": "bear-receive-right-0-body",
+      "hands": "bear-receive-right-0-hands",
+      "pose": "bear-receive-right-0-pose",
+      "identity": "bear",
+      "direction": "right",
+      "action": "receive",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-right",
+      "hand": [
+        25,
+        21
+      ],
+      "cup": null
+    },
+    "bear-receive-right-1": {
+      "body": "bear-receive-right-1-body",
+      "hands": "bear-receive-right-1-hands",
+      "pose": "bear-receive-right-1-pose",
+      "identity": "bear",
+      "direction": "right",
+      "action": "receive",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-right",
+      "hand": [
+        28,
+        20
+      ],
+      "cup": null
+    },
+    "bear-receive-right-2": {
+      "body": "bear-receive-right-2-body",
+      "hands": "bear-receive-right-2-hands",
+      "pose": "bear-receive-right-2-pose",
+      "identity": "bear",
+      "direction": "right",
+      "action": "receive",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-right",
+      "hand": [
+        29,
+        20
+      ],
+      "cup": null
+    },
+    "bear-receive-left-0": {
+      "body": "bear-receive-left-0-body",
+      "hands": "bear-receive-left-0-hands",
+      "pose": "bear-receive-left-0-pose",
+      "identity": "bear",
+      "direction": "left",
+      "action": "receive",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-left",
+      "hand": [
+        7,
+        21
+      ],
+      "cup": null
+    },
+    "bear-receive-left-1": {
+      "body": "bear-receive-left-1-body",
+      "hands": "bear-receive-left-1-hands",
+      "pose": "bear-receive-left-1-pose",
+      "identity": "bear",
+      "direction": "left",
+      "action": "receive",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-left",
+      "hand": [
+        4,
+        20
+      ],
+      "cup": null
+    },
+    "bear-receive-left-2": {
+      "body": "bear-receive-left-2-body",
+      "hands": "bear-receive-left-2-hands",
+      "pose": "bear-receive-left-2-pose",
+      "identity": "bear",
+      "direction": "left",
+      "action": "receive",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-left",
+      "hand": [
+        3,
+        20
+      ],
+      "cup": null
+    },
+    "bear-clink-right-0": {
+      "body": "bear-clink-right-0-body",
+      "hands": "bear-clink-right-0-hands",
+      "pose": "bear-clink-right-0-pose",
+      "identity": "bear",
+      "direction": "right",
+      "action": "clink",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-right",
+      "hand": [
+        22,
+        21
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-clink-right-1": {
+      "body": "bear-clink-right-1-body",
+      "hands": "bear-clink-right-1-hands",
+      "pose": "bear-clink-right-1-pose",
+      "identity": "bear",
+      "direction": "right",
+      "action": "clink",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-right",
+      "hand": [
+        23,
+        19
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-clink-right-2": {
+      "body": "bear-clink-right-2-body",
+      "hands": "bear-clink-right-2-hands",
+      "pose": "bear-clink-right-2-pose",
+      "identity": "bear",
+      "direction": "right",
+      "action": "clink",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-right",
+      "hand": [
+        23,
+        19
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-clink-right-3": {
+      "body": "bear-clink-right-3-body",
+      "hands": "bear-clink-right-3-hands",
+      "pose": "bear-clink-right-3-pose",
+      "identity": "bear",
+      "direction": "right",
+      "action": "clink",
+      "phase": 3,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-right",
+      "hand": [
+        22,
+        21
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-clink-left-0": {
+      "body": "bear-clink-left-0-body",
+      "hands": "bear-clink-left-0-hands",
+      "pose": "bear-clink-left-0-pose",
+      "identity": "bear",
+      "direction": "left",
+      "action": "clink",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-left",
+      "hand": [
+        10,
+        21
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-clink-left-1": {
+      "body": "bear-clink-left-1-body",
+      "hands": "bear-clink-left-1-hands",
+      "pose": "bear-clink-left-1-pose",
+      "identity": "bear",
+      "direction": "left",
+      "action": "clink",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-left",
+      "hand": [
+        9,
+        19
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-clink-left-2": {
+      "body": "bear-clink-left-2-body",
+      "hands": "bear-clink-left-2-hands",
+      "pose": "bear-clink-left-2-pose",
+      "identity": "bear",
+      "direction": "left",
+      "action": "clink",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-left",
+      "hand": [
+        9,
+        19
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "bear-clink-left-3": {
+      "body": "bear-clink-left-3-body",
+      "hands": "bear-clink-left-3-hands",
+      "pose": "bear-clink-left-3-pose",
+      "identity": "bear",
+      "direction": "left",
+      "action": "clink",
+      "phase": 3,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "bear-idle-left",
+      "hand": [
+        10,
+        21
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-heat-down-0": {
+      "body": "her-heat-down-0-body",
+      "hands": "her-heat-down-0-hands",
+      "pose": "her-heat-down-0-pose",
+      "identity": "her",
+      "direction": "down",
+      "action": "heat",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-down",
+      "hand": [
+        20,
+        24
+      ],
+      "cup": null
+    },
+    "her-heat-down-1": {
+      "body": "her-heat-down-1-body",
+      "hands": "her-heat-down-1-hands",
+      "pose": "her-heat-down-1-pose",
+      "identity": "her",
+      "direction": "down",
+      "action": "heat",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-down",
+      "hand": [
+        21,
+        25
+      ],
+      "cup": null
+    },
+    "her-heat-down-2": {
+      "body": "her-heat-down-2-body",
+      "hands": "her-heat-down-2-hands",
+      "pose": "her-heat-down-2-pose",
+      "identity": "her",
+      "direction": "down",
+      "action": "heat",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-down",
+      "hand": [
+        20,
+        26
+      ],
+      "cup": null
+    },
+    "her-stir-down-0": {
+      "body": "her-stir-down-0-body",
+      "hands": "her-stir-down-0-hands",
+      "pose": "her-stir-down-0-pose",
+      "identity": "her",
+      "direction": "down",
+      "action": "stir",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-down",
+      "hand": [
+        20,
+        24
+      ],
+      "cup": null,
+      "spoonTip": [
+        15,
+        20
+      ]
+    },
+    "her-stir-down-1": {
+      "body": "her-stir-down-1-body",
+      "hands": "her-stir-down-1-hands",
+      "pose": "her-stir-down-1-pose",
+      "identity": "her",
+      "direction": "down",
+      "action": "stir",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-down",
+      "hand": [
+        21,
+        24
+      ],
+      "cup": null,
+      "spoonTip": [
+        16,
+        21
+      ]
+    },
+    "her-stir-down-2": {
+      "body": "her-stir-down-2-body",
+      "hands": "her-stir-down-2-hands",
+      "pose": "her-stir-down-2-pose",
+      "identity": "her",
+      "direction": "down",
+      "action": "stir",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-down",
+      "hand": [
+        20,
+        25
+      ],
+      "cup": null,
+      "spoonTip": [
+        17,
+        20
+      ]
+    },
+    "her-stir-down-3": {
+      "body": "her-stir-down-3-body",
+      "hands": "her-stir-down-3-hands",
+      "pose": "her-stir-down-3-pose",
+      "identity": "her",
+      "direction": "down",
+      "action": "stir",
+      "phase": 3,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-down",
+      "hand": [
+        19,
+        24
+      ],
+      "cup": null,
+      "spoonTip": [
+        16,
+        19
+      ]
+    },
+    "her-hold-down-0": {
+      "body": "her-hold-down-0-body",
+      "hands": "her-hold-down-0-hands",
+      "pose": "her-hold-down-0-pose",
+      "identity": "her",
+      "direction": "down",
+      "action": "hold",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-down",
+      "hand": [
+        25,
+        23
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-hold-up-0": {
+      "body": "her-hold-up-0-body",
+      "hands": "her-hold-up-0-hands",
+      "pose": "her-hold-up-0-pose",
+      "identity": "her",
+      "direction": "up",
+      "action": "hold",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-up",
+      "hand": [
+        26,
+        23
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-hold-right-0": {
+      "body": "her-hold-right-0-body",
+      "hands": "her-hold-right-0-hands",
+      "pose": "her-hold-right-0-pose",
+      "identity": "her",
+      "direction": "right",
+      "action": "hold",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-right",
+      "hand": [
+        22,
+        20
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-hold-left-0": {
+      "body": "her-hold-left-0-body",
+      "hands": "her-hold-left-0-hands",
+      "pose": "her-hold-left-0-pose",
+      "identity": "her",
+      "direction": "left",
+      "action": "hold",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-left",
+      "hand": [
+        10,
+        20
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-offer-right-0": {
+      "body": "her-offer-right-0-body",
+      "hands": "her-offer-right-0-hands",
+      "pose": "her-offer-right-0-pose",
+      "identity": "her",
+      "direction": "right",
+      "action": "offer",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-right",
+      "hand": [
+        22,
+        21
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-offer-right-1": {
+      "body": "her-offer-right-1-body",
+      "hands": "her-offer-right-1-hands",
+      "pose": "her-offer-right-1-pose",
+      "identity": "her",
+      "direction": "right",
+      "action": "offer",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-right",
+      "hand": [
+        24,
+        20
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-offer-right-2": {
+      "body": "her-offer-right-2-body",
+      "hands": "her-offer-right-2-hands",
+      "pose": "her-offer-right-2-pose",
+      "identity": "her",
+      "direction": "right",
+      "action": "offer",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-right",
+      "hand": [
+        25,
+        20
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-offer-left-0": {
+      "body": "her-offer-left-0-body",
+      "hands": "her-offer-left-0-hands",
+      "pose": "her-offer-left-0-pose",
+      "identity": "her",
+      "direction": "left",
+      "action": "offer",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-left",
+      "hand": [
+        10,
+        21
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-offer-left-1": {
+      "body": "her-offer-left-1-body",
+      "hands": "her-offer-left-1-hands",
+      "pose": "her-offer-left-1-pose",
+      "identity": "her",
+      "direction": "left",
+      "action": "offer",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-left",
+      "hand": [
+        8,
+        20
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-offer-left-2": {
+      "body": "her-offer-left-2-body",
+      "hands": "her-offer-left-2-hands",
+      "pose": "her-offer-left-2-pose",
+      "identity": "her",
+      "direction": "left",
+      "action": "offer",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-left",
+      "hand": [
+        7,
+        20
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-receive-right-0": {
+      "body": "her-receive-right-0-body",
+      "hands": "her-receive-right-0-hands",
+      "pose": "her-receive-right-0-pose",
+      "identity": "her",
+      "direction": "right",
+      "action": "receive",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-right",
+      "hand": [
+        25,
+        21
+      ],
+      "cup": null
+    },
+    "her-receive-right-1": {
+      "body": "her-receive-right-1-body",
+      "hands": "her-receive-right-1-hands",
+      "pose": "her-receive-right-1-pose",
+      "identity": "her",
+      "direction": "right",
+      "action": "receive",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-right",
+      "hand": [
+        28,
+        20
+      ],
+      "cup": null
+    },
+    "her-receive-right-2": {
+      "body": "her-receive-right-2-body",
+      "hands": "her-receive-right-2-hands",
+      "pose": "her-receive-right-2-pose",
+      "identity": "her",
+      "direction": "right",
+      "action": "receive",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-right",
+      "hand": [
+        29,
+        20
+      ],
+      "cup": null
+    },
+    "her-receive-left-0": {
+      "body": "her-receive-left-0-body",
+      "hands": "her-receive-left-0-hands",
+      "pose": "her-receive-left-0-pose",
+      "identity": "her",
+      "direction": "left",
+      "action": "receive",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-left",
+      "hand": [
+        7,
+        21
+      ],
+      "cup": null
+    },
+    "her-receive-left-1": {
+      "body": "her-receive-left-1-body",
+      "hands": "her-receive-left-1-hands",
+      "pose": "her-receive-left-1-pose",
+      "identity": "her",
+      "direction": "left",
+      "action": "receive",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-left",
+      "hand": [
+        4,
+        20
+      ],
+      "cup": null
+    },
+    "her-receive-left-2": {
+      "body": "her-receive-left-2-body",
+      "hands": "her-receive-left-2-hands",
+      "pose": "her-receive-left-2-pose",
+      "identity": "her",
+      "direction": "left",
+      "action": "receive",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-left",
+      "hand": [
+        3,
+        20
+      ],
+      "cup": null
+    },
+    "her-clink-right-0": {
+      "body": "her-clink-right-0-body",
+      "hands": "her-clink-right-0-hands",
+      "pose": "her-clink-right-0-pose",
+      "identity": "her",
+      "direction": "right",
+      "action": "clink",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-right",
+      "hand": [
+        22,
+        21
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-clink-right-1": {
+      "body": "her-clink-right-1-body",
+      "hands": "her-clink-right-1-hands",
+      "pose": "her-clink-right-1-pose",
+      "identity": "her",
+      "direction": "right",
+      "action": "clink",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-right",
+      "hand": [
+        23,
+        19
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-clink-right-2": {
+      "body": "her-clink-right-2-body",
+      "hands": "her-clink-right-2-hands",
+      "pose": "her-clink-right-2-pose",
+      "identity": "her",
+      "direction": "right",
+      "action": "clink",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-right",
+      "hand": [
+        23,
+        19
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-clink-right-3": {
+      "body": "her-clink-right-3-body",
+      "hands": "her-clink-right-3-hands",
+      "pose": "her-clink-right-3-pose",
+      "identity": "her",
+      "direction": "right",
+      "action": "clink",
+      "phase": 3,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-right",
+      "hand": [
+        22,
+        21
+      ],
+      "cup": {
+        "grip": [
+          3,
+          8
+        ],
+        "flipX": true,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-clink-left-0": {
+      "body": "her-clink-left-0-body",
+      "hands": "her-clink-left-0-hands",
+      "pose": "her-clink-left-0-pose",
+      "identity": "her",
+      "direction": "left",
+      "action": "clink",
+      "phase": 0,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-left",
+      "hand": [
+        10,
+        21
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-clink-left-1": {
+      "body": "her-clink-left-1-body",
+      "hands": "her-clink-left-1-hands",
+      "pose": "her-clink-left-1-pose",
+      "identity": "her",
+      "direction": "left",
+      "action": "clink",
+      "phase": 1,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-left",
+      "hand": [
+        9,
+        19
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-clink-left-2": {
+      "body": "her-clink-left-2-body",
+      "hands": "her-clink-left-2-hands",
+      "pose": "her-clink-left-2-pose",
+      "identity": "her",
+      "direction": "left",
+      "action": "clink",
+      "phase": 2,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-left",
+      "hand": [
+        9,
+        19
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    },
+    "her-clink-left-3": {
+      "body": "her-clink-left-3-body",
+      "hands": "her-clink-left-3-hands",
+      "pose": "her-clink-left-3-pose",
+      "identity": "her",
+      "direction": "left",
+      "action": "clink",
+      "phase": 3,
+      "footAnchor": [
+        16,
+        29
+      ],
+      "origin": [
+        0.5,
+        0.90625
+      ],
+      "headBaseline": "her-idle-left",
+      "hand": [
+        10,
+        21
+      ],
+      "cup": {
+        "grip": [
+          8,
+          8
+        ],
+        "flipX": false,
+        "layer": "after-body-before-hand-tip"
+      }
+    }
+  },
+  "animations": {
+    "bear-heat-down": {
+      "actions": [
+        "bear-heat-down-0",
+        "bear-heat-down-1",
+        "bear-heat-down-2"
+      ],
+      "frameRate": 4,
+      "repeat": -1,
+      "reducedMotionAction": "bear-heat-down-1",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "bear-stir-down": {
+      "actions": [
+        "bear-stir-down-0",
+        "bear-stir-down-1",
+        "bear-stir-down-2",
+        "bear-stir-down-3"
+      ],
+      "frameRate": 5,
+      "repeat": -1,
+      "reducedMotionAction": "bear-stir-down-1",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "bear-hold-down": {
+      "actions": [
+        "bear-hold-down-0"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "bear-hold-down-0",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "bear-hold-up": {
+      "actions": [
+        "bear-hold-up-0"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "bear-hold-up-0",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "bear-hold-right": {
+      "actions": [
+        "bear-hold-right-0"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "bear-hold-right-0",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "bear-hold-left": {
+      "actions": [
+        "bear-hold-left-0"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "bear-hold-left-0",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "bear-offer-right": {
+      "actions": [
+        "bear-offer-right-0",
+        "bear-offer-right-1",
+        "bear-offer-right-2"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "bear-offer-right-2",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "bear-offer-left": {
+      "actions": [
+        "bear-offer-left-0",
+        "bear-offer-left-1",
+        "bear-offer-left-2"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "bear-offer-left-2",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "bear-receive-right": {
+      "actions": [
+        "bear-receive-right-0",
+        "bear-receive-right-1",
+        "bear-receive-right-2"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "bear-receive-right-2",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "bear-receive-left": {
+      "actions": [
+        "bear-receive-left-0",
+        "bear-receive-left-1",
+        "bear-receive-left-2"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "bear-receive-left-2",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "bear-clink-right": {
+      "actions": [
+        "bear-clink-right-0",
+        "bear-clink-right-1",
+        "bear-clink-right-2",
+        "bear-clink-right-3"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "bear-clink-right-1",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "bear-clink-left": {
+      "actions": [
+        "bear-clink-left-0",
+        "bear-clink-left-1",
+        "bear-clink-left-2",
+        "bear-clink-left-3"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "bear-clink-left-1",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-heat-down": {
+      "actions": [
+        "her-heat-down-0",
+        "her-heat-down-1",
+        "her-heat-down-2"
+      ],
+      "frameRate": 4,
+      "repeat": -1,
+      "reducedMotionAction": "her-heat-down-1",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-stir-down": {
+      "actions": [
+        "her-stir-down-0",
+        "her-stir-down-1",
+        "her-stir-down-2",
+        "her-stir-down-3"
+      ],
+      "frameRate": 5,
+      "repeat": -1,
+      "reducedMotionAction": "her-stir-down-1",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-hold-down": {
+      "actions": [
+        "her-hold-down-0"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "her-hold-down-0",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-hold-up": {
+      "actions": [
+        "her-hold-up-0"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "her-hold-up-0",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-hold-right": {
+      "actions": [
+        "her-hold-right-0"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "her-hold-right-0",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-hold-left": {
+      "actions": [
+        "her-hold-left-0"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "her-hold-left-0",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-offer-right": {
+      "actions": [
+        "her-offer-right-0",
+        "her-offer-right-1",
+        "her-offer-right-2"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "her-offer-right-2",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-offer-left": {
+      "actions": [
+        "her-offer-left-0",
+        "her-offer-left-1",
+        "her-offer-left-2"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "her-offer-left-2",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-receive-right": {
+      "actions": [
+        "her-receive-right-0",
+        "her-receive-right-1",
+        "her-receive-right-2"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "her-receive-right-2",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-receive-left": {
+      "actions": [
+        "her-receive-left-0",
+        "her-receive-left-1",
+        "her-receive-left-2"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "her-receive-left-2",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-clink-right": {
+      "actions": [
+        "her-clink-right-0",
+        "her-clink-right-1",
+        "her-clink-right-2",
+        "her-clink-right-3"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "her-clink-right-1",
+      "stateChangeRequiresServerConfirmation": true
+    },
+    "her-clink-left": {
+      "actions": [
+        "her-clink-left-0",
+        "her-clink-left-1",
+        "her-clink-left-2",
+        "her-clink-left-3"
+      ],
+      "frameRate": 5,
+      "repeat": 0,
+      "reducedMotionAction": "her-clink-left-1",
+      "stateChangeRequiresServerConfirmation": true
+    }
+  },
+  "counter": {
+    "size": [
+      72,
+      52
+    ],
+    "footprint": [
+      4,
+      35,
+      64,
+      14
+    ],
+    "workstations": {
+      "heat": {
+        "foot": [
+          18,
+          32
+        ],
+        "direction": "down"
+      },
+      "stir": {
+        "foot": [
+          50,
+          32
+        ],
+        "direction": "down"
+      }
+    },
+    "standCandidates": [
+      [
+        18,
+        62
+      ],
+      [
+        50,
+        62
+      ]
+    ],
+    "interaction": [
+      36,
+      62
+    ],
+    "parts": {
+      "base": [
+        0,
+        0
+      ],
+      "front": [
+        0,
+        0
+      ],
+      "burner": [
+        37,
+        29
+      ],
+      "pot": [
+        37,
+        17
+      ],
+      "knob": [
+        15,
+        25
+      ],
+      "steamAnchor": [
+        50,
+        20
+      ]
+    },
+    "absolutePlacement": null,
+    "allPlacementIsProposal": true
+  },
+  "workstationLayerOrder": [
+    "actor-body-behind-counter",
+    "counter-base",
+    "burner",
+    "pot",
+    "knob",
+    "counter-front",
+    "actor-hands",
+    "steam"
+  ],
+  "cupBinding": {
+    "frameTemplate": "cup-{cupType}-{topping}-{dayOrNight}",
+    "cupTypes": [
+      "cream",
+      "teal"
+    ],
+    "toppings": [
+      "marshmallow",
+      "cocoa",
+      "cinnamon"
+    ],
+    "drawOrder": [
+      "actor-body",
+      "actor-hands",
+      "cup-attached-by-grip",
+      "hand-tip-foreground"
+    ],
+    "tipRectangleRelativeToHand": [
+      -1,
+      0,
+      2,
+      2
+    ],
+    "receiveHasCupBeforeAccept": false,
+    "transferOnlyAfterConfirmedAccept": true,
+    "oneCupObjectPerConfirmedCupId": true
+  },
+  "socialGeometry": {
+    "offerFootOffsets": [
+      [
+        0,
+        0
+      ],
+      [
+        28,
+        0
+      ]
+    ],
+    "clinkFootOffsets": [
+      [
+        -12,
+        0
+      ],
+      [
+        12,
+        0
+      ]
+    ],
+    "leftActorDirection": "right",
+    "rightActorDirection": "left",
+    "clinkGlintRelativeToMidpoint": [
+      0,
+      -13
+    ],
+    "allPositionsAreProposals": true
+  },
+  "effects": {
+    "steam": {
+      "day": [
+        "steam-0-day",
+        "steam-1-day",
+        "steam-2-day",
+        "steam-3-day"
+      ],
+      "night": [
+        "steam-0-night",
+        "steam-1-night",
+        "steam-2-night",
+        "steam-3-night"
+      ],
+      "frameRate": 3,
+      "reducedMotion": "steam-1-{dayOrNight}",
+      "opacity": 0.8,
+      "alphaPulsing": false
+    },
+    "clinkGlint": {
+      "key": "clink-glint-{dayOrNight}",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "durationMs": 300,
+      "reducedMotion": "omit"
+    }
+  },
+  "integrationNotes": [
+    "Never infer participants, completion, ownership or acceptance from these pixels.",
+    "Workstation actors are stationary confirmed participants; do not animate fake remote walking.",
+    "No absolute counter placement and no existing room assets were changed.",
+    "Props offer day/night palettes; actor layers use existing shared actor lighting without changing identity or scale.",
+    "The tabletop occludes lower bodies, but hand overlays draw above the pot/controls."
+  ]
+}

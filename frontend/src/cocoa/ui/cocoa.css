@@ -1,0 +1,149 @@
+/* 受控料理面板。沿用已验收 tokens，所有尺寸均为 CSS 屏幕像素。 */
+.cocoa-mask { position: fixed; inset: 0; z-index: 35; display: grid; place-items: center; padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); background: #2b1b4566; font: var(--ui-text-body)/1.6 var(--ui-font); color: var(--ui-ink); }
+.cocoa-mask *, .cocoa-mask *::before, .cocoa-mask *::after { box-sizing: border-box; }
+.cocoa-panel { width: min(100%, 720px); min-width: 0; max-height: calc(100dvh - 24px); overflow: auto; overscroll-behavior: contain; background: var(--ui-paper); border: 1px solid var(--ui-wood); border-radius: var(--ui-radius-panel); box-shadow: var(--ui-shadow-panel); padding: 24px; }
+.cocoa-panel :is(p, h2, h3, h4, span, label, small, strong) { overflow-wrap: anywhere; }
+.cocoa-panel :is(button, input) { font-family: inherit; }
+.cocoa-panel button { min-height: var(--ui-touch); min-width: var(--ui-touch); cursor: pointer; touch-action: manipulation; }
+.cocoa-panel button:disabled, .cocoa-panel fieldset:disabled button { cursor: default; opacity: .7; }
+.cocoa-panel :is(button, input):focus-visible { outline: var(--ui-focus); outline-offset: 3px; }
+.cocoa-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--ui-divider); }
+.cocoa-header > div { min-width: 0; }
+.cocoa-eyebrow { margin: 0 0 4px; font-size: var(--ui-text-meta); color: var(--ui-muted); }
+.cocoa-header h2 { font-size: var(--ui-text-title); line-height: 1.35; margin: 0; font-weight: 600; }
+.cocoa-button { display: inline-flex; justify-content: center; align-items: center; gap: 6px; padding: 10px 14px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); background: var(--ui-paper-raised); color: var(--ui-ink); font-size: var(--ui-text-control); line-height: 1.4; text-align: center; }
+.cocoa-button:hover:not(:disabled) { background: var(--ui-paper-inset); border-color: var(--ui-wood); }
+.cocoa-button.is-primary { background: var(--ui-accent); border-color: var(--ui-accent); color: var(--ui-on-dark); }
+.cocoa-button.is-primary:hover:not(:disabled) { background: var(--ui-accent-hover); }
+.cocoa-button[aria-pressed="true"], .cocoa-button[aria-current="page"] { background: var(--ui-accent-soft); color: var(--ui-accent); border-color: var(--ui-accent); box-shadow: inset 0 -2px 0 var(--ui-accent); }
+.cocoa-close { flex: 0 0 auto; }
+.cocoa-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 16px 0; }
+.cocoa-prototype { margin: 16px 0 0; padding: 10px 12px; border: 1px dashed var(--ui-wood); border-radius: var(--ui-radius); background: var(--ui-paper-inset); font-size: var(--ui-text-control); }
+.cocoa-message { margin: 12px 0; padding: 12px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); background: var(--ui-paper-raised); }
+.cocoa-message p { margin: 0; }
+.cocoa-message button { margin-top: 8px; }
+.cocoa-message.is-error, .cocoa-message.is-conflict { border-color: var(--ui-danger); background: var(--ui-danger-soft); }
+.cocoa-pending { margin: 8px 0; font-size: var(--ui-text-control); color: var(--ui-muted); }
+.cocoa-empty { display: grid; justify-items: center; gap: 16px; padding: 20px 12px; text-align: center; }
+.cocoa-empty h3 { margin: 0; font-size: var(--ui-text-section); line-height: 1.4; }
+.cocoa-empty p { max-width: 430px; margin: 0; }
+.cocoa-empty > span { color: var(--ui-muted); font-size: var(--ui-text-control); }
+.cocoa-two-cups { display: flex; justify-content: center; gap: 16px; }
+.cocoa-cup-icon { display: block; flex-shrink: 0; color: var(--ui-ink); }
+.cocoa-people { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.cocoa-people > span { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; max-width: 100%; min-width: 0; padding: 6px 10px; border-radius: var(--ui-radius); background: var(--ui-paper-inset); font-size: var(--ui-text-control); }
+.cocoa-people small { font-size: var(--ui-text-meta); color: var(--ui-muted); }
+.cocoa-join { margin: 16px 0; padding: 16px; border: 1px solid var(--ui-accent); border-radius: var(--ui-radius); background: var(--ui-accent-soft); }
+.cocoa-join p { margin: 0 0 12px; }
+.cocoa-cup-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.cocoa-cup-choice { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 12px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); background: var(--ui-paper-raised); color: var(--ui-ink); text-align: left; font-size: var(--ui-text-control); }
+.cocoa-cup-choice > span { min-width: 0; }
+.cocoa-cup-choice small { display: block; margin-top: 4px; color: var(--ui-muted); font-size: var(--ui-text-meta); line-height: 1.5; }
+.cocoa-cup-choice[aria-pressed="true"] { border-color: var(--ui-accent); background: var(--ui-accent-soft); box-shadow: inset 0 -2px 0 var(--ui-accent); }
+.cocoa-choice-fields { min-width: 0; padding: 16px 0 0; margin: 16px 0 0; border: 0; border-top: 1px solid var(--ui-divider); }
+.cocoa-choice-fields legend { padding: 0 8px 0 0; font-size: var(--ui-text-body); font-weight: 600; }
+.cocoa-option-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.cocoa-subheading { margin: 16px 0 8px; font-size: var(--ui-text-control); }
+.cocoa-subheading > span { color: var(--ui-muted); font-size: var(--ui-text-meta); }
+.cocoa-ingredients { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.cocoa-ingredients button { display: grid; align-content: center; justify-items: start; gap: 4px; padding: 10px; color: var(--ui-ink); background: var(--ui-paper-raised); border: 1px solid var(--ui-border); border-radius: var(--ui-radius); font-size: var(--ui-text-control); text-align: left; }
+.cocoa-ingredients small { color: var(--ui-muted); font-size: var(--ui-text-meta); }
+.cocoa-ingredients button[aria-pressed="true"] { border-color: var(--ui-accent); background: var(--ui-accent-soft); }
+.cocoa-note { margin: 12px 0; font-size: var(--ui-text-control); line-height: 1.5; color: var(--ui-muted); }
+.cocoa-stations { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+.cocoa-station { display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 12px; min-width: 0; padding: 14px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); background: var(--ui-paper-raised); }
+.cocoa-station.is-mine { border-color: var(--ui-accent); background: var(--ui-accent-soft); }
+.cocoa-station h3 { margin: 0; font-size: var(--ui-text-body); font-weight: 600; }
+.cocoa-station p { margin: 4px 0; font-size: var(--ui-text-control); }
+.cocoa-station small { font-size: var(--ui-text-meta); color: var(--ui-muted); line-height: 1.5; }
+.cocoa-station-marker { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--ui-text-control); font-weight: 600; color: var(--ui-accent); }
+.cocoa-pot { padding: 16px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius-panel); background: var(--ui-paper-raised); }
+.cocoa-temperature-heading { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+.cocoa-temperature-heading > span { font-size: var(--ui-text-control); }
+.cocoa-temperature-heading strong { font: 600 28px/1.3 var(--ui-font-number); }
+.cocoa-temperature-heading small { font-size: var(--ui-text-control); }
+.cocoa-temperature-track { position: relative; height: 16px; margin: 16px 6px 8px; background: var(--ui-paper-inset); border: 1px solid var(--ui-border); border-radius: 4px; }
+.cocoa-ideal-band { position: absolute; top: 0; bottom: 0; background: var(--ui-accent-soft); border-inline: 2px solid var(--ui-accent); }
+.cocoa-temperature-mark { position: absolute; top: -5px; bottom: -5px; width: 6px; transform: translateX(-50%); border: 1px solid var(--ui-paper); border-radius: 3px; background: var(--ui-ink); }
+.cocoa-meter-key { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; margin: 0 0 16px; font-size: var(--ui-text-meta); color: var(--ui-muted); }
+.cocoa-meter-key .is-warm { color: var(--ui-accent); }
+.cocoa-progress-label { display: flex; justify-content: space-between; gap: 8px; font-size: var(--ui-text-control); }
+.cocoa-pot progress { display: block; width: 100%; height: 10px; margin-top: 8px; border: 0; border-radius: 4px; background: var(--ui-paper-inset); color: var(--ui-accent); accent-color: var(--ui-accent); overflow: hidden; }
+.cocoa-pot progress::-webkit-progress-bar { background: var(--ui-paper-inset); }
+.cocoa-pot progress::-webkit-progress-value { background: var(--ui-accent); }
+.cocoa-pot progress::-moz-progress-bar { background: var(--ui-accent); }
+.cocoa-progress-empty { height: 10px; margin-top: 8px; border-radius: 4px; background: var(--ui-paper-inset); }
+.cocoa-pot-hint { margin: 12px 0 0; font-size: var(--ui-text-control); color: var(--ui-muted); line-height: 1.5; }
+.cocoa-work { margin: 16px 0; }
+.cocoa-work p { margin: 0 0 12px; }
+.cocoa-heat-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.cocoa-main-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.cocoa-main-actions > button { flex: 1 1 150px; }
+.cocoa-pause-note { padding: 12px; margin: 16px 0; border-left: 3px solid var(--ui-accent); background: var(--ui-accent-soft); }
+.cocoa-portion { padding: 12px 0; }
+.cocoa-portion > p { margin: 16px 0; }
+.cocoa-portion form { display: grid; gap: 8px; }
+.cocoa-portion label { font-size: var(--ui-text-control); }
+.cocoa-portion input { width: 100%; min-width: 0; min-height: 48px; padding: 10px 12px; font-size: var(--ui-text-body); line-height: 1.5; color: var(--ui-ink); background: var(--ui-paper-raised); border: 1px solid var(--ui-border); border-radius: var(--ui-radius); }
+.cocoa-portion form > button { margin-top: 8px; }
+.cocoa-recipe-title h3 { font-size: var(--ui-text-section); margin: 4px 0; line-height: 1.4; }
+.cocoa-recipe-title > p { margin: 4px 0 0; font-size: var(--ui-text-meta); color: var(--ui-muted); }
+.cocoa-makers { margin: 12px 0 16px; }
+.cocoa-result-cups { display: grid; gap: 12px; }
+.cocoa-result-cup { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; padding: 16px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); background: var(--ui-paper-raised); }
+.cocoa-cup-copy { min-width: 0; }
+.cocoa-cup-copy h4 { margin: 0; font-size: var(--ui-text-body); }
+.cocoa-cup-copy > p { margin: 4px 0; font-size: var(--ui-text-control); }
+.cocoa-cup-copy .cocoa-cup-location { color: var(--ui-muted); }
+.cocoa-cup-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.cocoa-cup-actions > button { flex: 1 1 120px; }
+.cocoa-toast { display: grid; justify-items: center; gap: 8px; text-align: center; margin-top: 20px; }
+.cocoa-toast .cocoa-note { margin: 0; }
+.cocoa-toast-feedback { margin: 0; padding: 12px; border: 1px solid var(--ui-accent); border-radius: var(--ui-radius); background: var(--ui-accent-soft); }
+.cocoa-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; padding-top: 16px; margin-top: 20px; border-top: 1px solid var(--ui-divider); }
+.cocoa-footer > span { font-size: var(--ui-text-meta); color: var(--ui-muted); }
+.cocoa-collection { display: grid; gap: 12px; list-style: none; padding: 0; margin: 16px 0; }
+.cocoa-recipe-link { display: flex; align-items: center; width: 100%; gap: 12px; padding: 14px; text-align: left; background: var(--ui-paper-raised); border: 1px solid var(--ui-border); border-radius: var(--ui-radius); color: var(--ui-ink); }
+.cocoa-recipe-link > span:nth-child(2) { flex: 1; min-width: 0; }
+.cocoa-recipe-link strong { display: block; font-size: var(--ui-text-body); }
+.cocoa-recipe-link small { display: block; margin-top: 4px; font-size: var(--ui-text-meta); color: var(--ui-muted); }
+.cocoa-back { margin-bottom: 16px; }
+@media (max-width: 480px) {
+  .cocoa-panel { padding: 16px; }
+  .cocoa-header h2 { font-size: var(--ui-text-section); }
+  .cocoa-cup-choice { flex-direction: column; align-items: flex-start; padding: 10px; }
+  .cocoa-ingredients { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cocoa-stations { gap: 8px; }
+  .cocoa-station { padding: 10px; }
+  .cocoa-station button { padding: 8px 4px; width: 100%; }
+  .cocoa-pot { padding: 12px; }
+  .cocoa-result-cup { padding: 12px; gap: 8px; }
+}
+@media (max-height: 500px) { .cocoa-mask { padding-block: 8px; } .cocoa-panel { max-height: calc(100dvh - 16px); } }
+@media (prefers-reduced-motion: reduce) { .cocoa-panel *, .cocoa-panel *::before, .cocoa-panel *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+.cocoa-choice-toggle { margin: 0 0 16px; }
+.cocoa-invitation { margin: 12px 0; padding: 12px; border: 1px solid var(--ui-accent); border-radius: var(--ui-radius); background: var(--ui-accent-soft); }
+.cocoa-invitation > p { margin: 0 0 8px; }
+.cocoa-invitation > div { display: flex; flex-wrap: wrap; gap: 8px; }
+/* 制作时把温度和自己的操作放在一起；重复的成员标签收进工位行。 */
+.cocoa-panel[data-cocoa-phase="brewing"] .cocoa-people { display: none; }
+.cocoa-panel[data-cocoa-phase="brewing"] .cocoa-stations { margin-top: 12px; }
+.cocoa-panel[data-cocoa-phase="brewing"] .cocoa-station { padding: 10px; gap: 4px; }
+.cocoa-panel[data-cocoa-phase="brewing"] .cocoa-station small,
+.cocoa-panel[data-cocoa-phase="brewing"] .cocoa-station-marker { display: none; }
+
+/* 实际场景整合：制作/分杯/递杯时给料理台留出可见区域。 */
+.cocoa-mask.is-compact { background: transparent; pointer-events: none; justify-items: end; }
+.cocoa-mask.is-compact .cocoa-panel { width: min(440px, 42vw); max-height: calc(100dvh - 24px); pointer-events: auto; padding: 16px; }
+.cocoa-mask.is-compact .cocoa-stations { margin-top: 12px; gap: 8px; }
+.cocoa-mask.is-compact .cocoa-station { padding: 10px; }
+.cocoa-mask.is-compact .cocoa-station small { display: none; }
+@media (max-width: 600px) {
+  .cocoa-mask.is-compact { align-items: end; }
+  .cocoa-mask.is-compact .cocoa-panel { width: 100%; max-height: min(54dvh, 390px); padding: 12px; }
+  .cocoa-mask.is-compact .cocoa-header { padding-bottom: 10px; }
+  .cocoa-mask.is-compact .cocoa-tabs { margin: 10px 0; }
+}
+
+.cocoa-stage-status { position: fixed; z-index: 34; top: 96px; left: calc((100vw - min(440px, 42vw) - 24px) / 2); transform: translateX(-50%); max-width: calc(100vw - 32px); padding: 8px 12px; background: var(--ui-paper); color: var(--ui-ink); border: 1px solid var(--ui-border); border-radius: var(--ui-radius); font: var(--ui-text-control)/1.5 var(--ui-font); pointer-events: none; }
+@media (max-width: 600px) { .cocoa-stage-status { top: 80px; left: 50%; white-space: nowrap; } }

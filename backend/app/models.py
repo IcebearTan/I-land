@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from typing import Optional
 
+from sqlalchemy import UniqueConstraint
 from sqlmodel import Field, SQLModel
 
 
@@ -127,6 +128,39 @@ class RoomTelevision(SQLModel, table=True):
     anchor_utc_ms: int
     version: int = 1
     changed_by: Optional[str] = None
+
+
+class CocoaRun(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    request_id: str = Field(unique=True, index=True)
+    # 完成后置空；SQLite 唯一约束保证只有一锅未完成的可可。
+    active_slot: Optional[str] = Field(default="interior", unique=True)
+    phase: str = "preparing"
+    version: int = 1
+    temperature: float = 24.0
+    progress: float = 0.0
+    choices_json: str = "{}"
+    makers_json: str = "[]"  # 真正推进过操作的稳定用户 ID
+    reason: str = ""
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class CocoaRecipe(SQLModel, table=True):
+    run_id: int = Field(primary_key=True, foreign_key="cocoarun.id")
+    name: str
+    makers_json: str = "[]"
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    cheered_at: Optional[datetime] = None
+
+
+class CocoaCup(SQLModel, table=True):
+    __table_args__ = (UniqueConstraint("run_id", "recipient_id"),)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    run_id: int = Field(foreign_key="cocoarecipe.run_id", index=True)
+    recipient_id: int = Field(foreign_key="user.id")
+    cup_type: str = "cream"
+    ingredients_json: str = "[]"
+    claimed: bool = False
 
 
 class Note(SQLModel, table=True):

@@ -1,0 +1,151 @@
+{
+  "round": "warm-drink-03",
+  "version": "cocoa-art-1.0.0",
+  "status": "passed",
+  "categories": 23,
+  "frames": 236,
+  "actions": 62,
+  "atlasSize": [
+    1024,
+    320
+  ],
+  "checks": [
+    {
+      "name": "compatible accepted base dimensions and foot anchor",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all frames match declared size and visible bbox",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all exported pixels have binary alpha",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "62 actions / two identities / required roles",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all action layers are 32x32 with the accepted origin",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all action heads exactly match accepted heads",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "body foot and sole pixels remain unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "body plus hands exactly reconstructs full pose",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "every cup type/topping fits attachment frame without clipping",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "held cups do not cover opaque accepted head pixels",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receive action never includes a cup before confirmation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "animations and reduced-motion action references exist",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "work loops have distinct hand keyframes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "day/night props retain identical alpha geometry",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "six finished cup variants per lighting mode exist",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "steam frames are distinct and steady alpha",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no absolute room placement or participant baking",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "atlas declares exactly all individual frames",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "atlas crops equal untrimmed unrotated source PNGs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "one-pixel extrusion matches source borders",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "two-pixel guards are bounded and non-overlapping",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "stirring spoon tips land inside the cocoa mouth",
+      "passed": true,
+      "detail": [
+        [
+          49,
+          23
+        ],
+        [
+          50,
+          24
+        ],
+        [
+          51,
+          23
+        ],
+        [
+          50,
+          22
+        ]
+      ]
+    },
+    {
+      "name": "work feet are outside proposed solid footprint",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "limits": [
+    "Only new art assets and their direct base-dimension dependency checked.",
+    "No actual game, collision/pathfinding, multiplayer or device validation.",
+    "No checksums generated and no full regression/build invoked."
+  ]
+}

@@ -8,8 +8,8 @@
   "tileheight": 16,
   "width": 20,
   "height": 15,
-  "nextlayerid": 20,
-  "nextobjectid": 24,
+  "nextlayerid": 22,
+  "nextobjectid": 31,
   "backgroundcolor": "#2b1b45",
   "tilesets": [],
   "layers": [
@@ -499,6 +499,17 @@
           "height": 12,
           "rotation": 0,
           "visible": true
+        },
+        {
+          "id": 24,
+          "name": "cocoa-counter",
+          "type": "cocoa-bounds",
+          "x": 222,
+          "y": 157,
+          "width": 64,
+          "height": 14,
+          "rotation": 0,
+          "visible": true
         }
       ],
       "opacity": 1,
@@ -659,6 +670,123 @@
           "type": "anchor",
           "x": 178,
           "y": 211,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        }
+      ],
+      "opacity": 1,
+      "visible": false,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": 20,
+      "name": "cocoa-counter-preview",
+      "type": "imagelayer",
+      "image": "cocoa/frames/counter-base-day.png",
+      "x": 0,
+      "y": 0,
+      "offsetx": 218,
+      "offsety": 122,
+      "opacity": 1,
+      "visible": true,
+      "properties": [
+        {
+          "name": "atlasFrame",
+          "type": "string",
+          "value": "counter-base"
+        },
+        {
+          "name": "atlas",
+          "type": "string",
+          "value": "cocoa-art"
+        },
+        {
+          "name": "runtimeOwner",
+          "type": "string",
+          "value": "cocoa"
+        },
+        {
+          "name": "depth",
+          "type": "float",
+          "value": 171
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "name": "cocoa",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "objects": [
+        {
+          "id": 25,
+          "name": "counter-visual",
+          "type": "cocoa-bounds",
+          "x": 218,
+          "y": 141,
+          "width": 72,
+          "height": 33,
+          "rotation": 0,
+          "visible": true
+        },
+        {
+          "id": 26,
+          "name": "interaction",
+          "type": "cocoa-anchor",
+          "x": 254,
+          "y": 184,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 27,
+          "name": "heat-foot",
+          "type": "cocoa-anchor",
+          "x": 236,
+          "y": 154,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 28,
+          "name": "stir-foot",
+          "type": "cocoa-anchor",
+          "x": 268,
+          "y": 154,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 29,
+          "name": "heat-stand",
+          "type": "cocoa-anchor",
+          "x": 236,
+          "y": 184,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "point": true
+        },
+        {
+          "id": 30,
+          "name": "stir-stand",
+          "type": "cocoa-anchor",
+          "x": 268,
+          "y": 184,
           "width": 0,
           "height": 0,
           "rotation": 0,

@@ -116,6 +116,8 @@ export class SharedRoomClient<S extends RoomSnapshotBase> {
   }
 
   get status(): SharedRoomView<S> { return this.view }
+  /** 仅供同场景的短输入控制器区分新旧租约，不放进公共房间快照。 */
+  get leaseKey(): string | undefined { return this.view.state === 'connected' ? this.leaseId : undefined }
 
   start(): void {
     if (this.disposed || this.started) return
@@ -257,6 +259,27 @@ export class SharedRoomClient<S extends RoomSnapshotBase> {
       return false
     } finally {
       if (this.current(generation) && this.view.state === 'connected') this.publish({ ...this.view, pending: false })
+    }
+  }
+
+  /** 松手/短意图不能排在普通 pending 后；响应仍受当前连接代数与快照排序保护。 */
+  async sendIntent(path: string, body: Record<string, unknown>): Promise<boolean> {
+    if (this.disposed || this.view.state !== 'connected' || !this.leaseId) return false
+    const generation = this.generation
+    try {
+      const { data, timing } = await this.request(path, 'PUT', { ...body, lease_id: this.leaseId })
+      if (!this.current(generation)) return false
+      const snapshot = (data as { snapshot?: unknown }).snapshot
+      if (!this.options.isSnapshot(snapshot)) throw new RoomRequestError(502, { message: '房间状态暂时无法确认。' })
+      this.accept(snapshot, timing)
+      return true
+    } catch (error) {
+      if (!this.current(generation)) return false
+      if (error instanceof RoomRequestError && error.status === 409 && this.options.isSnapshot(error.detail.snapshot)) {
+        this.accept(error.detail.snapshot, { receivedMonoMs: this.env.now() })
+        this.publish({ ...this.view, message: error.detail.message ?? '操作条件已经变化，已同步当前状态。' })
+      } else this.handleError(error)
+      return false
     }
   }
 

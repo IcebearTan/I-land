@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-07",
+  "round": "warm-drink-03",
+  "checksums": false,
+  "deliveries": [
+    {
+      "component": "ui",
+      "version": "cocoa-ui-v1.1",
+      "files": 31,
+      "all_paths_exist": true,
+      "frozen": true
+    },
+    {
+      "component": "art",
+      "version": "cocoa-art-1.0.0",
+      "files": 241,
+      "all_paths_exist": true,
+      "frozen": true
+    }
+  ]
+}

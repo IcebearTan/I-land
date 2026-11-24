@@ -130,3 +130,19 @@ test('a full-width partition returns null rather than a path through an unreacha
   assert.equal(homeRoute(divided, HOME_LAYOUT.door, HOME_LAYOUT.tv), null)
   assert.equal(homeRoute(divided, HOME_LAYOUT.tv, HOME_LAYOUT.door), null)
 })
+
+const cocoaLayoutCode = compile(fs.readFileSync(new URL('../src/cocoa/layout.ts', import.meta.url), 'utf8')).replace(/from ['"]\.\.\/interior\/layout['"]/, `from '${moduleUrl(mapCode)}'`)
+const { COCOA_LAYOUT } = await import(moduleUrl(cocoaLayoutCode))
+for (const target of [...Object.values(COCOA_LAYOUT.feet), COCOA_LAYOUT.interaction]) {
+  test(`cocoa point ${target.x},${target.y} stays reachable around the counter`, () => {
+    assertSafeRoute(HOME_LAYOUT, HOME_LAYOUT.door, target, homeRoute(HOME_LAYOUT, HOME_LAYOUT.door, target))
+    for (const other of [HOME_LAYOUT.tv, HOME_LAYOUT.fireplace, ...HOME_LAYOUT.standPoints]) {
+      assertSafeRoute(HOME_LAYOUT, target, other, homeRoute(HOME_LAYOUT, target, other))
+    }
+  })
+}
+
+test('confirmed station exchange has a clear route behind the cooking counter', () => {
+  assertSafeSegment(HOME_LAYOUT, COCOA_LAYOUT.feet.heat, COCOA_LAYOUT.feet.stir)
+  for (const role of ['heat','stir']) assertSafeRoute(HOME_LAYOUT, COCOA_LAYOUT.feet[role], COCOA_LAYOUT.stands[role], homeRoute(HOME_LAYOUT, COCOA_LAYOUT.feet[role], COCOA_LAYOUT.stands[role]))
+})

@@ -4,6 +4,7 @@ import type { AudioContextInfo, AudioSettings, AudioStatus } from '../audio/type
 import type { SceneryRate, SceneryTime } from '../seaside/clock'
 import type { RoomMember, RoomPose, RoomView } from '../seaside/types'
 import type { HomeMember, HomeView } from '../interior/room'
+import type { CocoaCommand, CocoaGameView, CocoaMode } from '../cocoa/types'
 
 export interface IslandIdentity { character: CharacterId; display: string; account?: 'bear' | 'her' }
 export type SceneId = 'login' | 'island' | 'seaside' | 'interior'
@@ -20,7 +21,7 @@ export interface SeasideState {
 
 /** 位置留在 Phaser；成员、坐席与电视由独立小屋房间确认。 */
 export interface InteriorState {
-  pose: 'walking' | 'approaching' | 'seated'
+  pose: 'walking' | 'approaching' | 'seated' | 'cooking'
   seat: 0 | 1 | null
   television: boolean
   channel: 0 | 1 | 2
@@ -37,7 +38,7 @@ export interface InteriorState {
  * 游戏层（Phaser）与 UI 层（React）之间唯一允许的通信通道。
  * 规则：Phaser 不知道 React 存在，React 不碰 canvas。
  */
-export type PanelName = 'mailbox' | 'calendar' | 'bottle' | 'settings'
+export type PanelName = 'mailbox' | 'calendar' | 'bottle' | 'settings' | 'cocoa'
 
 export interface DayTick {
   time: string
@@ -61,6 +62,13 @@ export type GameEvents = {
   INTERIOR_STATE: InteriorState
   INTERIOR_REQUEST_STATE: Record<string, never>
   INTERIOR_ACTION: { action: 'stand' | 'sit-left' | 'sit-right' | 'tv-toggle' | 'tv-next' | 'reconnect' }
+  OPEN_COCOA: Record<string, never>
+  COCOA_STATE: CocoaGameView
+  COCOA_REQUEST_STATE: Record<string, never>
+  COCOA_ACTION: CocoaCommand
+  COCOA_INPUT: { mode: CocoaMode; sessionId: string | null; account: 'bear' | 'her' }
+  COCOA_LAYOUT: { compact: boolean }
+  COCOA_OPERATION: { ok: boolean; account: 'bear' | 'her' }
   SEASIDE_STATE: SeasideState
   SEASIDE_REQUEST_STATE: Record<string, never>
   SEASIDE_ACTION: { action: 'sit' | 'stand' | 'lean' | 'unlean' }

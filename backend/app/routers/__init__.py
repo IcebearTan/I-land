@@ -7,6 +7,7 @@ from .settings import router as settings_router
 from .uploads import router as uploads_router
 from .world import router as world_router
 from .rooms import router as rooms_router
+from .cocoa import router as cocoa_router
 
 __all__ = [
     "anniversaries_router",
@@ -18,4 +19,5 @@ __all__ = [
     "uploads_router",
     "world_router",
     "rooms_router",
+    "cocoa_router",
 ]
