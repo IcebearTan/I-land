@@ -1,0 +1,142 @@
+.lighthouse-panel {
+  width: min(440px, 92vw);
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.lh-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 16px;
+}
+
+.lh-current {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  background: rgba(255, 250, 236, 0.72);
+  border: 2px solid #b88450;
+  border-radius: 6px;
+}
+
+.lh-beacon-dot {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  border-radius: 999px;
+  border: 2px solid #59301b;
+}
+
+.lh-current-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lh-current-copy strong {
+  font-size: 14px;
+  color: #4a3228;
+}
+
+.lh-current-copy p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #5c4338;
+  word-break: break-word;
+}
+
+.lh-meta {
+  font-size: 12px;
+  color: #8a6a52;
+}
+
+.lh-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lh-presets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.lh-preset {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border: 2px solid #b88450;
+  border-radius: 6px;
+  background: #f8e7c4;
+  color: #4a3228;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.08s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.lh-preset:hover {
+  background: #fff2d6;
+}
+
+.lh-preset.is-active {
+  background: #fff6df;
+  border-color: #59301b;
+  box-shadow: inset 0 0 0 2px #d9a05b;
+}
+
+.lh-swatch {
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 1.5px solid #59301b;
+}
+
+.lh-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: #59301b;
+}
+
+.lh-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 11px;
+  border: 2px solid #b88450;
+  border-radius: 6px;
+  background: #fff9eb;
+  color: #3d281f;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.lh-field input:focus {
+  outline: none;
+  border-color: #59301b;
+}
+
+.lh-error {
+  margin: 0;
+  font-size: 12px;
+  color: #b43c4d;
+}
+
+.lh-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 2px;
+}

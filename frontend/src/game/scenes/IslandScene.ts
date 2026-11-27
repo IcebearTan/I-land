@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 import { worldZoom } from '../../visual/layout'
 import { CHARACTER_ATLAS, CHARACTER_ORIGIN, CHARACTER_FOOT, actorFrame, pickFacing, type Facing } from '../../visual/artV2'
 import { SCREEN_BODY_PX, SCREEN_LABEL_PX, screenTextScale } from '../../visual/screenText'
-import { eventBus, type Phase, type IslandIdentity, type IslandEntry, type SceneState } from '../EventBus'
+import { eventBus, type Phase, type IslandIdentity, type IslandEntry, type SceneState, type LighthouseSignal } from '../EventBus'
 import { makeTexture } from '../pixels'
 import { hash2 } from '../art'
 import { createIslandArt, WORLD, HOME, TOWER, MAIL, DOCK, SPAWN, BOTTLE, SEASIDE_ENTRY, SEASIDE_RETURN, TREES, LAMPS, OBSTACLES, landDistance } from '../art/island'
@@ -54,7 +54,9 @@ function phaseAtHour(h: number): Phase {
   return 'dusk'
 }
 
-interface Interactable { x: number; y: number; label: string; event: 'mailbox' | 'calendar' | 'bottle' | 'seaside' | 'interior' }
+interface Interactable { x: number; y: number; label: string; event: 'mailbox' | 'lighthouse' | 'bottle' | 'seaside' | 'interior' }
+interface SwayingCanopy { img: Phaser.GameObjects.Image; baseX: number; phase: number; amp: number }
+interface WindLeaf { img: Phaser.GameObjects.Image; originX: number; originY: number; life: number; maxLife: number; drift: number }
 
 export class IslandScene extends Phaser.Scene {
   private identity: IslandIdentity = { character: 'bear', display: '小熊' }
@@ -79,11 +81,18 @@ export class IslandScene extends Phaser.Scene {
   private promptTarget: Interactable | null = null
   private tintOverlay!: Phaser.GameObjects.Rectangle
   private nightLights!: Phaser.GameObjects.Container
+  private towerGlowLayers: Phaser.GameObjects.Ellipse[] = []
+  private towerGlass!: Phaser.GameObjects.Rectangle
+  private towerBeam!: Phaser.GameObjects.Graphics
+  private towerColor = 0xffd98a
+  private towerDayBeacon!: Phaser.GameObjects.Rectangle
   private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
   private decorations: Phaser.GameObjects.Image[] = []
+  private canopies: SwayingCanopy[] = []
+  private windLeaves: WindLeaf[] = []
   private interactables: Interactable[] = [
     { ...MAIL, label: '小屋信箱', event: 'mailbox' },
-    { x: TOWER.x, y: TOWER.y + 8, label: '灯塔 · 记忆日历', event: 'calendar' },
+    { x: TOWER.x, y: TOWER.y + 8, label: '灯塔 · 灯语信号', event: 'lighthouse' },
     { ...BOTTLE, label: '海边漂流瓶', event: 'bottle' },
     { ...SEASIDE_ENTRY, label: '去海边坐一会儿', event: 'seaside' },
     { x: HOME.x, y: HOME.y + 10, label: '回家 · 进屋休息', event: 'interior' },
@@ -104,7 +113,8 @@ export class IslandScene extends Phaser.Scene {
 
   create(): void {
     this.sceneLabels = []
-    this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.audioTimer = 0; this.decorations = []
+    this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.audioTimer = 0
+    this.decorations = []; this.canopies = []; this.windLeaves = []; this.towerGlowLayers = []
     this.cameras.main.setBounds(0, 0, WORLD.width, WORLD.height)
     this.physics.world.setBounds(0, 0, WORLD.width, WORLD.height)
     createIslandArt(this)
@@ -158,6 +168,7 @@ export class IslandScene extends Phaser.Scene {
     const onBlur = () => this.clearInput()
     const onVisibility = () => { if (document.hidden) this.clearInput() }
     const onIdentity = (identity: IslandIdentity) => { this.identity = { ...identity } }
+    const onLighthouse = (signal: LighthouseSignal) => { this.applyLighthouseColor(signal.color) }
     const onScene = (state: SceneState) => {
       if (state.scene !== 'island' || !state.transitioning) return
       this.leaving = true; this.clearInput(); this.promptTarget = null; this.prompt.setVisible(false)
@@ -169,6 +180,7 @@ export class IslandScene extends Phaser.Scene {
     eventBus.on('INTERACTION_REQUEST_STATE', onInteractionState)
     eventBus.on('PANEL_OPENED', onOpen); eventBus.on('PANEL_CLOSED', onClose)
     eventBus.on('IDENTITY_CHANGED', onIdentity); eventBus.on('SCENE_CHANGED', onScene)
+    eventBus.on('LIGHTHOUSE_UPDATED', onLighthouse)
     this.scale.on('resize', this.fitZoom, this)
     let disposed = false
     const cleanup = () => {
@@ -176,6 +188,7 @@ export class IslandScene extends Phaser.Scene {
       disposed = true; this.leaving = true; this.clearInput()
       eventBus.off('PANEL_OPENED', onOpen); eventBus.off('PANEL_CLOSED', onClose)
       eventBus.off('IDENTITY_CHANGED', onIdentity); eventBus.off('SCENE_CHANGED', onScene)
+      eventBus.off('LIGHTHOUSE_UPDATED', onLighthouse)
       this.scale.off('resize', this.fitZoom, this)
       this.game.events.off('blur', onBlur)
       document.removeEventListener('visibilitychange', onVisibility)
@@ -220,8 +233,22 @@ export class IslandScene extends Phaser.Scene {
       return this.add.image(x, y, key).setOrigin(ox, oy).setDepth(y)
     }
     object(HOME.x, HOME.y, 'cottage-v3', 106, .5, 100 / 112)
-    object(TOWER.x, TOWER.y, 'lighthouse-v3', 46, .5, 105 / 113)
-    TREES.forEach(([x, y], i) => object(x, y, i % 5 === 0 ? 'olive-v3' : 'oak-v3', 38))
+    object(TOWER.x, TOWER.y, 'lighthouse-v3', 48, .5, 108 / 116)
+    // Daytime subtle beacon tint inside lighthouse lantern glass
+    this.towerDayBeacon = this.add.rectangle(TOWER.x, TOWER.y - 84, 12, 13, this.towerColor, .28).setDepth(TOWER.y + 0.5)
+    // Split trees: grounded roots + independently swaying sea-breeze canopies
+    TREES.forEach(([x, y], i) => {
+      const kind = i % 5 === 0 ? 'olive' : 'oak'
+      object(x, y, `${kind}-trunk-v4`, 38)
+      const canopy = this.add.image(x, y - 22, `${kind}-canopy-v4`).setOrigin(.5, .86).setDepth(y + 0.2)
+      this.canopies.push({ img: canopy, baseX: x, phase: x * 0.022 + y * 0.014 + i * 0.4, amp: 0.028 + (i % 3) * 0.005 })
+    })
+    // Gentle occasional wind-blown leaves drifting from island trees
+    for (let i = 0; i < 6; i++) {
+      const [tx, ty] = TREES[(i * 3 + 1) % TREES.length]
+      const leaf = this.add.image(tx, ty - 34, 'wind-leaf-v4').setDepth(4200).setAlpha(0)
+      this.windLeaves.push({ img: leaf, originX: tx, originY: ty - 34, life: i * 1600, maxLife: 7200 + (i % 3) * 1400, drift: 0.7 + (i % 3) * 0.25 })
+    }
     object(MAIL.x, MAIL.y, 'mailbox-v3', 17)
     object(398, 241, 'bench-v3', 38)
     LAMPS.forEach(([x, y]) => object(x, y, 'lantern-v3', 10))
@@ -236,7 +263,7 @@ export class IslandScene extends Phaser.Scene {
       fontFamily: 'system-ui, sans-serif', fontSize: SCREEN_LABEL_PX, color: '#f5eee2', resolution: 3,
     }).setOrigin(.5).setDepth(SEASIDE_ENTRY.y + 1))
     // 位置标识在场景中使用清晰的小字，不烘焙进像素素材。
-    for (const [x, y, text] of [[HOME.x, 254, '我们的家'], [164, 324, '慢慢开花'], [TOWER.x, 277, '记忆灯塔']] as const) {
+    for (const [x, y, text] of [[HOME.x, 254, '我们的家'], [164, 324, '慢慢开花'], [TOWER.x, 277, '灯语灯塔']] as const) {
       this.sceneLabels.push(this.add.text(x, y, text, { fontFamily: 'system-ui, sans-serif', fontSize: SCREEN_LABEL_PX, color: '#4a3b55',
         backgroundColor: '#f0d9a8', padding: { x: 4, y: 2 }, resolution: 3 }).setOrigin(.5).setDepth(2))
     }
@@ -264,9 +291,40 @@ export class IslandScene extends Phaser.Scene {
       this.nightLights.add(this.add.rectangle(x + 5.5, HOME.y - 23, 1, 12, 0x8a5a38))
       this.nightLights.add(this.add.rectangle(x + 5.5, HOME.y - 23, 11, 1, 0x8a5a38))
     }
-    glow(TOWER.x, TOWER.y - 81, 30)
-    this.nightLights.add(this.add.rectangle(TOWER.x, TOWER.y - 81, 14, 14, 0xffd98a))
-    this.nightLights.add(this.add.rectangle(TOWER.x, TOWER.y - 81, 1, 14, 0x8a5a38))
+    const beamY = TOWER.y - 84
+    this.towerBeam = this.add.graphics({ x: TOWER.x, y: beamY })
+    this.nightLights.add(this.towerBeam)
+    for (let r = 32; r > 4; r -= 5) {
+      const e = this.add.ellipse(TOWER.x, beamY, r * 2, r, this.towerColor, .055)
+      this.towerGlowLayers.push(e)
+      this.nightLights.add(e)
+    }
+    this.towerGlass = this.add.rectangle(TOWER.x, beamY, 14, 15, this.towerColor)
+    this.nightLights.add(this.towerGlass)
+    this.nightLights.add(this.add.rectangle(TOWER.x, beamY, 2, 15, 0x454b57))
+    this.redrawTowerBeam(0)
+  }
+
+  private applyLighthouseColor(hex: string): void {
+    const parsed = Number.parseInt(hex.replace('#', ''), 16)
+    if (!Number.isFinite(parsed)) return
+    this.towerColor = parsed
+    this.towerGlass?.setFillStyle(parsed)
+    this.towerDayBeacon?.setFillStyle(parsed, .32)
+    this.towerGlowLayers.forEach(e => e.setFillStyle(parsed, .055))
+  }
+
+  private redrawTowerBeam(angle: number): void {
+    if (!this.towerBeam) return
+    this.towerBeam.clear()
+    const spread = 0.24
+    const len = 110
+    const x1 = Math.cos(angle - spread) * len
+    const y1 = Math.sin(angle - spread) * len * 0.52
+    const x2 = Math.cos(angle + spread) * len
+    const y2 = Math.sin(angle + spread) * len * 0.52
+    this.towerBeam.fillStyle(this.towerColor, 0.11).fillTriangle(0, 0, x1, y1, x2, y2)
+    this.towerBeam.fillStyle(this.towerColor, 0.08).fillTriangle(0, 0, x1 * 0.55, y1 * 0.55, x2 * 0.55, y2 * 0.55)
   }
 
   update(time: number, delta: number): void {
@@ -312,6 +370,26 @@ export class IslandScene extends Phaser.Scene {
       const water = this.decorations[i]
       water.setAlpha(this.reducedMotion.matches ? .8 : .8 + Math.floor((time + i * 173) / 800) % 2 * .15)
     }
+    // Coastal sea-breeze canopy sway + occasional drifting leaves + lighthouse sweep beam
+    if (!this.reducedMotion.matches) {
+      for (const tree of this.canopies) {
+        const wave = Math.sin(time * 0.0015 + tree.phase) + Math.sin(time * 0.0007 + tree.phase * 0.5) * 0.4
+        tree.img.setRotation(wave * tree.amp)
+        tree.img.setX(tree.baseX + wave * 0.55)
+      }
+      for (const lf of this.windLeaves) {
+        lf.life = (lf.life + delta) % lf.maxLife
+        const p = lf.life / lf.maxLife
+        if (p < 0.42) {
+          const t = p / 0.42
+          lf.img.setPosition(lf.originX + t * 28 * lf.drift + Math.sin(t * 7) * 3, lf.originY + t * 24)
+          lf.img.setAlpha(Math.sin(t * Math.PI) * 0.85).setRotation(t * 2.4)
+        } else {
+          lf.img.setAlpha(0)
+        }
+      }
+      if (this.nightLights?.visible) this.redrawTowerBeam(Math.sin(time * 0.00055) * 0.95 + 0.35)
+    }
     this.updatePrompt()
     if (Phaser.Input.Keyboard.JustDown(this.keys.E) || Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) this.tryInteract()
     this.secondTimer += delta
@@ -356,7 +434,7 @@ export class IslandScene extends Phaser.Scene {
   private tryInteract(): void {
     if (this.panelOpen || this.leaving || !this.promptTarget) return
     if (this.promptTarget.event === 'mailbox') eventBus.emit('OPEN_MAILBOX', { unread: 0 })
-    else if (this.promptTarget.event === 'calendar') eventBus.emit('OPEN_CALENDAR', {})
+    else if (this.promptTarget.event === 'lighthouse') eventBus.emit('OPEN_LIGHTHOUSE', {})
     else if (this.promptTarget.event === 'bottle') eventBus.emit('OPEN_BOTTLE', { id: 'shore' })
     else if (this.promptTarget.event === 'interior') eventBus.emit('TRAVEL_REQUEST', { from: 'island', to: 'interior', returnPoint: { x: HOME.x, y: HOME.y + 16 } })
     else eventBus.emit('TRAVEL_REQUEST', { from: 'island', to: 'seaside', returnPoint: { ...SEASIDE_RETURN } })

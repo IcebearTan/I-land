@@ -62,10 +62,53 @@ export function paintInteriorTV(scene: Phaser.Scene, channel: number, timeMs: nu
   p.texture(scene, 'home-tv')
 }
 
+export const WALL_CALENDAR = {
+  x: 203,
+  y: 44,
+  visual: { x: 200, y: 41, w: 26, h: 30 },
+  stand: { x: 213, y: 122 },
+} as const
+
+function buildWallCalendar(scene: Phaser.Scene, key: string, night: boolean): void {
+  const p = new PixelArt(20, 24)
+  // Soft wall drop shadow
+  p.rect(3, 5, 16, 19, night ? '#1b1d30' : '#b7a181')
+  // Hanging brass pin & cord
+  p.rect(9, 0, 2, 2, night ? '#a88c5d' : '#e0b35e')
+  p.rect(7, 2, 2, 1, night ? '#594a57' : '#8a5a38')
+  p.rect(11, 2, 2, 1, night ? '#594a57' : '#8a5a38')
+  // Carved oak hanging bar
+  p.rect(1, 3, 18, 3, night ? '#3c3142' : '#6e4529')
+  p.rect(2, 3, 16, 2, night ? '#5b4b5d' : '#a87246')
+  p.rect(3, 3, 12, 1, night ? '#756477' : '#d2a26c')
+  // Paper body + warm terracotta month header
+  p.rect(2, 6, 16, 17, night ? '#33364f' : '#8a6c56')
+  p.rect(3, 6, 14, 4, night ? '#704556' : '#c66559')
+  p.rect(4, 7, 10, 2, night ? '#8a586a' : '#df8872')
+  p.rect(3, 10, 14, 12, night ? '#8f93aa' : '#f8e9cb')
+  p.rect(3, 21, 14, 1, night ? '#6b7089' : '#dec69b')
+  // Curled bottom-right page corner
+  p.rect(15, 20, 2, 2, night ? '#565c75' : '#ccb083')
+  // Crisp miniature date grid + rose-circled anniversary date
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 4; col++) {
+      const cx = 4 + col * 3
+      const cy = 12 + row * 3
+      const mark = row === 1 && col === 2
+      p.rect(cx, cy, 2, 2, mark ? (night ? '#c25b74' : '#e8637c') : (night ? '#5e657d' : '#bfa785'))
+    }
+  }
+  p.texture(scene, key)
+}
+
 export function createInteriorArt(scene: Phaser.Scene): void {
   paintInteriorTV(scene, 0, 0, true, false)
+  buildWallCalendar(scene, 'home-calendar-day', false)
+  buildWallCalendar(scene, 'home-calendar-night', true)
   for (const [key, x, y, depth] of HOME_LAYERS) {
     scene.add.image(x, y, HOME_ATLAS, `${key}-day`).setOrigin(0).setDepth(depth)
     scene.add.image(x, y, HOME_ATLAS, `${key}-night`).setOrigin(0).setDepth(depth + .01).setData('home-night-layer', true)
   }
+  scene.add.image(WALL_CALENDAR.x, WALL_CALENDAR.y, 'home-calendar-day').setOrigin(0).setDepth(3.5)
+  scene.add.image(WALL_CALENDAR.x, WALL_CALENDAR.y, 'home-calendar-night').setOrigin(0).setDepth(3.51).setData('home-night-layer', true)
 }

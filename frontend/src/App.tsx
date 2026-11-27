@@ -10,6 +10,7 @@ import { Hud } from './components/Hud'
 import { LoginPanel } from './components/LoginPanel'
 import { DockOverlay, type DockMode } from './components/DockOverlay'
 import { MailboxPanel } from './components/panels/MailboxPanel'
+import { LighthousePanel } from './components/panels/LighthousePanel'
 import { ComingSoonPanel } from './components/panels/ComingSoonPanel'
 import { SettingsPanel } from './components/SettingsPanel'
 import { useIslandAudio } from './audio/useIslandAudio'
@@ -207,6 +208,7 @@ export default function App() {
           {scene.scene === 'seaside' && <SeasideControls transitioning={scene.transitioning} />}
           {scene.scene === 'interior' && <InteriorControls transitioning={scene.transitioning} />}
           <MailboxPanel />
+          <LighthousePanel />
           <ComingSoonPanel />
           <CalendarFeature />
           <SettingsPanel

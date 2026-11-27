@@ -37,7 +37,17 @@ export interface InteriorState {
  * 游戏层（Phaser）与 UI 层（React）之间唯一允许的通信通道。
  * 规则：Phaser 不知道 React 存在，React 不碰 canvas。
  */
-export type PanelName = 'mailbox' | 'calendar' | 'bottle' | 'settings'
+export type PanelName = 'mailbox' | 'calendar' | 'bottle' | 'settings' | 'lighthouse'
+
+export interface LighthouseSignal {
+  preset: string
+  label: string
+  color: string
+  message: string
+  updated_by: string
+  updated_by_display: string
+  updated_at: string | null
+}
 
 export interface DayTick {
   time: string
@@ -77,6 +87,8 @@ export type GameEvents = {
   INTERACTION_REQUEST_STATE: Record<string, never>
   OPEN_MAILBOX: { unread: number }
   OPEN_CALENDAR: Record<string, never>
+  OPEN_LIGHTHOUSE: Record<string, never>
+  LIGHTHOUSE_UPDATED: LighthouseSignal
   OPEN_BOTTLE: { id: string }
   OPEN_SETTINGS: Record<string, never>
   /** 声音场景启动/重建后，UI 重发当前账号与偏好快照 */

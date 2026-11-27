@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { hash2 } from '../art'
 import { makeTexture } from '../pixels'
 import { HOME_ATLAS } from '../../visual/artV2'
+import { buildIslandSceneryArt } from './scenery'
 
 export const WORLD = { width: 640, height: 480, cx: 320, cy: 236, rx: 252, ry: 167 }
 export const HOME = { x: 266, y: 230 }
@@ -229,43 +230,6 @@ function cottage(scene: Phaser.Scene): void {
   context.restore(); texture.refresh()
 }
 
-function lighthouse(scene: Phaser.Scene): void {
-  const p = new PixelArt(56, 113)
-  p.ellipse(28, 105, 24, 6, '#aaa88e'); p.ellipse(28, 102, 23, 5, '#d4c9a6')
-  p.polygon([[13, 99], [20, 36], [36, 36], [43, 99]], '#9e8c80')
-  for (let y = 38; y < 99; y++) {
-    const half = 8 + Math.floor((y - 38) / 9), red = Math.floor((y - 38) / 15) % 2 === 0
-    p.rect(28 - half, y, half * 2, 1, red ? '#c87966' : '#f0dfb9')
-    p.rect(29 - half, y, 3, 1, red ? '#e09a7c' : C.cream)
-    p.rect(25 + half, y, 3, 1, red ? '#a55e58' : '#c8b79a')
-  }
-  p.rect(15, 65, 26, 35, C.woodDark); p.rect(17, 67, 22, 32, '#ac8256'); p.rect(18, 68, 2, 29, '#c79a65'); p.rect(34, 85, 2, 2, C.warm)
-  p.rect(25, 55, 5, 8, '#547484'); p.rect(26, 55, 1, 7, '#bdd5cc')
-  p.rect(10, 34, 36, 4, C.woodDark); p.rect(12, 33, 32, 2, '#d2ae81')
-  p.rect(12, 27, 32, 1, C.woodDark)
-  for (let x = 12; x < 45; x += 6) p.rect(x, 27, 1, 7, C.woodDark)
-  p.rect(19, 15, 18, 18, C.woodDark); p.rect(21, 16, 14, 16, '#8cc3cc')
-  p.rect(23, 17, 3, 12, '#d9e5cd'); p.rect(27, 16, 1, 16, C.woodDark)
-  p.polygon([[14, 15], [28, 3], [42, 15]], '#ad6258'); p.rect(17, 14, 22, 2, '#e1a180')
-  p.rect(27, 0, 2, 5, C.woodDark)
-  p.texture(scene, 'lighthouse-v3')
-}
-
-function tree(scene: Phaser.Scene, key: string, autumn = false): void {
-  const p = new PixelArt(50, 66)
-  p.rect(22, 39, 8, 24, C.woodDark); p.rect(23, 40, 4, 22, '#b08755'); p.rect(25, 46, 2, 14, '#d1a56c')
-  p.rect(18, 61, 15, 3, C.wood); p.rect(20, 58, 11, 4, C.wood)
-  const colors = autumn ? ['#716443', '#8b914d', '#aeb15e', '#c8c877'] : [C.leafShade, C.leafDark, C.leaf, '#8db765']
-  // 分叶团塑形，避免圆球与矩形树冠。
-  for (const [x, y, rx, ry] of [[25, 17, 16, 14], [14, 29, 13, 13], [35, 29, 13, 14], [25, 37, 19, 13]]) p.ellipse(x, y, rx, ry, colors[0])
-  for (const [x, y, rx, ry] of [[24, 16, 15, 12], [13, 27, 11, 11], [34, 27, 12, 12], [24, 34, 17, 12]]) p.ellipse(x, y, rx, ry, colors[1])
-  for (const [x, y, rx, ry] of [[22, 12, 10, 7], [11, 24, 8, 7], [29, 25, 12, 9], [21, 37, 10, 5]]) p.ellipse(x, y, rx, ry, colors[2])
-  for (const [x, y] of [[17, 8], [13, 12], [8, 23], [22, 20], [29, 19], [17, 32], [29, 29]]) {
-    p.rect(x, y, 5, 2, colors[3]); p.rect(x - 1, y + 2, 3, 1, colors[3])
-  }
-  p.texture(scene, key)
-}
-
 function props(scene: Phaser.Scene): void {
   const p = new PixelArt(22, 30)
   p.rect(9, 14, 4, 16, C.wood); p.rect(10, 15, 1, 13, C.board)
@@ -297,7 +261,7 @@ export const OBSTACLES: Obstacle[] = [
   ...TREES.map(([x, y]) => ({ x: x - 5, y: y - 5, w: 10, h: 7 })),
 ]
 export function createIslandArt(scene: Phaser.Scene): void {
-  terrain(scene); cottage(scene); lighthouse(scene); tree(scene, 'oak-v3'); tree(scene, 'olive-v3', true); props(scene)
+  terrain(scene); cottage(scene); buildIslandSceneryArt(scene); props(scene)
   // 海边入口独立于漂流瓶：小木牌、青绿坐垫和奶油色贝壳。
   makeTexture(scene, 'seaside-waymark', [
     '..................',
