@@ -14,6 +14,8 @@ SEED_USERS = os.getenv("ILAND_SEED_USERS", "bear:123456:小熊,her:123456:她")
 
 SESSION_COOKIE = "iland_session"
 SESSION_DAYS = 30
+# 可选：与统一门户共享的短时效 SSO 签名密钥（未设置时 SSO 接口自动关闭）
+SSO_SECRET = os.getenv("ILAND_SSO_SECRET", "").strip()
 # HTTPS 反向代理（如 Caddy/Nginx TLS）部署时设 ILAND_COOKIE_SECURE=1，
 # 本地 http 开发保持默认，两种环境同一份代码。
 COOKIE_SECURE = os.getenv("ILAND_COOKIE_SECURE", "") == "1"

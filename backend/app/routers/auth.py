@@ -1,11 +1,17 @@
+import base64
+import hashlib
+import hmac
+import json
+import time
 from typing import Optional
 
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Query, Response, status
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import delete as sa_delete
 from sqlmodel import Session, select
 
-from ..config import COOKIE_SECURE, SESSION_COOKIE, SESSION_DAYS
+from ..config import COOKIE_SECURE, SESSION_COOKIE, SESSION_DAYS, SSO_SECRET
 from ..db import get_db
 from ..deps import create_session, get_current_user
 from ..models import AuthSession, User
@@ -38,6 +44,7 @@ def _set_session_cookie(response: Response, token: str) -> None:
         httponly=True,
         samesite="lax",
         secure=COOKIE_SECURE,  # HTTPS 部署设 ILAND_COOKIE_SECURE=1；本地 http 保持关闭
+        path="/",
     )
 
 
@@ -49,6 +56,41 @@ def login(body: LoginIn, response: Response, db: Session = Depends(get_db)):
     token = create_session(db, user.id)
     _set_session_cookie(response, token)
     return {"ok": True, "user": user_public(user)}
+
+
+@router.get("/sso")
+def sso_login(
+    token: str = Query(..., min_length=10, max_length=512),
+    next: str = Query(default="/", max_length=200),
+    db: Session = Depends(get_db),
+):
+    """统一门户短时效签名 SSO：校验通过后签发原生 iland_session 并直接上岛。"""
+    if not SSO_SECRET:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "SSO 未启用")
+    if "." not in token:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "无效的 SSO 令牌")
+    b64, sig = token.rsplit(".", 1)
+    expected = hmac.new(
+        SSO_SECRET.encode("utf-8"), b64.encode("ascii"), hashlib.sha256
+    ).hexdigest()
+    if not hmac.compare_digest(expected, sig):
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "SSO 签名校验失败")
+    try:
+        payload = json.loads(base64.urlsafe_b64decode(b64.encode("ascii")))
+        account = str(payload.get("account", "")).strip()
+        ts = int(payload.get("ts", 0))
+    except Exception:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "SSO 令牌解析失败")
+    if abs(int(time.time()) - ts) > 60:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "SSO 令牌已过期")
+    user = db.exec(select(User).where(User.name == account)).first()
+    if not user:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "未找到对应的岛民身份")
+    safe_next = next if (next.startswith("/") and not next.startswith("//")) else "/"
+    session_token = create_session(db, user.id)
+    redirect = RedirectResponse(url=safe_next, status_code=status.HTTP_302_FOUND)
+    _set_session_cookie(redirect, session_token)
+    return redirect
 
 
 @router.get("/me")
