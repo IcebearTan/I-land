@@ -30,7 +30,7 @@ body {
 /* Calendar shortcut is now unified inside the Stardew HUD inventory slot */
 .calendar-shortcut { display: none !important; }
 
-/* Unified 9-slice carved oak panels & pixel buttons across Mailbox / Settings */
+/* Unified 9-slice carved oak panels & pixel buttons across all island modals */
 .wood-panel {
   border-style: solid;
   border-width: 18px;
@@ -45,66 +45,17 @@ body {
   box-shadow: none;
 }
 
-/* Memory Calendar: solid warm Stardew parchment surface + crisp carved oak frame so sticky header & scroll never bleed */
-.calendar-panel {
-  border: 6px solid #9e5b2b !important;
-  outline: 2px solid #59301b;
-  border-radius: 0 !important;
-  background: #f8e1b8 !important;
-  color: var(--px-ink) !important;
-  box-shadow: inset 0 0 0 2px #f5d28e, 0 8px 28px rgba(43, 24, 18, 0.36) !important;
-}
-.calendar-panel .calendar-header {
-  background: #f8e1b8 !important;
-  border-bottom: 2px solid #cfa76e !important;
-  padding: 14px 20px !important;
-}
-.calendar-panel .calendar-header h2 {
-  font-family: var(--px-font) !important;
-  font-weight: 400 !important;
-}
-.calendar-panel .calendar-close {
-  border: 2px solid #68371d !important;
-  background: #fff2d4 !important;
-  color: var(--px-ink) !important;
-  font-family: var(--px-font) !important;
-  border-radius: 0 !important;
-  box-shadow: 0 2px 0 rgba(89, 48, 27, 0.25);
-}
-.calendar-panel .cal-primary,
-.calendar-panel .cal-secondary,
-.calendar-panel .cal-danger {
-  border-radius: 0 !important;
-  border-width: 2px !important;
-  font-family: var(--px-font) !important;
-}
-.calendar-panel .cal-primary {
-  background: #326c62 !important;
-  border-color: #1c383e !important;
-  color: #fffaf0 !important;
-}
-.calendar-panel .cal-secondary {
-  background: #fff2d4 !important;
-  border-color: #8a5a38 !important;
-  color: var(--px-ink) !important;
-}
-.calendar-panel .cal-danger {
-  background: #a8374b !important;
-  border-color: #591c27 !important;
-  color: #fffaf0 !important;
-}
-
 .btn, .text-button {
-  font-family: var(--px-font);
   font-size: 14px;
   line-height: 1.35;
-  min-height: 44px;
-  min-width: 44px;
+  min-height: 40px;
+  min-width: 40px;
   cursor: pointer;
   overflow-wrap: anywhere;
 }
 
 .btn {
+  font-family: var(--px-font);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -132,13 +83,35 @@ body {
 }
 .btn-primary:hover:not(:disabled) { border-image-source: url('/art-v2/ui/btn-accent-hover.png'); }
 .btn-primary:active:not(:disabled) { border-image-source: url('/art-v2/ui/btn-accent-pressed.png'); }
-.btn-mini { padding: 0 8px; min-height: 38px; border-width: 8px; font-size: 13px; }
+.btn-mini { padding: 0 8px; min-height: 36px; border-width: 8px; font-size: 13px; }
+
+/* Tactile 2px pixel parchment chip button (replaces unframed modern text links) */
 .text-button {
-  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-  appearance: none; background: transparent; border: 2px solid transparent;
-  color: var(--px-accent); padding: 6px 8px;
+  font-family: var(--ui-font);
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 36px;
+  min-width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  appearance: none;
+  background: var(--px-cream-hi);
+  border: 2px solid var(--px-border);
+  border-radius: 0;
+  color: var(--px-ink);
+  padding: 5px 10px;
+  box-shadow: 0 2px 0 rgba(59, 33, 23, 0.2);
 }
-.text-button:hover:not(:disabled) { background: rgba(50, 108, 98, 0.12); }
+.text-button:hover:not(:disabled) {
+  background: #fae8be;
+  border-color: var(--px-wood-dark);
+}
+.text-button:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 rgba(59, 33, 23, 0.2);
+}
 .form-error { margin: 0; font-size: 13px; line-height: 1.5; color: var(--px-danger); }
 .panel-eyebrow { display: none; }
 .loading, .empty, .coming-soon { font-size: 15px; color: var(--px-ink-soft); line-height: 1.6; margin: 12px 0; }
@@ -229,41 +202,47 @@ body {
 .modal-head h2 { margin: 0; font-family: var(--px-font); font-size: 18px; font-weight: 400; color: var(--px-ink); }
 @media (max-width: 480px) { .modal-panel { padding: 2px 4px; } .wood-panel { border-width: 14px; } }
 
-/* Mailbox styles harmonized with warm parchment */
-.mailbox-panel { width: min(100%, 560px); }
-.mailbox-panel--reading { width: min(100%, 880px); }
-.mailbox-shelf-heading { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+/* Mailbox base layout harmonized with 2px pixel parchment system */
+.mailbox-panel { width: min(100%, 580px); }
+.mailbox-panel--reading { width: min(100%, 860px); }
+.mailbox-shelf-heading { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .mailbox-shelf-heading > span { color: var(--px-ink-soft); font-size: 12px; font-family: var(--px-font); }
 .mailbox-intro { flex: 1 1 220px; margin: 0; font-size: 14px; color: var(--px-ink-soft); }
 .letter-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.letter-card { display: flex; align-items: flex-start; width: 100%; gap: 12px; text-align: left; padding: 12px; border: 2px solid #8a5a38; background: #fff4da; box-shadow: 0 2px 0 rgba(59, 33, 23, 0.25); color: var(--px-ink); cursor: pointer; }
-.letter-card:hover { background: #fae8be; border-color: #3b2117; }
+.letter-card { display: flex; align-items: flex-start; width: 100%; gap: 12px; text-align: left; padding: 12px; border: 2px solid var(--px-border); background: var(--px-cream-hi); box-shadow: var(--ui-shadow-control); color: var(--px-ink); cursor: pointer; }
+.letter-card:hover { background: #fae8be; border-color: var(--px-wood-dark); }
 .letter-card-copy { flex: 1; min-width: 0; }
-.letter-card strong { display: block; font-size: 15px; margin: 6px 0; }
-.letter-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 10px; font-size: 12px; color: var(--px-ink-soft); }
+.letter-card strong { display: block; font-size: 15px; font-weight: 600; margin: 5px 0; color: var(--px-ink); }
+.letter-meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px 10px; font-size: 12px; color: var(--px-ink-soft); }
 .letter-excerpt { display: block; font-size: 14px; color: var(--px-ink-soft); line-height: 1.55; }
-.letter-card-arrow { color: var(--px-accent); font-size: 18px; }
+.letter-card-arrow { color: var(--px-accent); font-family: var(--px-font); font-size: 16px; flex-shrink: 0; }
 .letter-card-details { display: block; margin-top: 8px; font-size: 12px; color: var(--px-ink-soft); }
 .letter-card--qixi { border-color: #756087; background: #f8f0fc; }
-.letter-empty { padding: 20px 0; text-align: center; }
-.paper-envelope { position: relative; isolation: isolate; width: 76px; height: 48px; margin: 0 auto; display: grid; place-items: center; background: #f0d49b; border: 2px solid #68371d; color: var(--heart); font-size: 18px; }
-.paper-envelope::before { content: ''; position: absolute; z-index: -1; inset: 0; background: #fff4da; clip-path: polygon(0 0, 100% 0, 50% 62%); }
-.sealed-letter { position: relative; isolation: isolate; margin: 12px 0 6px; padding: 20px; text-align: center; border: 2px solid #68371d; background: #f0d49b; }
+.letter-card--qixi:hover { background: #efe3f8; border-color: #5b4970; }
+.letter-empty { padding: 20px 12px; text-align: center; border: 2px solid var(--px-divider); background: var(--px-cream-hi); }
+.letter-empty p { margin: 10px 0 4px; font-size: 15px; font-weight: 600; color: var(--px-ink); }
+.letter-empty span { font-size: 13px; color: var(--px-ink-soft); }
+.paper-envelope { position: relative; isolation: isolate; width: 76px; height: 48px; margin: 0 auto; display: grid; place-items: center; background: #f0d49b; border: 2px solid var(--px-wood-dark); color: var(--heart); font-size: 18px; }
+.paper-envelope::before { content: ''; position: absolute; z-index: -1; inset: 0; background: var(--px-cream-hi); clip-path: polygon(0 0, 100% 0, 50% 62%); }
+.sealed-letter { position: relative; isolation: isolate; margin: 12px 0 6px; padding: 20px 18px; text-align: center; border: 2px solid var(--px-wood-dark); background: #f0d49b; box-shadow: var(--ui-shadow-control); }
 .sealed-letter::before { content: ''; position: absolute; inset: 0; z-index: -1; background: #fff5dd; clip-path: polygon(0 0, 100% 0, 50% 60%); }
-.sealed-letter-address { display: flex; align-items: center; justify-content: space-between; gap: 12px; font: 12px/1.5 var(--px-font); }
-.letter-postmark { padding: 6px; border: 2px dashed #8a5a38; }
-.wax-seal { width: 52px; height: 52px; border: 2px solid #3b2117; background: #a8374b; color: #fffaf0; box-shadow: inset 2px 2px 0 #eb7588; font-size: 22px; cursor: pointer; }
-.seal-instruction { display: block; font-family: var(--px-font); font-size: 13px; margin-top: 10px; }
-.reading-meta { padding: 8px 0; font-size: 13px; color: var(--px-ink-soft); }
+.sealed-letter h3 { margin: 8px 0 6px; font-size: 17px; font-weight: 600; color: var(--px-ink); }
+.sealed-letter > p { margin: 8px 0 0; font-size: 13px; color: var(--px-ink-soft); }
+.sealed-letter-address { display: flex; align-items: center; justify-content: space-between; gap: 12px; font: 12px/1.45 var(--px-font); }
+.letter-postmark { padding: 5px 8px; border: 2px solid var(--px-border); background: rgba(255, 250, 240, 0.65); }
+.wax-seal { width: 52px; height: 52px; margin-top: 8px; border: 2px solid #3b2117; background: #a8374b; color: #fffaf0; box-shadow: inset 2px 2px 0 #eb7588, 0 2px 0 rgba(59, 33, 23, 0.3); font-size: 22px; cursor: pointer; }
+.wax-seal:active { transform: translateY(1px); }
+.seal-instruction { display: block; font-family: var(--px-font); font-size: 12px; color: var(--px-ink-soft); margin-top: 10px; }
+.reading-meta { padding: 10px 0 8px; font-size: 13px; color: var(--px-ink-soft); }
 .reading-toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
 .letter-page-tabs { display: flex; flex: 1 1 140px; gap: 6px; overflow-x: auto; padding: 2px; }
-.letter-page-tab { flex: 0 0 40px; min-height: 40px; border: 2px solid #68371d; background: #fff4da; color: var(--px-ink); font-family: var(--px-font); cursor: pointer; }
+.letter-page-tab { flex: 0 0 40px; min-height: 38px; border: 2px solid var(--px-wood-dark); background: var(--px-cream-hi); color: var(--px-ink); font-family: var(--px-font); font-size: 13px; cursor: pointer; }
 .letter-page-tab[aria-current] { background: var(--px-accent); color: #fffaf0; border-color: #1c383e; }
-.letter-paper { min-height: 220px; max-height: min(62dvh, 720px); overflow: auto; touch-action: pan-x pan-y pinch-zoom; background: #f2e4c7; border: 2px solid #8a5a38; padding: 10px; }
+.letter-paper { min-height: 220px; max-height: min(62dvh, 720px); overflow: auto; touch-action: pan-x pan-y pinch-zoom; background: #f2e4c7; border: 2px solid var(--px-border); padding: 10px; }
 .letter-paper img { display: block; width: 100%; height: auto; }
 .letter-paper--zoomed img { width: 150%; min-width: 600px; }
-.letter-text { white-space: pre-wrap; font-size: 15px; line-height: 1.8; }
-.paper-signature { display: block; text-align: right; font-size: 13px; padding: 12px 4px; }
+.letter-text { white-space: pre-wrap; font-size: 15px; line-height: 1.85; font-family: var(--ui-font); }
+.paper-signature { display: block; text-align: right; font-size: 13px; color: var(--px-ink-soft); padding: 12px 4px 2px; }
 .page-turner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; }
 
 /* Settings & pixel switches/sliders */

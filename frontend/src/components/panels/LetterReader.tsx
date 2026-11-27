@@ -123,7 +123,9 @@ export function LetterReader({
               <br />
               {letter.date}
             </span>
-            <CharacterPortrait character={letter.author === 'her' ? 'her' : 'bear'} size={48} />
+            <div className="px-portrait-box">
+              <CharacterPortrait character={letter.author === 'her' ? 'her' : 'bear'} size={40} />
+            </div>
           </div>
           {themeMeta?.badge && <span className="letter-theme-label">{themeMeta.badge}</span>}
           <p>
@@ -224,7 +226,7 @@ export function LetterReader({
               <nav className="page-turner" aria-label="信纸翻页">
                 <button
                   type="button"
-                  className="btn btn-mini"
+                  className="px-btn px-btn-sm"
                   disabled={page === 0}
                   onClick={() => setPage(page - 1)}
                 >
@@ -235,7 +237,7 @@ export function LetterReader({
                 </span>
                 <button
                   type="button"
-                  className="btn btn-mini"
+                  className="px-btn px-btn-sm"
                   disabled={page >= letter.pages.length - 1}
                   onClick={() => setPage(page + 1)}
                 >

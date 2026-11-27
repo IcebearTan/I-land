@@ -1,53 +1,73 @@
-/* UI-01 · DOM tokens。尺寸均为最终 CSS px，不随游戏相机缩放。 */
+/* I-land Design Tokens — Single source of truth for Warm Parchment & Carved Oak UI.
+ * All DOM dimensions use crisp CSS px (border-radius: 0 everywhere).
+ */
 :root {
   color-scheme: only light;
-  --ui-font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --ui-font-number: ui-monospace, 'SF Mono', Menlo, monospace;
-  --ui-text-body: 16px;
+
+  /* Two-tier font system:
+     1) --px-font: ONLY for short chrome (ribbon titles, buttons, tags, HUD clock, tabular numbers)
+     2) --ui-font: ALL prose, form labels/hints, inputs, textareas, calendar & letter content */
+  --ui-font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --ui-font-number: 'ArkPixel', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Unified readable type scale */
+  --ui-text-body: 15px;
   --ui-text-control: 14px;
+  --ui-text-label: 13px;
   --ui-text-meta: 12px;
-  --ui-text-title: 24px;
-  --ui-text-section: 20px;
-  --ui-leading-body: 1.6;
+  --ui-text-title: 18px;
+  --ui-text-section: 16px;
+  --ui-leading-body: 1.65;
   --ui-leading-control: 1.4;
   --ui-touch: 44px;
+
+  /* Spacing & zero-radius pixel discipline */
   --ui-space-1: 4px;
   --ui-space-2: 8px;
   --ui-space-3: 12px;
   --ui-space-4: 16px;
   --ui-space-5: 24px;
   --ui-space-6: 32px;
-  --ui-radius: 4px;
-  --ui-radius-panel: 8px;
-  --ui-paper: #fdf6e9;
-  --ui-paper-raised: #fffaf1;
-  --ui-paper-inset: #f0e4cc;
+  --ui-radius: 0px;
+  --ui-radius-panel: 0px;
+
+  /* Unified Warm Parchment & Carved Oak Palette */
+  --ui-paper: #f8e1b8;
+  --ui-paper-raised: #fff4da;
+  --ui-paper-input: #fff8e8;
+  --ui-paper-inset: #eed3a1;
   --ui-wood: #8a5a38;
-  --ui-wood-dark: #6e4529;
-  --ui-border: #c8ad8b;
-  --ui-divider: #e0ceb0;
-  --ui-ink: #4a3b55;
-  --ui-muted: #6d5e7a;
-  --ui-on-dark: #f5eee2;
-  --ui-accent: #326860;
-  --ui-accent-hover: #28584f;
-  --ui-accent-soft: #e3eee3;
-  --ui-danger: #98465c;
+  --ui-wood-dark: #68371d;
+  --ui-border: #8a5a38;
+  --ui-divider: #cfa76e;
+  --ui-ink: #3b2117;
+  --ui-muted: #6e4529;
+  --ui-on-dark: #fffaf0;
+  --ui-accent: #326c62;
+  --ui-accent-hover: #27564e;
+  --ui-accent-soft: #e3f2e8;
+  --ui-danger: #a8374b;
   --ui-danger-soft: #f7dce0;
-  --ui-shadow-control: 0 2px 0 #6e45292b;
-  --ui-shadow-panel: 0 4px 0 #6e45294d, 0 16px 40px #2b1b4526;
+
+  /* Pixel bevel shadows (2px crisp offset, zero blur) */
+  --ui-shadow-control: 0 2px 0 rgba(59, 33, 23, 0.24);
+  --ui-shadow-inset: inset 2px 2px 0 #e2c593;
+  --ui-shadow-panel: 0 6px 0 rgba(43, 24, 18, 0.36);
   --ui-focus: 2px solid var(--ui-accent);
+
   --ui-inset-top: max(12px, env(safe-area-inset-top));
   --ui-inset-bottom: max(12px, env(safe-area-inset-bottom));
   --ui-inset-left: max(12px, env(safe-area-inset-left));
   --ui-inset-right: max(12px, env(safe-area-inset-right));
-  /* 供场景整合者据此预留取景空间；CSS 不读取/修改 canvas。 */
+
+  /* Scene camera safe-zone hints */
   --ui-room-mobile-back-top: 80px;
   --ui-room-mobile-walk-bottom: 156px;
   --ui-room-mobile-seated-bottom: 160px;
   --ui-shore-mobile-bottom: 200px;
-  /* 保留已有主题/组件引用的名称。 */
-  --cream: var(--ui-paper);
+
+  /* Legacy aliases mapped cleanly onto the unified palette */
+  --cream: var(--ui-paper-raised);
   --wood: #e8c48f;
   --beam: var(--ui-wood);
   --beam-dark: var(--ui-wood-dark);

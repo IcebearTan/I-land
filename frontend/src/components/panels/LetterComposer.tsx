@@ -207,10 +207,12 @@ export function LetterComposer({
 
       <div className="letter-field-row">
         <label className="letter-field">
-          <span>
-            信件标题 <small>必填</small>
+          <span className="letter-field-head">
+            <span>信件标题</span>
+            <small>必填</small>
           </span>
           <input
+            className="px-input"
             value={draft.title}
             maxLength={80}
             placeholder="例如：给这周辛苦啦的你"
@@ -218,8 +220,11 @@ export function LetterComposer({
           />
         </label>
         <label className="letter-field">
-          <span>落款日期</span>
+          <span className="letter-field-head">
+            <span>落款日期</span>
+          </span>
           <input
+            className="px-input"
             type="date"
             value={draft.date}
             onChange={(e) => patch({ date: e.target.value })}
@@ -228,7 +233,10 @@ export function LetterComposer({
       </div>
 
       <div className="letter-field">
-        <span>信封样式</span>
+        <span className="letter-field-head">
+          <span>信封样式</span>
+          <small>拆封时的封面与火漆配色</small>
+        </span>
         <div className="letter-theme-grid" role="group" aria-label="选择信封样式">
           {LETTER_THEMES.map((item) => (
             <button
@@ -246,10 +254,12 @@ export function LetterComposer({
       </div>
 
       <label className="letter-field">
-        <span>
-          信封寄语 <small>拆开火漆前露出的短短一句（选填，不剧透正文）</small>
+        <span className="letter-field-head">
+          <span>信封寄语</span>
+          <small>拆火漆前露出的短短一句（选填）</small>
         </span>
         <input
+          className="px-input"
           value={draft.excerpt}
           maxLength={200}
           placeholder="例如：今晚风很温柔，慢慢拆开看"
@@ -258,10 +268,12 @@ export function LetterComposer({
       </label>
 
       <label className="letter-field">
-        <span>
-          信纸正文 <small>拆开火漆后才展开（{draft.body.length} / 10000）</small>
+        <span className="letter-field-head">
+          <span>信纸正文</span>
+          <small>拆火漆后才展开（{draft.body.length} / 10000）</small>
         </span>
         <textarea
+          className="px-input"
           value={draft.body}
           maxLength={10000}
           rows={6}
@@ -272,10 +284,8 @@ export function LetterComposer({
 
       <div className="letter-pages-box">
         <div className="letter-pages-head">
-          <span>
-            附上手写信 / 照片（{draft.pages.length}/{MAX_PAGES}）
-          </span>
-          <label className="btn btn-mini letter-upload-btn">
+          <span>附上手写信 / 照片（{draft.pages.length}/{MAX_PAGES}）</span>
+          <label className="px-btn px-btn-sm letter-upload-btn">
             <span>{uploading ? '上传中…' : '+ 添加信纸图'}</span>
             <input
               type="file"
@@ -297,8 +307,8 @@ export function LetterComposer({
               <div key={`${page.url}-${index}`} className="letter-page-thumb">
                 <img src={page.thumbUrl || page.url} alt={`第 ${index + 1} 页信纸预览`} />
                 <div className="letter-page-thumb-bar">
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <div>
+                  <span className="num">{String(index + 1).padStart(2, '0')}</span>
+                  <div className="letter-page-thumb-btns">
                     <button
                       type="button"
                       disabled={index === 0}
@@ -337,12 +347,12 @@ export function LetterComposer({
       )}
 
       <div className="letter-composer-actions">
-        <button type="button" className="btn btn-mini" onClick={onCancel} disabled={sending}>
+        <button type="button" className="px-btn px-btn-sm" onClick={onCancel} disabled={sending}>
           先存草稿返回
         </button>
         <button
           type="submit"
-          className="btn btn-primary btn-mini"
+          className="px-btn px-btn-accent px-btn-sm"
           disabled={sending || Boolean(uploading)}
         >
           {sending ? '封蜡投递中…' : '封蜡投递'}

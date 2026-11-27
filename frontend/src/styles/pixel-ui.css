@@ -11,24 +11,28 @@
 }
 
 :root {
-  --px-font: 'ArkPixel', ui-monospace, 'PingFang SC', 'Microsoft YaHei', monospace;
+  --px-font: 'ArkPixel', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --px-ink: #3b2117;
   --px-ink-soft: #6e4529;
   --px-cream: #f8e1b8;
-  --px-cream-hi: #fff2d4;
-  --px-cream-deep: #e6c184;
+  --px-cream-hi: #fff4da;
+  --px-cream-input: #fff8e8;
+  --px-cream-deep: #eed3a1;
+  --px-border: #8a5a38;
   --px-wood-dark: #68371d;
+  --px-divider: #cfa76e;
   --px-accent: #326c62;
   --px-accent-ink: #fffaf0;
   --px-danger: #a8374b;
   --px-shadow-drop: drop-shadow(0 3px 0 rgba(59, 33, 23, 0.36));
 }
 
+/* Short chrome labels/titles/buttons ONLY.
+   Do NOT disable font-smoothing globally: fractional scaling on mobile/HiDPI
+   causes jagged uneven stroke weights on Chinese glyphs when smoothing is forced off. */
 .px-font {
   font-family: var(--px-font);
-  -webkit-font-smoothing: none;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeSpeed;
+  letter-spacing: 0.02em;
 }
 
 .px-icon {
@@ -141,6 +145,53 @@
   opacity: 0.58;
   cursor: default;
   transform: none;
+}
+
+.px-btn-sm {
+  min-height: 36px;
+  min-width: 36px;
+  padding: 0 8px;
+  border-width: 8px;
+  font-size: 13px;
+  gap: 6px;
+}
+
+.px-btn-danger {
+  border-style: solid;
+  border-width: 2px;
+  border-image: none;
+  background: var(--px-danger);
+  border-color: #591c27;
+  color: var(--px-accent-ink);
+  box-shadow: 0 2px 0 rgba(59, 33, 23, 0.28);
+  padding: 6px 12px;
+}
+.px-btn-danger:hover:not(:disabled) {
+  background: #922e40;
+}
+
+/* Standard recessed parchment input / textarea / select */
+.px-input {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 2px solid var(--px-wood-dark);
+  border-radius: 0;
+  background: var(--px-cream-input);
+  box-shadow: inset 2px 2px 0 #e2c593;
+  font: 15px/1.55 var(--ui-font);
+  color: var(--px-ink);
+  caret-color: var(--px-accent);
+}
+
+.px-input::placeholder {
+  color: #9c7958;
+}
+
+@media (max-width: 680px) {
+  .px-input {
+    font-size: 16px;
+  }
 }
 
 /* Square inventory-style slot button */

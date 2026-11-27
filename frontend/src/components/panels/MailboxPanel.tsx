@@ -5,11 +5,12 @@ import { useDialogFocus } from '../../hooks/useDialogFocus'
 import { islanderName, useIslanders } from '../../islanders'
 import type { Letter, User } from '../../types'
 import { CharacterPortrait } from '../CharacterPortrait'
+import { PixelIcon } from '../PixelIcon'
 import { LETTER_THEMES, LetterComposer } from './LetterComposer'
 import { LetterReader } from './LetterReader'
 import './mailbox.css'
 
-/** 小屋信箱：收信列表 · 拆火漆读信 · 提笔写信（文字 + 手写信纸图片双修）。 */
+/** 小屋信箱：收信列表 · 拆火漆读信 · 提笔写信（统一像素木框与暖羊皮纸体系）。 */
 export function MailboxPanel({ user }: { user: User }) {
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<'list' | 'read' | 'compose'>('list')
@@ -40,7 +41,7 @@ export function MailboxPanel({ user }: { user: User }) {
 
   function handleMaskClick() {
     if (mode === 'compose' && composeDirty) {
-      setNotice('草稿已自动保存在本机，点右上角「合上」或「先存草稿返回」可以安心离开。')
+      setNotice('草稿已自动保存在本机，点右上角关闭或底部「先存草稿返回」可安心离开。')
       return
     }
     close()
@@ -125,7 +126,7 @@ export function MailboxPanel({ user }: { user: User }) {
 
   const heading =
     mode === 'compose'
-      ? `给${recipient}写一封信`
+      ? `给${recipient}写信`
       : mode === 'read' && selected
         ? unsealed
           ? selected.title
@@ -138,32 +139,32 @@ export function MailboxPanel({ user }: { user: User }) {
     <div className="modal-mask mailbox-mask" onClick={handleMaskClick}>
       <div
         ref={dialog}
-        className={`wood-panel modal-panel mailbox-panel ${readingWide ? 'mailbox-panel--reading' : ''} ${selected?.theme === 'qixi' ? 'mailbox-panel--qixi' : ''}`}
+        className={`wood-panel modal-panel mailbox-panel px-pop ${readingWide ? 'mailbox-panel--reading' : ''} ${selected?.theme === 'qixi' ? 'mailbox-panel--qixi' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="mailbox-title"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-head">
-          <div>
-            <p className="panel-eyebrow">LETTERS BETWEEN US</p>
-            <h2 id="mailbox-title">{heading}</h2>
+          <div className="px-ribbon" id="mailbox-title">
+            <PixelIcon name="heart" size={18} />
+            <span>{heading}</span>
           </div>
           <div className="mailbox-head-actions">
             {mode === 'list' && (
               <button
                 type="button"
-                className="btn btn-primary btn-mini"
+                className="px-btn px-btn-accent px-btn-sm"
                 onClick={() => {
                   setNotice('')
                   setMode('compose')
                 }}
               >
-                提笔写信
+                <span>提笔写信</span>
               </button>
             )}
-            <button type="button" className="btn btn-mini" onClick={close}>
-              合上 ✕
+            <button type="button" className="px-slot" onClick={close} aria-label="合上信箱">
+              <PixelIcon name="close" size={18} />
             </button>
           </div>
         </div>
@@ -250,17 +251,19 @@ export function MailboxPanel({ user }: { user: User }) {
                         setMode('read')
                       }}
                     >
-                      <CharacterPortrait
-                        character={letter.author === 'her' ? 'her' : 'bear'}
-                        size={36}
-                      />
+                      <div className="px-portrait-box">
+                        <CharacterPortrait
+                          character={letter.author === 'her' ? 'her' : 'bear'}
+                          size={32}
+                        />
+                      </div>
                       <span className="letter-card-copy">
                         <span className="letter-meta">
                           <span>
                             {islanderName(letter.author)}寄来的信
                             {letter.unread && <span className="letter-unread-pill">未拆</span>}
                           </span>
-                          <time>{letter.date}</time>
+                          <time className="num">{letter.date}</time>
                         </span>
                         <strong>{letter.title}</strong>
                         <span className="letter-excerpt">
@@ -269,7 +272,7 @@ export function MailboxPanel({ user }: { user: User }) {
                         <span className="letter-card-details">{formatParts.join(' · ')}</span>
                       </span>
                       <span className="letter-card-arrow" aria-hidden="true">
-                        ↗
+                        ›
                       </span>
                     </button>
                   </li>
