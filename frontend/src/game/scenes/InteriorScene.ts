@@ -4,7 +4,7 @@ import { SCREEN_BODY_PX, screenTextScale } from '../../visual/screenText'
 import { HomeRoomClient, SharedProgramClock } from '../../interior/room'
 import type { HomeSnapshot, HomeMember, HomeView } from '../../interior/room'
 import type { RoomTiming } from '../../seaside/types'
-import { CHARACTER_ATLAS, CHARACTER_ORIGIN, HOME_ATLAS, actorFrame } from '../../visual/artV2'
+import { CHARACTER_ATLAS, CHARACTER_ORIGIN, HOME_ATLAS, actorFrame, pickFacing, type Facing } from '../../visual/artV2'
 import { nightWeight } from '../../audio/types'
 import { homeRoute, homeSegmentClear, homeWalkable, type Point, type Rect } from '../../interior/navigation'
 import { eventBus, type GameEvents, type InteriorState, type IslandIdentity, type Phase, type SceneState } from '../EventBus'
@@ -50,6 +50,7 @@ export class InteriorScene extends Phaser.Scene {
   private arrival?: () => void
   private facing: 'front' | 'back' | 'side' = 'front'
   private flip = false
+  private walkClock = 0
   private interaction: Interaction | null = null
   private lastLabel: string | null = null
   private nearTV = false
@@ -427,7 +428,7 @@ export class InteriorScene extends Phaser.Scene {
   private drawPlayer(moving = false): void {
     if (!this.player) return
     const facing = this.facing === 'front' ? 'down' : this.facing === 'back' ? 'up' : this.flip ? 'left' : 'right'
-    this.player.setTexture(CHARACTER_ATLAS, this.pose === 'seated' ? `${this.identity.character}-sit-up` : actorFrame(this.identity.character, facing, moving && !this.reducedMotion.matches, this.elapsed))
+    this.player.setTexture(CHARACTER_ATLAS, this.pose === 'seated' ? `${this.identity.character}-sit-up` : actorFrame(this.identity.character, facing, moving && !this.reducedMotion.matches, this.walkClock))
       .setFlipX(false).setDepth(this.pose === 'seated' ? 200 : this.player.y)
     this.shadow?.setPosition(this.player.x, this.player.y - 1).setVisible(this.pose !== 'seated')
   }
@@ -481,10 +482,16 @@ export class InteriorScene extends Phaser.Scene {
         else if (homeSegmentClear(HOME_LAYOUT, this.player, { x: next.x, y: this.player.y })) { this.player.x = next.x; moving = true }
         else if (homeSegmentClear(HOME_LAYOUT, this.player, { x: this.player.x, y: next.y })) { this.player.y = next.y; moving = true }
         else if (this.path.length) this.cancelAction()
-        this.facing = Math.abs(dx) > Math.abs(dy) ? 'side' : dy < 0 ? 'back' : 'front'; this.flip = this.facing === 'side' && dx < 0
+        const cur: Facing = this.facing === 'front' ? 'down' : this.facing === 'back' ? 'up' : this.flip ? 'left' : 'right'
+        const nextFacing = pickFacing(cur, dx, dy)
+        this.facing = nextFacing === 'down' ? 'front' : nextFacing === 'up' ? 'back' : 'side'
+        this.flip = nextFacing === 'left'
       }
     }
-    this.drawPlayer(moving || !!this.seatTween); this.updatePrompt()
+    const animateWalk = moving || !!this.seatTween
+    if (animateWalk) this.walkClock += Math.min(50, delta)
+    else this.walkClock = 0
+    this.drawPlayer(animateWalk); this.updatePrompt()
     const target = this.viewFocus(), amount = this.reducedMotion.matches ? 1 : Math.min(1, delta / 180)
     this.cameraCenter.x += (target.x - this.cameraCenter.x) * amount; this.cameraCenter.y += (target.y - this.cameraCenter.y) * amount
     this.cameras.main.centerOn(this.cameraCenter.x, this.cameraCenter.y)

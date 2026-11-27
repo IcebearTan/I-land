@@ -5,9 +5,9 @@ import path from 'node:path'
 /** Stardew-inspired warm oak & parchment palette aligned with I-land STYLE.md */
 export const PAL = {
   _: [0, 0, 0, 0],
-  // Warm carved oak frame
-  K: [0x3b, 0x21, 0x17, 255], // Deep roasted outline
-  D: [0x68, 0x37, 0x1d, 255], // Dark wood recess
+  // Warm carved oak frame (Stardew warm mahogany-oak outline, never harsh black)
+  K: [0x59, 0x30, 0x1b, 255], // Warm dark mahogany outline
+  D: [0x78, 0x41, 0x22, 255], // Dark wood recess
   W: [0x9e, 0x5b, 0x2b, 255], // Mid oak body
   M: [0xbd, 0x76, 0x3b, 255], // Warm oak lit face
   L: [0xe6, 0xb2, 0x67, 255], // Oak bevel highlight

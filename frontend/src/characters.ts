@@ -127,7 +127,7 @@ export const CHARACTERS: Record<CharacterId, Character> = {
     frames: bearFrames, steps: steps(bearFrames, true),
   },
   her: {
-    title: '黑发岛民', description: '黑发 · 罗小黑青绿短袖 · 黑裤',
+    title: '黑发岛民', description: '黑发齐刘海 · 圆框眼镜 · 草绿黑猫上衣',
     palette: { h: '#20222e', H: '#393946', k: '#f0c6a0', d: '#252334', r: '#df997f',
       t: '#3f887f', T: '#62b2a2', c: '#161b26', w: '#f5eee2', p: '#242333', P: '#393946', s: '#4a3b55' },
     frames: girlFrames, steps: steps(girlFrames, false),

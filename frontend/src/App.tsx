@@ -126,7 +126,8 @@ export default function App() {
 
   function handleReturnPortal() {
     try {
-      window.parent?.postMessage({ type: 'iland:return-portal' }, window.location.origin)
+      // Safe non-sensitive navigation signal; parent validates origin
+      window.parent?.postMessage({ type: 'iland:return-portal' }, '*')
     } catch {
       window.location.href = '/'
     }

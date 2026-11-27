@@ -30,28 +30,68 @@ body {
 /* Calendar shortcut is now unified inside the Stardew HUD inventory slot */
 .calendar-shortcut { display: none !important; }
 
-/* Unified 9-slice carved oak panels & pixel buttons across Mailbox / Settings / Calendar */
+/* Unified 9-slice carved oak panels & pixel buttons across Mailbox / Settings */
 .wood-panel {
   border-style: solid;
   border-width: 18px;
+  border-color: transparent;
   border-image-source: url('/art-v2/ui/panel-wood.png');
   border-image-slice: 9 fill;
   border-image-repeat: stretch;
-  background: transparent;
+  background-color: transparent;
+  background-clip: padding-box;
   color: var(--px-ink);
   image-rendering: pixelated;
-  filter: var(--px-shadow-drop);
+  box-shadow: none;
 }
 
+/* Memory Calendar: solid warm Stardew parchment surface + crisp carved oak frame so sticky header & scroll never bleed */
 .calendar-panel {
-  border-style: solid !important;
-  border-width: 18px !important;
-  border-image-source: url('/art-v2/ui/panel-wood.png') !important;
-  border-image-slice: 9 fill !important;
-  border-image-repeat: stretch !important;
-  background: transparent !important;
+  border: 6px solid #9e5b2b !important;
+  outline: 2px solid #59301b;
+  border-radius: 0 !important;
+  background: #f8e1b8 !important;
   color: var(--px-ink) !important;
-  filter: var(--px-shadow-drop);
+  box-shadow: inset 0 0 0 2px #f5d28e, 0 8px 28px rgba(43, 24, 18, 0.36) !important;
+}
+.calendar-panel .calendar-header {
+  background: #f8e1b8 !important;
+  border-bottom: 2px solid #cfa76e !important;
+  padding: 14px 20px !important;
+}
+.calendar-panel .calendar-header h2 {
+  font-family: var(--px-font) !important;
+  font-weight: 400 !important;
+}
+.calendar-panel .calendar-close {
+  border: 2px solid #68371d !important;
+  background: #fff2d4 !important;
+  color: var(--px-ink) !important;
+  font-family: var(--px-font) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 0 rgba(89, 48, 27, 0.25);
+}
+.calendar-panel .cal-primary,
+.calendar-panel .cal-secondary,
+.calendar-panel .cal-danger {
+  border-radius: 0 !important;
+  border-width: 2px !important;
+  font-family: var(--px-font) !important;
+}
+.calendar-panel .cal-primary {
+  background: #326c62 !important;
+  border-color: #1c383e !important;
+  color: #fffaf0 !important;
+}
+.calendar-panel .cal-secondary {
+  background: #fff2d4 !important;
+  border-color: #8a5a38 !important;
+  color: var(--px-ink) !important;
+}
+.calendar-panel .cal-danger {
+  background: #a8374b !important;
+  border-color: #591c27 !important;
+  color: #fffaf0 !important;
 }
 
 .btn, .text-button {
@@ -72,17 +112,19 @@ body {
   padding: 2px 10px;
   border-style: solid;
   border-width: 10px;
+  border-color: transparent;
   border-image-source: url('/art-v2/ui/btn-wood.png');
   border-image-slice: 6 fill;
   border-image-repeat: stretch;
-  background: transparent;
+  background-color: transparent;
+  background-clip: padding-box;
   color: var(--px-ink);
   image-rendering: pixelated;
-  filter: drop-shadow(0 2px 0 rgba(59, 33, 23, 0.28));
+  box-shadow: none;
   transition: transform 60ms steps(2);
 }
 .btn:hover:not(:disabled) { border-image-source: url('/art-v2/ui/btn-wood-hover.png'); }
-.btn:active:not(:disabled) { border-image-source: url('/art-v2/ui/btn-wood-pressed.png'); transform: translateY(2px); filter: none; }
+.btn:active:not(:disabled) { border-image-source: url('/art-v2/ui/btn-wood-pressed.png'); transform: translateY(2px); }
 .btn-primary {
   border-image-source: url('/art-v2/ui/btn-accent.png');
   color: var(--px-accent-ink);
@@ -117,7 +159,7 @@ body {
 .islander-select { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 14px; }
 .islander-option {
   display: flex; align-items: center; flex-direction: column; gap: 6px; padding: 8px 6px;
-  border-style: solid; border-width: 8px; border-image-source: url('/art-v2/ui/slot.png');
+  border-style: solid; border-width: 8px; border-color: transparent; border-image-source: url('/art-v2/ui/slot.png');
   border-image-slice: 5 fill; background: transparent; color: var(--px-ink);
   font-family: var(--px-font); font-size: 13px; cursor: pointer; image-rendering: pixelated;
 }

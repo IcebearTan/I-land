@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import { worldZoom } from '../../visual/layout'
-import { CHARACTER_ATLAS, CHARACTER_ORIGIN, CHARACTER_FOOT, actorFrame } from '../../visual/artV2'
+import { CHARACTER_ATLAS, CHARACTER_ORIGIN, CHARACTER_FOOT, actorFrame, pickFacing, type Facing } from '../../visual/artV2'
 import { SCREEN_BODY_PX, SCREEN_LABEL_PX, screenTextScale } from '../../visual/screenText'
 import { eventBus, type Phase, type IslandIdentity, type IslandEntry, type SceneState } from '../EventBus'
 import { makeTexture } from '../pixels'
@@ -70,8 +70,8 @@ export class IslandScene extends Phaser.Scene {
   private spawn = { ...SPAWN }
   private secondTimer = 0
   private audioTimer = 0
-  private facing = 'front'
-  private facingLeft = false
+  private facingDir: Facing = 'down'
+  private walkClock = 0
   private prompt!: Phaser.GameObjects.Container
   private sceneLabels: Phaser.GameObjects.Text[] = []
   private promptText!: Phaser.GameObjects.Text
@@ -81,7 +81,6 @@ export class IslandScene extends Phaser.Scene {
   private nightLights!: Phaser.GameObjects.Container
   private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
   private decorations: Phaser.GameObjects.Image[] = []
-  private previous = { x: SPAWN.x, y: SPAWN.y }
   private interactables: Interactable[] = [
     { ...MAIL, label: '小屋信箱', event: 'mailbox' },
     { x: TOWER.x, y: TOWER.y + 8, label: '灯塔 · 记忆日历', event: 'calendar' },
@@ -96,7 +95,8 @@ export class IslandScene extends Phaser.Scene {
     this.identity = entry ? { character: entry.character, display: entry.display, account: entry.account } : { character: 'bear', display: '小熊' }
     this.spawn = entry?.returnPoint && Number.isFinite(entry.returnPoint.x) && Number.isFinite(entry.returnPoint.y)
       && this.walkable(entry.returnPoint.x, entry.returnPoint.y) ? { ...entry.returnPoint } : { ...SPAWN }
-    this.facing = 'front'
+    this.facingDir = 'down'
+    this.walkClock = 0
     this.moveInput = { x: 0, y: 0 }
     this.interactionLabel = null
     this.promptTarget = null; this.leaving = false
@@ -104,7 +104,7 @@ export class IslandScene extends Phaser.Scene {
 
   create(): void {
     this.sceneLabels = []
-    this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.audioTimer = 0; this.decorations = []; this.previous = { ...this.spawn }
+    this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.audioTimer = 0; this.decorations = []
     this.cameras.main.setBounds(0, 0, WORLD.width, WORLD.height)
     this.physics.world.setBounds(0, 0, WORLD.width, WORLD.height)
     createIslandArt(this)
@@ -114,7 +114,7 @@ export class IslandScene extends Phaser.Scene {
     this.shadow = this.add.ellipse(this.spawn.x, this.spawn.y - 1, 12, 4, 0x345b40, .24).setDepth(1)
     this.player = this.physics.add.sprite(this.spawn.x, this.spawn.y, CHARACTER_ATLAS, actorFrame(this.identity.character, 'down')).setOrigin(CHARACTER_ORIGIN.x, CHARACTER_ORIGIN.y)
     this.player.setSize(CHARACTER_FOOT.width, CHARACTER_FOOT.height).setOffset(CHARACTER_FOOT.offsetX, CHARACTER_FOOT.offsetY).setCollideWorldBounds(true)
-    this.cameras.main.startFollow(this.player, true, 1, 1, 0, 65)
+    this.cameras.main.startFollow(this.player, true, 0.18, 0.18, 0, 65)
     this.fitZoom()
     this.destination = this.add.graphics().setDepth(2).setVisible(false)
     this.destination.lineStyle(1, 0xfdf6e9).strokeEllipse(0, 0, 14, 7).lineStyle(1, 0x8a5a38).strokeEllipse(0, 0, 18, 11)
@@ -271,9 +271,6 @@ export class IslandScene extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     if (!this.player?.active) return
-    // 在前一帧位置上执行轴向滑动，树干、房屋墙体不再可以直接穿过。
-    this.resolveMovement()
-    this.previous = { x: this.player.x, y: this.player.y }
     let dx = 0, dy = 0
     if (!this.panelOpen && !this.leaving) {
       dx = Number(this.keys.D.isDown || this.keys.RIGHT.isDown) - Number(this.keys.A.isDown || this.keys.LEFT.isDown)
@@ -282,18 +279,33 @@ export class IslandScene extends Phaser.Scene {
       if (dx || dy) this.tapTarget = null
       else if (this.tapTarget) {
         dx = this.tapTarget.x - this.player.x; dy = this.tapTarget.y - this.player.y
-        if (Math.hypot(dx, dy) < 3) { this.tapTarget = null; dx = 0; dy = 0 }
+        if (Math.hypot(dx, dy) < 2.5) { this.tapTarget = null; dx = 0; dy = 0 }
       }
     }
+    this.player.setVelocity(0, 0)
     const norm = Math.hypot(dx, dy)
-    this.player.setVelocity(norm ? dx / norm * 72 : 0, norm ? dy / norm * 72 : 0)
-    this.player.setDepth(this.player.y)
-    if (norm) {
-      this.facing = Math.abs(dx) > Math.abs(dy) ? 'side' : dy < 0 ? 'back' : 'front'
-      this.facingLeft = this.facing === 'side' && dx < 0
+    let moved = false
+    if (norm > 0.01) {
+      const dt = Math.min(50, delta) / 1000
+      const step = this.tapTarget ? Math.min(norm, 74 * dt) : 74 * dt
+      const nx = Phaser.Math.Clamp(this.player.x + (dx / norm) * step, 8, WORLD.width - 8)
+      const ny = Phaser.Math.Clamp(this.player.y + (dy / norm) * step, 8, WORLD.height - 8)
+      // Predictive axial sliding: glides smoothly along trees/house/shore with zero bounce-back jitter
+      if (this.walkable(nx, ny)) {
+        this.player.setPosition(nx, ny); moved = true
+      } else if (Math.abs(nx - this.player.x) > 0.02 && this.walkable(nx, this.player.y)) {
+        this.player.setPosition(nx, this.player.y); moved = true
+      } else if (Math.abs(ny - this.player.y) > 0.02 && this.walkable(this.player.x, ny)) {
+        this.player.setPosition(this.player.x, ny); moved = true
+      } else if (this.tapTarget) {
+        this.tapTarget = null
+      }
+      this.facingDir = pickFacing(this.facingDir, dx, dy)
     }
-    const facing = this.facing === 'front' ? 'down' : this.facing === 'back' ? 'up' : this.facingLeft ? 'left' : 'right'
-    this.player.setTexture(CHARACTER_ATLAS, actorFrame(this.identity.character, facing, !this.reducedMotion.matches && norm > 0, time)).setFlipX(false)
+    if (moved) this.walkClock += Math.min(50, delta)
+    else this.walkClock = 0
+    this.player.setDepth(this.player.y)
+    this.player.setTexture(CHARACTER_ATLAS, actorFrame(this.identity.character, this.facingDir, !this.reducedMotion.matches && moved, this.walkClock)).setFlipX(false)
     this.destination.setVisible(!!this.tapTarget && !this.panelOpen && !this.leaving)
     this.shadow.setPosition(this.player.x, this.player.y - 1)
     for (let i = 0; i < this.decorations.length; i++) {
@@ -322,13 +334,6 @@ export class IslandScene extends Phaser.Scene {
     const onDock = x > DOCK.left + 4 && x < DOCK.right - 4 && y >= DOCK.top - 8 && y < DOCK.bottom - 6
     if (!onDock && landDistance(x, y - 1) > .967) return false
     return !OBSTACLES.some(o => x + 4 > o.x && x - 4 < o.x + o.w && y > o.y && y - 4 < o.y + o.h)
-  }
-  private resolveMovement(): void {
-    const { x, y } = this.player
-    if (this.walkable(x, y)) return
-    if (this.walkable(x, this.previous.y)) this.player.y = this.previous.y
-    else if (this.walkable(this.previous.x, y)) this.player.x = this.previous.x
-    else { this.player.setPosition(this.previous.x, this.previous.y); this.tapTarget = null }
   }
   private updatePrompt(force = false): void {
     this.promptTarget = this.leaving ? null : this.interactables
