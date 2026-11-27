@@ -44,6 +44,7 @@ export default function App() {
   const [scene, setScene] = useState<SceneState>({ scene: 'login', transitioning: false })
   const [embedded] = useState(isEmbeddedInPortal)
   const [wantMuted, setWantMuted] = useState(false)
+  const unreadLettersRef = useRef(0)
   const enteredUser = useRef<number | null>(null)
   const audio = useIslandAudio(user?.id ?? null)
 
@@ -96,13 +97,39 @@ export default function App() {
     }
   }, [])
 
-  // Presence heartbeat only while actually on the island
+  // Presence heartbeat & unread mailbox sync while on the island
   useEffect(() => {
     if (!user || stage !== 'on-island') return
     const beat = () => api('/api/heartbeat', { method: 'POST', body: JSON.stringify({}) }).catch(() => {})
+    const syncMailbox = () =>
+      api<{ unread_count?: number }>('/api/letters')
+        .then((res) => {
+          const count = typeof res.unread_count === 'number' ? res.unread_count : 0
+          unreadLettersRef.current = count
+          eventBus.emit('MAILBOX_UNREAD_CHANGED', { count })
+        })
+        .catch(() => {})
+    const onUnread = ({ count }: { count: number }) => {
+      unreadLettersRef.current = count
+    }
+    const onSceneReady = ({ scene: readyScene }: { scene: string }) => {
+      if (readyScene === 'island') {
+        eventBus.emit('MAILBOX_UNREAD_CHANGED', { count: unreadLettersRef.current })
+      }
+    }
+    eventBus.on('MAILBOX_UNREAD_CHANGED', onUnread)
+    eventBus.on('SCENE_READY', onSceneReady)
     beat()
-    const timer = window.setInterval(beat, 60_000)
-    return () => window.clearInterval(timer)
+    syncMailbox()
+    const timer = window.setInterval(() => {
+      beat()
+      syncMailbox()
+    }, 60_000)
+    return () => {
+      eventBus.off('MAILBOX_UNREAD_CHANGED', onUnread)
+      eventBus.off('SCENE_READY', onSceneReady)
+      window.clearInterval(timer)
+    }
   }, [user, stage])
 
   function handleEmbark() {
@@ -207,7 +234,7 @@ export default function App() {
           {scene.scene === 'island' && !scene.transitioning && <IslandControls />}
           {scene.scene === 'seaside' && <SeasideControls transitioning={scene.transitioning} />}
           {scene.scene === 'interior' && <InteriorControls transitioning={scene.transitioning} />}
-          <MailboxPanel />
+          <MailboxPanel user={user} />
           <LighthousePanel />
           <ComingSoonPanel />
           <CalendarFeature />

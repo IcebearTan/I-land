@@ -5,7 +5,7 @@ import { SCREEN_BODY_PX, SCREEN_LABEL_PX, screenTextScale } from '../../visual/s
 import { eventBus, type Phase, type IslandIdentity, type IslandEntry, type SceneState, type LighthouseSignal } from '../EventBus'
 import { makeTexture } from '../pixels'
 import { hash2 } from '../art'
-import { createIslandArt, WORLD, HOME, TOWER, MAIL, DOCK, SPAWN, BOTTLE, SEASIDE_ENTRY, SEASIDE_RETURN, TREES, LAMPS, OBSTACLES, landDistance } from '../art/island'
+import { createIslandArt, ISLAND_WAVE_FRAMES, WORLD, HOME, TOWER, MAIL, DOCK, SPAWN, BOTTLE, SEASIDE_ENTRY, SEASIDE_RETURN, TREES, LAMPS, OBSTACLES, landDistance } from '../art/island'
 import { nightWeight } from '../../audio/types'
 
 const TINT_KEYS: Array<{ h: number; c: number }> = [
@@ -57,6 +57,7 @@ function phaseAtHour(h: number): Phase {
 interface Interactable { x: number; y: number; label: string; event: 'mailbox' | 'lighthouse' | 'bottle' | 'seaside' | 'interior' }
 interface SwayingCanopy { img: Phaser.GameObjects.Image; baseX: number; phase: number; amp: number }
 interface WindLeaf { img: Phaser.GameObjects.Image; originX: number; originY: number; life: number; maxLife: number; drift: number }
+interface WaveRipple { img: Phaser.GameObjects.Image; baseX: number; phase: number; drift: number }
 
 export class IslandScene extends Phaser.Scene {
   private identity: IslandIdentity = { character: 'bear', display: '小熊' }
@@ -87,7 +88,11 @@ export class IslandScene extends Phaser.Scene {
   private towerColor = 0xffd98a
   private towerDayBeacon!: Phaser.GameObjects.Rectangle
   private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-  private decorations: Phaser.GameObjects.Image[] = []
+  private shoreWave!: Phaser.GameObjects.Image
+  private waveFrame = 0
+  private ripples: WaveRipple[] = []
+  private mailboxBadge!: Phaser.GameObjects.Image
+  private unreadLetters = 0
   private canopies: SwayingCanopy[] = []
   private windLeaves: WindLeaf[] = []
   private interactables: Interactable[] = [
@@ -114,11 +119,12 @@ export class IslandScene extends Phaser.Scene {
   create(): void {
     this.sceneLabels = []
     this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.audioTimer = 0
-    this.decorations = []; this.canopies = []; this.windLeaves = []; this.towerGlowLayers = []
+    this.ripples = []; this.canopies = []; this.windLeaves = []; this.towerGlowLayers = []; this.waveFrame = 0
     this.cameras.main.setBounds(0, 0, WORLD.width, WORLD.height)
     this.physics.world.setBounds(0, 0, WORLD.width, WORLD.height)
     createIslandArt(this)
     this.add.image(0, 0, 'island-ground-v3').setOrigin(0).setDepth(0)
+    this.shoreWave = this.add.image(0, 0, 'island-waves-0').setOrigin(0).setDepth(0.5)
     this.placeScenery()
     this.setupLights()
     this.shadow = this.add.ellipse(this.spawn.x, this.spawn.y - 1, 12, 4, 0x345b40, .24).setDepth(1)
@@ -169,6 +175,11 @@ export class IslandScene extends Phaser.Scene {
     const onVisibility = () => { if (document.hidden) this.clearInput() }
     const onIdentity = (identity: IslandIdentity) => { this.identity = { ...identity } }
     const onLighthouse = (signal: LighthouseSignal) => { this.applyLighthouseColor(signal.color) }
+    const onMailboxUnread = ({ count }: { count: number }) => {
+      this.unreadLetters = Math.max(0, count)
+      this.mailboxBadge?.setVisible(this.unreadLetters > 0)
+      this.updatePrompt(true)
+    }
     const onScene = (state: SceneState) => {
       if (state.scene !== 'island' || !state.transitioning) return
       this.leaving = true; this.clearInput(); this.promptTarget = null; this.prompt.setVisible(false)
@@ -181,6 +192,7 @@ export class IslandScene extends Phaser.Scene {
     eventBus.on('PANEL_OPENED', onOpen); eventBus.on('PANEL_CLOSED', onClose)
     eventBus.on('IDENTITY_CHANGED', onIdentity); eventBus.on('SCENE_CHANGED', onScene)
     eventBus.on('LIGHTHOUSE_UPDATED', onLighthouse)
+    eventBus.on('MAILBOX_UNREAD_CHANGED', onMailboxUnread)
     this.scale.on('resize', this.fitZoom, this)
     let disposed = false
     const cleanup = () => {
@@ -189,6 +201,7 @@ export class IslandScene extends Phaser.Scene {
       eventBus.off('PANEL_OPENED', onOpen); eventBus.off('PANEL_CLOSED', onClose)
       eventBus.off('IDENTITY_CHANGED', onIdentity); eventBus.off('SCENE_CHANGED', onScene)
       eventBus.off('LIGHTHOUSE_UPDATED', onLighthouse)
+      eventBus.off('MAILBOX_UNREAD_CHANGED', onMailboxUnread)
       this.scale.off('resize', this.fitZoom, this)
       this.game.events.off('blur', onBlur)
       document.removeEventListener('visibilitychange', onVisibility)
@@ -250,6 +263,21 @@ export class IslandScene extends Phaser.Scene {
       this.windLeaves.push({ img: leaf, originX: tx, originY: ty - 34, life: i * 1600, maxLife: 7200 + (i % 3) * 1400, drift: 0.7 + (i % 3) * 0.25 })
     }
     object(MAIL.x, MAIL.y, 'mailbox-v3', 17)
+    makeTexture(this, 'mailbox-unread-v1', [
+      '.ooooooooooo.',
+      'opppppppppppo',
+      'opbpppppppbpo',
+      'oppbpppppbppo',
+      'opppbrrrbpppo',
+      'opppprrrppppo',
+      'opppppppppppo',
+      'opppppppppppo',
+      '.ooooooooooo.',
+    ], { o: '#4a3b55', p: '#fdf6e9', b: '#c79a65', r: '#e8637c' })
+    this.mailboxBadge = this.add.image(MAIL.x, MAIL.y - 33, 'mailbox-unread-v1')
+      .setOrigin(0.5, 1)
+      .setDepth(MAIL.y + 8)
+      .setVisible(this.unreadLetters > 0)
     object(398, 241, 'bench-v3', 38)
     LAMPS.forEach(([x, y]) => object(x, y, 'lantern-v3', 10))
     makeTexture(this, 'bottle-v3', ['..cc..', '..cc..', '.swws.', '.swgs.', '.sggs.', '.sggs.', '.swws.', '..ss..'], {
@@ -267,11 +295,14 @@ export class IslandScene extends Phaser.Scene {
       this.sceneLabels.push(this.add.text(x, y, text, { fontFamily: 'system-ui, sans-serif', fontSize: SCREEN_LABEL_PX, color: '#4a3b55',
         backgroundColor: '#f0d9a8', padding: { x: 4, y: 2 }, resolution: 3 }).setOrigin(.5).setDepth(2))
     }
-    makeTexture(this, 'ripple-v3', ['....ww......', '..ww..ww....', 'ww......wwww'], { w: '#b4d7df' })
-    for (let i = 0; i < 38; i++) {
+    makeTexture(this, 'ripple-v4-0', ['....ww......', '..ww..ww....', 'ww......wwww'], { w: '#b4d7df' })
+    makeTexture(this, 'ripple-v4-1', ['..ww....ww..', '....wwww....', '..ww........'], { w: '#d6ebf0' })
+    makeTexture(this, 'ripple-v4-2', ['......ww....', '....ww..ww..', '........ww..'], { w: '#9ac6d8' })
+    for (let i = 0; i < 46; i++) {
       const x = Math.floor(hash2(i, 31) * WORLD.width), y = Math.floor(hash2(i, 34) * WORLD.height)
-      if (landDistance(x, y) < 1.07) continue
-      this.decorations.push(this.add.image(x, y, 'ripple-v3').setAlpha(.8).setDepth(1))
+      if (landDistance(x, y) < 1.14) continue
+      const img = this.add.image(x, y, `ripple-v4-${i % 3}`).setAlpha(.72).setDepth(0.8)
+      this.ripples.push({ img, baseX: x, phase: i * 0.91, drift: 2.5 + (i % 3) * 1.5 })
     }
   }
 
@@ -366,9 +397,31 @@ export class IslandScene extends Phaser.Scene {
     this.player.setTexture(CHARACTER_ATLAS, actorFrame(this.identity.character, this.facingDir, !this.reducedMotion.matches && moved, this.walkClock)).setFlipX(false)
     this.destination.setVisible(!!this.tapTarget && !this.panelOpen && !this.leaving)
     this.shadow.setPosition(this.player.x, this.player.y - 1)
-    for (let i = 0; i < this.decorations.length; i++) {
-      const water = this.decorations[i]
-      water.setAlpha(this.reducedMotion.matches ? .8 : .8 + Math.floor((time + i * 173) / 800) % 2 * .15)
+    if (this.reducedMotion.matches) {
+      if (this.waveFrame !== 0) {
+        this.waveFrame = 0
+        this.shoreWave.setTexture('island-waves-0')
+      }
+      for (const r of this.ripples) {
+        r.img.setX(r.baseX).setAlpha(0.7)
+      }
+      if (this.mailboxBadge?.visible) this.mailboxBadge.setY(MAIL.y - 33)
+    } else {
+      const nextWave = Math.floor(time / 270) % ISLAND_WAVE_FRAMES
+      if (nextWave !== this.waveFrame) {
+        this.waveFrame = nextWave
+        this.shoreWave.setTexture(`island-waves-${nextWave}`)
+      }
+      for (let i = 0; i < this.ripples.length; i++) {
+        const r = this.ripples[i]
+        const frame = Math.floor((time + i * 211) / 520) % 3
+        r.img.setTexture(`ripple-v4-${frame}`)
+        r.img.setX(Math.round(r.baseX + Math.sin(time * 0.00095 + r.phase) * r.drift))
+        r.img.setAlpha(0.48 + (Math.sin(time * 0.0018 + r.phase) * 0.5 + 0.5) * 0.4)
+      }
+      if (this.mailboxBadge?.visible) {
+        this.mailboxBadge.setY(MAIL.y - 33 - (Math.floor(time / 440) % 2) * 2)
+      }
     }
     // Coastal sea-breeze canopy sway + occasional drifting leaves + lighthouse sweep beam
     if (!this.reducedMotion.matches) {
@@ -417,14 +470,20 @@ export class IslandScene extends Phaser.Scene {
     this.promptTarget = this.leaving ? null : this.interactables
       .filter(it => Math.hypot(it.x - this.player.x, it.y - this.player.y) < 34)
       .sort((a, b) => Math.hypot(a.x - this.player.x, a.y - this.player.y) - Math.hypot(b.x - this.player.x, b.y - this.player.y))[0] ?? null
-    const label = this.panelOpen ? null : this.promptTarget?.label ?? null
+    const label = this.panelOpen
+      ? null
+      : this.promptTarget
+        ? this.promptTarget.event === 'mailbox' && this.unreadLetters > 0
+          ? `${this.promptTarget.label} · ${this.unreadLetters} 封未拆`
+          : this.promptTarget.label
+        : null
     if (label !== this.interactionLabel || force) {
       this.interactionLabel = label
       eventBus.emit('INTERACTION_CHANGED', { label })
     }
     this.prompt.setVisible(!!this.promptTarget && !this.panelOpen)
     if (!this.promptTarget) return
-    this.promptText.setText(`${this.promptTarget.label}  ·  E / 轻点`)
+    this.promptText.setText(`${label ?? this.promptTarget.label}  ·  E / 轻点`)
     const width = this.promptText.width + 20
     this.promptBg.clear().fillStyle(0x8a5a38).fillRoundedRect(-width / 2 - 1, -19, width + 2, 38, 3)
       .fillStyle(0xfdf6e9).fillRoundedRect(-width / 2, -18, width, 36, 3)

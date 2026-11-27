@@ -63,10 +63,12 @@ class Letter(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     date: str  # YYYY-MM-DD 写信日期
     title: str
-    excerpt: str = ""
+    excerpt: str = ""  # 信封寄语（拆封前可见）
+    body: str = ""  # 信件正文（拆开火漆后可见）
     author: str  # bear | her
-    theme: str = ""  # 如 "qixi"
+    theme: str = ""  # "" | "classic" | "seaside" | "blossom" | "qixi"
     pages_json: str = "[]"  # 图片路径列表
+    read_at: Optional[datetime] = None  # 收件人首次拆信时间
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 

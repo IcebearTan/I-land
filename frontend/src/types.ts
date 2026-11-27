@@ -11,9 +11,12 @@ export interface Letter {
   date: string
   title: string
   excerpt: string
+  body: string
   author: string
   theme: string
   pages: string[]
+  read_at: string | null
+  unread: boolean
   created_at: string
 }
 

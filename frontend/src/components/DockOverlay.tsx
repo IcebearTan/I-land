@@ -165,6 +165,17 @@ export function DockOverlay({
               >
                 <PixelIcon name={muted ? 'sound-off' : 'sound-on'} size={22} />
               </button>
+              {embedded && (
+                <button
+                  type="button"
+                  className="px-slot"
+                  title="回到 Donut"
+                  aria-label="回到 Donut"
+                  onClick={onReturnPortal}
+                >
+                  <PixelIcon name="chat" size={22} />
+                </button>
+              )}
             </div>
           </div>
         ) : (

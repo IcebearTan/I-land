@@ -71,6 +71,69 @@ def test_letters_crud(client):
     assert client.get("/api/letters").json()["letters"] == []
 
 
+def test_letters_body_unread_and_migration(client):
+    login(client, "bear")
+    res = client.post(
+        "/api/letters",
+        json={
+            "date": "2026-11-27",
+            "title": "写给夜晚的你",
+            "excerpt": "拆开前只露这一句",
+            "body": "这是拆开火漆之后才能看到的长正文。",
+            "theme": "seaside",
+            "pages": [],
+        },
+    )
+    assert res.status_code == 200, res.text
+    letter = res.json()["letter"]
+    assert letter["body"] == "这是拆开火漆之后才能看到的长正文。"
+    assert letter["theme"] == "seaside"
+    assert letter["unread"] is False  # 自己写的信不算未拆
+
+    # 切到对方账号：应显示 1 封未拆，且对方无法删除
+    login(client, "her")
+    listed = client.get("/api/letters").json()
+    assert listed["unread_count"] == 1
+    assert listed["letters"][0]["unread"] is True
+    assert client.delete(f"/api/letters/{letter['id']}").status_code == 403
+
+    # 拆开火漆标记已读
+    read_res = client.post(f"/api/letters/{letter['id']}/read")
+    assert read_res.status_code == 200
+    assert read_res.json()["letter"]["unread"] is False
+    assert read_res.json()["letter"]["read_at"] is not None
+    assert client.get("/api/letters").json()["unread_count"] == 0
+
+    # 空白标题与非法主题应被拒绝
+    assert client.post("/api/letters", json={"date": "2026-11-27", "title": "   "}).status_code == 422
+    assert client.post("/api/letters", json={"date": "2026-11-27", "title": "错主题", "body": "hi", "theme": "bad"}).status_code == 422
+
+    # 清理测试信件
+    login(client, "bear")
+    assert client.delete(f"/api/letters/{letter['id']}").status_code == 200
+
+    # 旧表迁移保留老数据并默认标已读
+    from sqlalchemy import text
+    from sqlmodel import create_engine
+    from app.db import migrate_letter_columns
+
+    old = create_engine("sqlite://")
+    with old.begin() as conn:
+        conn.execute(text(
+            "CREATE TABLE letter (id INTEGER PRIMARY KEY, date VARCHAR, title VARCHAR, "
+            "excerpt VARCHAR, author VARCHAR, theme VARCHAR, pages_json VARCHAR, created_at DATETIME)"
+        ))
+        conn.execute(text(
+            "INSERT INTO letter VALUES (1, '2026-08-17', '旧信', '摘录', 'bear', 'qixi', '[]', '2026-08-17 12:00:00')"
+        ))
+    migrate_letter_columns(old)
+    migrate_letter_columns(old)
+    with old.connect() as conn:
+        row = conn.execute(text("SELECT * FROM letter")).mappings().one()
+        assert row["body"] == "" and row["read_at"] is not None
+    old.dispose()
+
+
 def test_world_optimistic_lock(client):
     login(client)
     v0 = client.get("/api/world").json()["version"]

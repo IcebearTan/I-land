@@ -1,132 +1,284 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { api } from '../../api/client'
 import { eventBus } from '../../game/EventBus'
 import { useDialogFocus } from '../../hooks/useDialogFocus'
-import { CharacterPortrait } from '../CharacterPortrait'
 import { islanderName, useIslanders } from '../../islanders'
-import type { Letter } from '../../types'
+import type { Letter, User } from '../../types'
+import { CharacterPortrait } from '../CharacterPortrait'
+import { LETTER_THEMES, LetterComposer } from './LetterComposer'
+import { LetterReader } from './LetterReader'
+import './mailbox.css'
 
-/** 信封 → 拆信 → 原尺寸信纸；只读取现有 API，不生成虚构信件。 */
-export function MailboxPanel() {
+/** 小屋信箱：收信列表 · 拆火漆读信 · 提笔写信（文字 + 手写信纸图片双修）。 */
+export function MailboxPanel({ user }: { user: User }) {
   const [open, setOpen] = useState(false)
-  const islanders = useIslanders()
+  const [mode, setMode] = useState<'list' | 'read' | 'compose'>('list')
   const [letters, setLetters] = useState<Letter[] | null>(null)
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
   const [retry, setRetry] = useState(0)
   const [selected, setSelected] = useState<Letter | null>(null)
   const [unsealed, setUnsealed] = useState(false)
-  const [page, setPage] = useState(0)
-  const [zoomed, setZoomed] = useState(false)
-  const [imageRetry, setImageRetry] = useState(0)
-  const [imageState, setImageState] = useState<'loading' | 'ready' | 'error'>('loading')
-  const content = useRef<HTMLDivElement>(null)
-  function close() { setOpen(false); eventBus.emit('PANEL_CLOSED', { panel: 'mailbox' }) }
+  const [composeDirty, setComposeDirty] = useState(false)
+  const islanders = useIslanders()
+  const currentAccount = user.account === 'her' ? 'her' : 'bear'
+  const recipient = currentAccount === 'her' ? islanders.bear : islanders.her
+
+  const syncUnread = useCallback((list: Letter[]) => {
+    const count = list.filter((item) => item.unread).length
+    eventBus.emit('MAILBOX_UNREAD_CHANGED', { count })
+  }, [])
+
+  function close() {
+    setOpen(false)
+    setMode('list')
+    setSelected(null)
+    setUnsealed(false)
+    setNotice('')
+    eventBus.emit('PANEL_CLOSED', { panel: 'mailbox' })
+  }
+
+  function handleMaskClick() {
+    if (mode === 'compose' && composeDirty) {
+      setNotice('草稿已自动保存在本机，点右上角「合上」或「先存草稿返回」可以安心离开。')
+      return
+    }
+    close()
+  }
+
   const dialog = useDialogFocus(open, close)
 
   useEffect(() => {
     const onOpen = () => {
-      setOpen(true); setSelected(null); setUnsealed(false); setPage(0)
+      setOpen(true)
+      setMode('list')
+      setSelected(null)
+      setUnsealed(false)
+      setNotice('')
       eventBus.emit('PANEL_OPENED', { panel: 'mailbox' })
     }
     eventBus.on('OPEN_MAILBOX', onOpen)
     return () => eventBus.off('OPEN_MAILBOX', onOpen)
   }, [])
+
   useEffect(() => {
     if (!open) return
     const controller = new AbortController()
-    setLetters(null); setError('')
-    api<{ letters: Letter[] }>('/api/letters', { signal: controller.signal })
-      .then(r => { if (!controller.signal.aborted) setLetters(r.letters) })
-      .catch(err => { if (!controller.signal.aborted) setError(err instanceof Error ? err.message : '取信失败') })
+    setLetters(null)
+    setError('')
+    api<{ letters: Letter[]; unread_count?: number }>('/api/letters', { signal: controller.signal })
+      .then((r) => {
+        if (controller.signal.aborted) return
+        setLetters(r.letters)
+        syncUnread(r.letters)
+      })
+      .catch((err) => {
+        if (!controller.signal.aborted) {
+          setError(err instanceof Error ? err.message : '取信失败')
+        }
+      })
     return () => controller.abort()
-  }, [open, retry])
+  }, [open, retry, syncUnread])
+
   useEffect(() => {
-    setImageState('loading')
-    content.current?.scrollTo({ top: 0, left: 0 })
-    setZoomed(false)
-  }, [selected?.id, page, unsealed])
-  useEffect(() => {
-    if (!open || !unsealed || !selected || zoomed) return
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowLeft' && page > 0) { event.preventDefault(); setPage(page - 1) }
-      if (event.key === 'ArrowRight' && page < selected.pages.length - 1) { event.preventDefault(); setPage(page + 1) }
+    if (mode === 'read' && selected) {
+      dialog.current?.querySelector<HTMLButtonElement>('.text-button')?.focus()
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [open, unsealed, selected, page, zoomed])
-  useEffect(() => {
-    if (selected) dialog.current?.querySelector<HTMLButtonElement>('.text-button')?.focus()
-  }, [selected, unsealed, dialog])
+  }, [mode, selected, unsealed, dialog])
+
   if (!open) return null
-  const author = islanderName(selected?.author ?? '')
-  const recipient = selected?.author === 'her' ? islanders.bear : islanders.her
-  const source = selected?.pages[page]
-  let imageUrl: string | null = null
-  if (source) {
-    // 旧信纸是 uploads/ 相对路径 → 走登录保护的兼容接口；其余仅放行同源地址
-    if (source.startsWith('uploads/')) imageUrl = '/api/' + source
-    else {
-      try {
-        const url = new URL(source, window.location.origin)
-        if (url.origin === window.location.origin && /^https?:$/.test(url.protocol)) imageUrl = url.href
-      } catch { /* 无效信纸地址由下面的可见错误状态说明 */ }
-    }
+
+  function handleLetterSent(created: Letter) {
+    setLetters((prev) => {
+      const next = [created, ...(prev ?? [])].sort((a, b) =>
+        b.date !== a.date ? b.date.localeCompare(a.date) : b.id - a.id,
+      )
+      syncUnread(next)
+      return next
+    })
+    setMode('list')
+    setNotice(`信已封蜡放进小屋信箱，等${recipient}上岛拆开。`)
   }
-  function turnPage(next: number) {
-    setPage(next)
+
+  function handleMarkedRead(updated: Letter) {
+    setSelected(updated)
+    setLetters((prev) => {
+      if (!prev) return prev
+      const next = prev.map((item) => (item.id === updated.id ? updated : item))
+      syncUnread(next)
+      return next
+    })
   }
-  return <div className="modal-mask mailbox-mask" onClick={close}>
-    <div ref={dialog} className={`wood-panel modal-panel mailbox-panel ${unsealed ? 'mailbox-panel--reading' : ''} ${selected?.theme === 'qixi' ? 'mailbox-panel--qixi' : ''}`} role="dialog" aria-modal="true" aria-labelledby="mailbox-title" onClick={e => e.stopPropagation()}>
-      <div className="modal-head">
-        <div><p className="panel-eyebrow">LETTERS BETWEEN US</p><h2 id="mailbox-title">{selected ? (unsealed ? selected.title : '一封给你的信') : '小屋信箱'}</h2></div>
-        <button className="btn btn-mini" onClick={close}>合上 ✕</button>
-      </div>
-      {selected ? <>
-        <button className="text-button" onClick={() => { setSelected(null); setUnsealed(false) }}>← 回到所有信件</button>
-        {!unsealed ? <div className="sealed-letter">
-          <div className="sealed-letter-address"><span className="letter-postmark">I-LAND POST<br />{selected.date}</span><CharacterPortrait character={selected.author === 'her' ? 'her' : 'bear'} size={48} /></div>
-          {selected.theme === 'qixi' && <span className="letter-theme-label">✦ 七夕来信</span>}
-          <p>寄给{recipient} · 来自{author}</p><h3>{selected.title}</h3>
-          {selected.excerpt && <p className="sealed-letter-excerpt">{selected.excerpt}</p>}
-          <button className="wax-seal" onClick={() => setUnsealed(true)} aria-label={`拆开信件：${selected.title}`}>♥</button>
-          <span className="seal-instruction">轻轻拆开，慢慢读</span>
-        </div> : <div className="letter-reading">
-          <div className="reading-meta"><span>{author}写给{recipient} · {selected.date}</span></div>
-          {selected.pages.length > 0 && <div className="reading-toolbar">
-            <nav className="letter-page-tabs" aria-label="选择信纸页码">
-              {selected.pages.map((_, index) => <button key={index} className="letter-page-tab" aria-label={`第 ${index + 1} 页信纸`} aria-current={page === index ? 'page' : undefined} onClick={() => turnPage(index)}>{String(index + 1).padStart(2, '0')}</button>)}
-            </nav>
-            <button className="text-button reading-zoom" aria-pressed={zoomed} onClick={() => setZoomed(value => !value)}>{zoomed ? '适应宽度' : '放大阅读'}</button>
-          </div>}
-          <div className={`letter-paper ${zoomed ? 'letter-paper--zoomed' : ''}`} ref={content} tabIndex={0} aria-label="信纸阅读区">
-            {selected.pages.length ? <>
-              {imageUrl && <img key={`${selected.id}-${page}-${imageRetry}`} src={imageUrl} draggable={false} alt={`${selected.title}，第 ${page + 1} 页信纸`} onLoad={() => setImageState('ready')} onError={() => setImageState('error')} />}
-              {imageUrl && imageState === 'loading' && <p className="loading" role="status">正在铺开信纸…</p>}
-              {(!imageUrl || imageState === 'error') && <div role="alert"><p className="form-error">这页信纸暂时无法显示。</p>{imageUrl && <button className="text-button" onClick={() => { setImageState('loading'); setImageRetry(value => value + 1) }}>重新铺开这页信纸</button>}</div>}
-            </> : <><p className="letter-text">{selected.excerpt || '这封信暂时还没有附上信纸。'}</p><span className="paper-signature">—— {author}</span></>}
+
+  function handleDeleted(letterId: number) {
+    setSelected(null)
+    setUnsealed(false)
+    setMode('list')
+    setLetters((prev) => {
+      if (!prev) return prev
+      const next = prev.filter((item) => item.id !== letterId)
+      syncUnread(next)
+      return next
+    })
+    setNotice('这封信已经从信箱里收回了。')
+  }
+
+  const heading =
+    mode === 'compose'
+      ? `给${recipient}写一封信`
+      : mode === 'read' && selected
+        ? unsealed
+          ? selected.title
+          : '一封给你的信'
+        : '小屋信箱'
+
+  const readingWide = mode === 'read' && unsealed && Boolean(selected?.pages.length)
+
+  return (
+    <div className="modal-mask mailbox-mask" onClick={handleMaskClick}>
+      <div
+        ref={dialog}
+        className={`wood-panel modal-panel mailbox-panel ${readingWide ? 'mailbox-panel--reading' : ''} ${selected?.theme === 'qixi' ? 'mailbox-panel--qixi' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mailbox-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="modal-head">
+          <div>
+            <p className="panel-eyebrow">LETTERS BETWEEN US</p>
+            <h2 id="mailbox-title">{heading}</h2>
           </div>
-          {selected.pages.length > 0 && <nav className="page-turner" aria-label="信纸翻页">
-            <button className="btn btn-mini" disabled={page === 0} onClick={() => turnPage(page - 1)}>← 上一页</button>
-            <span className="num" aria-live="polite">第 {page + 1} / {selected.pages.length} 页</span>
-            <button className="btn btn-mini" disabled={page >= selected.pages.length - 1} onClick={() => turnPage(page + 1)}>下一页 →</button>
-          </nav>}
-        </div>}
-      </> : <>
-        <div className="mailbox-shelf-heading"><p className="mailbox-intro">把平时没说完的话，留给彼此慢慢读。</p>{letters && <span>{letters.length} 封来信</span>}</div>
-        {error && <div role="alert"><p className="form-error">{error}</p><button className="text-button" onClick={() => setRetry(v => v + 1)}>再取一次信</button></div>}
-        {letters === null && !error && <p className="loading" role="status">正在取信…</p>}
-        {letters?.length === 0 && <div className="letter-empty"><div className="paper-envelope" aria-hidden="true">♥</div><p>把想念，留在一封信里。</p><span>信箱暂时还没有来信。</span></div>}
-        <ul className="letter-list">
-          {letters?.map(letter => <li key={letter.id}>
-            <button className={`letter-card ${letter.theme === 'qixi' ? 'letter-card--qixi' : ''}`} onClick={() => { setSelected(letter); setUnsealed(false); setPage(0) }}>
-              <CharacterPortrait character={letter.author === 'her' ? 'her' : 'bear'} size={36} />
-              <span className="letter-card-copy"><span className="letter-meta"><span>{islanderName(letter.author)}寄来的信</span><time>{letter.date}</time></span>
-                <strong>{letter.title}</strong><span className="letter-excerpt">{letter.excerpt || '有些话，想亲手写给你。'}</span><span className="letter-card-details">{letter.theme === 'qixi' ? '✦ 七夕珍藏 · ' : ''}{letter.pages.length ? `${letter.pages.length} 页信纸` : '文字来信'}</span></span>
-              <span className="letter-card-arrow" aria-hidden="true">↗</span>
+          <div className="mailbox-head-actions">
+            {mode === 'list' && (
+              <button
+                type="button"
+                className="btn btn-primary btn-mini"
+                onClick={() => {
+                  setNotice('')
+                  setMode('compose')
+                }}
+              >
+                提笔写信
+              </button>
+            )}
+            <button type="button" className="btn btn-mini" onClick={close}>
+              合上 ✕
             </button>
-          </li>)}
-        </ul>
-      </>}
+          </div>
+        </div>
+
+        {notice && (
+          <p className="mailbox-notice" role="status">
+            {notice}
+          </p>
+        )}
+
+        {mode === 'compose' ? (
+          <LetterComposer
+            user={user}
+            onCancel={() => {
+              setNotice('')
+              setMode('list')
+            }}
+            onSent={handleLetterSent}
+            onDirtyChange={setComposeDirty}
+          />
+        ) : mode === 'read' && selected ? (
+          <LetterReader
+            letter={selected}
+            currentAccount={currentAccount}
+            unsealed={unsealed}
+            onUnseal={() => setUnsealed(true)}
+            onBack={() => {
+              setSelected(null)
+              setUnsealed(false)
+              setMode('list')
+            }}
+            onMarkedRead={handleMarkedRead}
+            onDeleted={handleDeleted}
+          />
+        ) : (
+          <>
+            <div className="mailbox-shelf-heading">
+              <p className="mailbox-intro">把平时没说完的话，留给彼此慢慢读。</p>
+              {letters && <span>{letters.length} 封信件</span>}
+            </div>
+            {error && (
+              <div role="alert">
+                <p className="form-error">{error}</p>
+                <button type="button" className="text-button" onClick={() => setRetry((v) => v + 1)}>
+                  再取一次信
+                </button>
+              </div>
+            )}
+            {letters === null && !error && (
+              <p className="loading" role="status">
+                正在取信…
+              </p>
+            )}
+            {letters?.length === 0 && (
+              <div className="letter-empty">
+                <div className="paper-envelope" aria-hidden="true">
+                  ♥
+                </div>
+                <p>把想念，留在一封信里。</p>
+                <span>点右上角「提笔写信」，投出你们在岛上的第一封信吧。</span>
+              </div>
+            )}
+            <ul className="letter-list">
+              {letters?.map((letter) => {
+                const themeMeta = LETTER_THEMES.find((t) => t.id === letter.theme)
+                const themeClass =
+                  letter.theme && ['seaside', 'blossom', 'qixi'].includes(letter.theme)
+                    ? `letter-card--${letter.theme}`
+                    : ''
+                const formatParts: string[] = []
+                if (themeMeta?.badge) formatParts.push(themeMeta.badge)
+                if (letter.body.trim()) formatParts.push('文字信纸')
+                if (letter.pages.length) formatParts.push(`${letter.pages.length} 页信纸图`)
+                if (formatParts.length === 0) formatParts.push('文字来信')
+                return (
+                  <li key={letter.id}>
+                    <button
+                      type="button"
+                      className={`letter-card ${themeClass} ${letter.unread ? 'letter-card--unread' : ''}`}
+                      onClick={() => {
+                        setSelected(letter)
+                        setUnsealed(false)
+                        setNotice('')
+                        setMode('read')
+                      }}
+                    >
+                      <CharacterPortrait
+                        character={letter.author === 'her' ? 'her' : 'bear'}
+                        size={36}
+                      />
+                      <span className="letter-card-copy">
+                        <span className="letter-meta">
+                          <span>
+                            {islanderName(letter.author)}寄来的信
+                            {letter.unread && <span className="letter-unread-pill">未拆</span>}
+                          </span>
+                          <time>{letter.date}</time>
+                        </span>
+                        <strong>{letter.title}</strong>
+                        <span className="letter-excerpt">
+                          {letter.excerpt || '拆开火漆，慢慢读给你听。'}
+                        </span>
+                        <span className="letter-card-details">{formatParts.join(' · ')}</span>
+                      </span>
+                      <span className="letter-card-arrow" aria-hidden="true">
+                        ↗
+                      </span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </>
+        )}
+      </div>
     </div>
-  </div>
+  )
 }

@@ -13,6 +13,7 @@ export const MAIL = { x: 316, y: 244 }
 export const BOTTLE = { x: 432, y: 355 }
 export const SEASIDE_ENTRY = { x: 360, y: 376 }
 export const SEASIDE_RETURN = { x: 360, y: 338 }
+export const ISLAND_WAVE_FRAMES = 6
 export type Obstacle = { x: number; y: number; w: number; h: number }
 
 // 原创占位像素资产：所有绘制先落到字符网格，再统一交给 makeTexture。
@@ -115,7 +116,7 @@ function terrain(scene: Phaser.Scene): void {
     else if (d < grassEdge + .031) color = '#b2bc78'
     else if (d < .968) color = C.sand
     else if (d < 1) color = '#d8c293'
-    else if (d < 1.014) color = '#f5eee2'
+    else if (d < 1.012) color = '#94c5df'
     else if (d < 1.065) color = C.shallow
     else if (d < 1.15) color = '#629abb'
     else if (d < 1.26) color = '#5288af'
@@ -178,6 +179,75 @@ function terrain(scene: Phaser.Scene): void {
     p.rect(x - 2, y, 5, 2, '#d8a997'); p.rect(x - 1, y - 2, 3, 3, '#f7e9d1'); p.rect(x, y - 1, 1, 3, '#e7beab')
   }
   p.texture(scene, 'island-ground-v3')
+}
+
+function shoreWaves(scene: Phaser.Scene): void {
+  for (let frame = 0; frame < ISLAND_WAVE_FRAMES; frame++) {
+    const key = `island-waves-${frame}`
+    const tex = (
+      scene.textures.exists(key)
+        ? scene.textures.get(key)
+        : scene.textures.createCanvas(key, WORLD.width, WORLD.height)
+    ) as Phaser.Textures.CanvasTexture | null
+    if (!tex) continue
+    const ctx = tex.getContext()
+    ctx.clearRect(0, 0, WORLD.width, WORLD.height)
+
+    const phi = (frame / ISLAND_WAVE_FRAMES) * Math.PI * 2
+    for (let y = 0; y < WORLD.height; y += 2) {
+      const dy = (y - WORLD.cy) / WORLD.ry
+      for (let x = 0; x < WORLD.width; x += 2) {
+        const dx = (x - WORLD.cx) / WORLD.rx
+        const raw = Math.hypot(dx, dy)
+        if (raw < 0.86 || raw > 1.32) continue
+        if (x >= DOCK.left - 1 && x <= DOCK.right + 1 && y >= DOCK.top - 1 && y <= DOCK.bottom + 1) continue
+
+        const angle = Math.atan2(dy, dx)
+        const d = raw / coastRadius(angle)
+        if (d < 0.975 || d > 1.22) continue
+
+        const localPhase = phi - Math.sin(angle * 3 + 0.6) * 0.9 - Math.cos(angle * 5 - 0.3) * 0.35
+        const surge = Math.sin(localPhase)
+        const crestD = 1.005 - surge * 0.015
+        const distCrest = Math.abs(d - crestD)
+
+        if (distCrest < 0.0082) {
+          if (surge < -0.22 && hash2(x + frame * 7, y) < 0.38) continue
+          ctx.fillStyle = '#f5eee2'
+          ctx.fillRect(x, y, 2, 2)
+          continue
+        }
+        if (d > crestD && d < crestD + 0.018 && (surge > 0.25 || ((x + y) >> 1) % 2 === 0)) {
+          ctx.fillStyle = '#c8e4ea'
+          ctx.fillRect(x, y, 2, 2)
+          continue
+        }
+
+        const arcMask = Math.sin(angle * 8 + 0.5) + Math.cos(angle * 3) * 0.35
+        if (arcMask > -0.15) {
+          const cycle = (((frame / ISLAND_WAVE_FRAMES) + Math.sin(angle * 4 + 1.1) * 0.14) % 1 + 1) % 1
+          const swellD = 1.145 - cycle * 0.095
+          if (cycle > 0.08 && cycle < 0.92 && Math.abs(d - swellD) < 0.0065) {
+            ctx.fillStyle = cycle > 0.22 && cycle < 0.78 ? '#d8eef2' : '#9ed0e0'
+            ctx.fillRect(x, y, 2, 2)
+          }
+        }
+      }
+    }
+
+    // Gentle foam lapping along the submerged wooden dock edges
+    const dockShift = Math.round(Math.sin(phi) * 2)
+    ctx.fillStyle = '#f5eee2'
+    for (let y = DOCK.top + 22; y < DOCK.bottom - 2; y += 10) {
+      const py = y + ((frame % 2) * 2)
+      ctx.fillRect(DOCK.left - 3, py, 2, 2)
+      ctx.fillRect(DOCK.right + 1, py + 2, 2, 2)
+    }
+    for (let x = DOCK.left + 2; x < DOCK.right - 2; x += 6) {
+      ctx.fillRect(x, DOCK.bottom + 2 + (dockShift > 0 ? 0 : 2), 4, 2)
+    }
+    tex.refresh()
+  }
 }
 
 function cottage(scene: Phaser.Scene): void {
@@ -261,7 +331,7 @@ export const OBSTACLES: Obstacle[] = [
   ...TREES.map(([x, y]) => ({ x: x - 5, y: y - 5, w: 10, h: 7 })),
 ]
 export function createIslandArt(scene: Phaser.Scene): void {
-  terrain(scene); cottage(scene); buildIslandSceneryArt(scene); props(scene)
+  terrain(scene); shoreWaves(scene); cottage(scene); buildIslandSceneryArt(scene); props(scene)
   // 海边入口独立于漂流瓶：小木牌、青绿坐垫和奶油色贝壳。
   makeTexture(scene, 'seaside-waymark', [
     '..................',

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { eventBus, type Phase, type SeasideState } from '../game/EventBus'
-import { SCENERY_RATES } from '../seaside/clock'
 import { CharacterPortrait } from './CharacterPortrait'
 import { PixelIcon, type PixelIconName } from './PixelIcon'
 
@@ -11,11 +10,10 @@ const PHASE_LABEL: Record<Phase, string> = {
   night: '月光作伴',
 }
 
-/** Seaside pixel overlay — minimal night-sky plaque + Stardew carved action bar. */
+/** Seaside pixel overlay — minimal night-sky plaque + Stardew carved 3-action bar. */
 export function SeasideControls({ transitioning }: { transitioning: boolean }) {
   const [state, setState] = useState<SeasideState | null>(null)
   const [panelOpen, setPanelOpen] = useState(false)
-  const [showTime, setShowTime] = useState(false)
 
   useEffect(() => {
     const onState = (value: SeasideState) => setState(value)
@@ -41,7 +39,6 @@ export function SeasideControls({ transitioning }: { transitioning: boolean }) {
   const leaning = state?.pose === 'leaning'
   const seated = state?.pose === 'seated' || leaning
   const canLean = seated && !!state?.companion && state.companion.pose !== 'standing'
-  const rate = state?.clock.rate ?? 1
 
   const statusLine =
     state?.notice ||
@@ -68,12 +65,10 @@ export function SeasideControls({ transitioning }: { transitioning: boolean }) {
       className="seaside-ui px-font"
       data-phase={phase}
       data-seaside-pose={state?.pose}
-      data-scenery-rate={rate}
       data-scenery-time={state?.clock.time}
       data-room-state={connection}
       data-room-members={state?.members.map((m) => `${m.account}:${m.seat}:${m.pose}`).join(',')}
       data-scenery-virtual-ms={state?.clock.virtualMs}
-      data-time-open={showTime}
     >
       <div className="shore-top-left">
         <div className="shore-status-card px-panel-dark" role="status">
@@ -116,7 +111,7 @@ export function SeasideControls({ transitioning }: { transitioning: boolean }) {
           <span className="shore-time-value">{state?.clock.time ?? '--:--'}</span>
         </div>
 
-        <section className="shore-controls px-panel-compact" aria-label="看海动作与景色时间">
+        <section className="shore-controls px-panel-compact" aria-label="看海动作">
           <div className="shore-main-actions">
             <button
               type="button"
@@ -155,56 +150,9 @@ export function SeasideControls({ transitioning }: { transitioning: boolean }) {
               <PixelIcon name="heart" size={18} />
               <span>{leaning ? '坐好' : '靠一会'}</span>
             </button>
-
-            <button
-              type="button"
-              className={`px-btn shore-btn${showTime ? ' px-btn-accent' : ''}`}
-              disabled={disabled}
-              aria-expanded={showTime}
-              aria-controls="shore-clock-settings"
-              onClick={() => setShowTime((v) => !v)}
-            >
-              <PixelIcon name="clock" size={18} />
-              <span>{rate === 0 ? '暂停' : `${rate}×`}</span>
-            </button>
           </div>
         </section>
       </div>
-
-      {showTime && (
-        <section
-          className="shore-clock-settings px-panel px-pop"
-          id="shore-clock-settings"
-          aria-label="景色时间设置"
-        >
-          <div className="shore-clock-heading">
-            <span>海边景色流速</span>
-            <span>{state?.clock.followingReal ? '现实时间' : '自定流速'}</span>
-          </div>
-          <div className="shore-clock-options" role="group" aria-label="景色流速">
-            {SCENERY_RATES.map((value) => (
-              <button
-                key={value}
-                type="button"
-                className={`px-btn${rate === value ? ' px-btn-accent' : ''}`}
-                disabled={disabled}
-                aria-pressed={rate === value}
-                onClick={() => eventBus.emit('SEASIDE_CLOCK_REQUEST', { action: 'rate', rate: value })}
-              >
-                <span>{value === 0 ? '暂停' : `${value}×`}</span>
-              </button>
-            ))}
-          </div>
-          <button
-            type="button"
-            className="px-btn shore-reset"
-            disabled={disabled || state?.clock.followingReal}
-            onClick={() => eventBus.emit('SEASIDE_CLOCK_REQUEST', { action: 'reset' })}
-          >
-            回到现实时间
-          </button>
-        </section>
-      )}
     </div>
   )
 }

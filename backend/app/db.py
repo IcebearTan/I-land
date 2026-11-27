@@ -30,6 +30,7 @@ def init_db():
     migrate_user_login_names(engine)
     migrate_anniversary_columns(engine)
     migrate_memory_columns(engine)
+    migrate_letter_columns(engine)
 
 
 def migrate_user_login_names(target_engine):
@@ -91,3 +92,18 @@ def migrate_memory_columns(target_engine):
         indexes = {idx["name"] for idx in inspect(conn).get_indexes("memory")}
         if "ix_memory_client_id" not in indexes:
             conn.execute(text("CREATE INDEX IF NOT EXISTS ix_memory_client_id ON memory (client_id)"))
+
+
+def migrate_letter_columns(target_engine):
+    """旧 letter 表补齐正文与拆封状态字段；历史旧信默认视为已读，避免突然全标未拆。"""
+    with target_engine.begin() as conn:
+        existing = inspect(conn).get_table_names()
+        if "letter" not in existing:
+            return
+        columns = {col["name"] for col in inspect(conn).get_columns("letter")}
+        if "body" not in columns:
+            conn.execute(text("ALTER TABLE letter ADD COLUMN body VARCHAR NOT NULL DEFAULT ''"))
+        if "read_at" not in columns:
+            conn.execute(text("ALTER TABLE letter ADD COLUMN read_at DATETIME"))
+            fallback = "COALESCE(created_at, CURRENT_TIMESTAMP)" if "created_at" in columns else "CURRENT_TIMESTAMP"
+            conn.execute(text(f"UPDATE letter SET read_at = {fallback} WHERE read_at IS NULL"))

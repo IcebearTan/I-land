@@ -86,6 +86,7 @@ export type GameEvents = {
   INTERACTION_CHANGED: { label: string | null }
   INTERACTION_REQUEST_STATE: Record<string, never>
   OPEN_MAILBOX: { unread: number }
+  MAILBOX_UNREAD_CHANGED: { count: number }
   OPEN_CALENDAR: Record<string, never>
   OPEN_LIGHTHOUSE: Record<string, never>
   LIGHTHOUSE_UPDATED: LighthouseSignal
