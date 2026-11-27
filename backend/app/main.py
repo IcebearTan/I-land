@@ -11,6 +11,7 @@ from .routers import (
     anniversaries_router,
     auth_router,
     letters_router,
+    lighthouse_router,
     memories_router,
     misc_router,
     settings_router,
@@ -47,6 +48,7 @@ app = FastAPI(title="I-land API", version="0.2.0", lifespan=lifespan)
 app.include_router(misc_router)
 app.include_router(auth_router)
 app.include_router(letters_router)
+app.include_router(lighthouse_router)
 app.include_router(world_router)
 app.include_router(anniversaries_router)
 app.include_router(memories_router)

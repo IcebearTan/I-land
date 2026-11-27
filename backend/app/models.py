@@ -153,3 +153,14 @@ class Visit(SQLModel, table=True):
     last_seen: datetime = Field(default_factory=datetime.utcnow)
     last_pos_json: str = "{}"  # {x, y}
     action_note: str = ""
+
+
+class LighthouseSignal(SQLModel, table=True):
+    """小岛灯语信号塔：双人共享的当前灯光色与一句话灯语。"""
+
+    id: int = Field(default=1, primary_key=True)
+    preset: str = "amber"  # amber | coral | lavender | sea | ivory
+    message: str = ""
+    updated_by: str = ""
+    updated_by_display: str = ""
+    updated_at: Optional[datetime] = None
