@@ -8,6 +8,7 @@ import type { User } from './types'
 import { GameShell } from './components/GameShell'
 import { Hud } from './components/Hud'
 import { LoginPanel } from './components/LoginPanel'
+import { DockOverlay, type DockMode } from './components/DockOverlay'
 import { MailboxPanel } from './components/panels/MailboxPanel'
 import { ComingSoonPanel } from './components/panels/ComingSoonPanel'
 import { SettingsPanel } from './components/SettingsPanel'
@@ -16,18 +17,35 @@ import { SeasideControls } from './components/SeasideControls'
 import { InteriorControls } from './components/InteriorControls'
 
 function islandIdentity(user: User): IslandIdentity {
-  return { character: characterId(user.sprite, user.account), display: user.display,
-    ...(user.account === 'bear' || user.account === 'her' ? { account: user.account } : {}) }
+  return {
+    character: characterId(user.sprite, user.account),
+    display: user.display,
+    ...(user.account === 'bear' || user.account === 'her' ? { account: user.account } : {}),
+  }
 }
 
+function isEmbeddedInPortal(): boolean {
+  try {
+    return window.self !== window.top
+  } catch {
+    return true
+  }
+}
+
+type JourneyStage = 'embark' | 'on-island' | 'farewell'
+
 export default function App() {
-  // undefined = 还在检查登录态；null = 未登录
+  // undefined = checking session; null = unauthenticated standalone visit
   const [user, setUser] = useState<User | null | undefined>(undefined)
-  const userRef = useRef<User | null | undefined>(undefined)
-  const gameReady = useRef(false)
-  const enteredUser = useRef<number | null>(null)
+  const [bootProgress, setBootProgress] = useState(0.15)
+  const [gameReady, setGameReady] = useState(false)
+  const [stage, setStage] = useState<JourneyStage>('embark')
   const [scene, setScene] = useState<SceneState>({ scene: 'login', transitioning: false })
+  const [embedded] = useState(isEmbeddedInPortal)
+  const [wantMuted, setWantMuted] = useState(false)
+  const enteredUser = useRef<number | null>(null)
   const audio = useIslandAudio(user?.id ?? null)
+
   const audioState = {
     'data-audio-status': audio.playback.status,
     'data-audio-period': audio.playback.period,
@@ -36,77 +54,154 @@ export default function App() {
   }
 
   useEffect(() => {
-    userRef.current = user
-    if (user && gameReady.current) {
-      const identity = islandIdentity(user)
-      eventBus.emit(enteredUser.current === user.id ? 'IDENTITY_CHANGED' : 'ENTER_ISLAND', identity)
-    }
-    enteredUser.current = user?.id ?? null
-  }, [user])
-
-  useEffect(() => {
     api<{ user: User }>('/api/auth/me')
       .then((r) => setUser(r.user))
       .catch(() => setUser(null))
   }, [])
 
   useEffect(() => {
+    if (audio.ready) setWantMuted(audio.settings.muted)
+  }, [audio.ready, audio.settings.muted])
+
+  useEffect(() => {
+    if (user && stage === 'on-island' && enteredUser.current === user.id) {
+      eventBus.emit('IDENTITY_CHANGED', islandIdentity(user))
+    }
+  }, [user, stage])
+
+  useEffect(() => {
+    const onProgress = ({ progress }: { progress: number }) => setBootProgress((p) => Math.max(p, progress))
+    const onReady = () => {
+      setBootProgress(1)
+      setGameReady(true)
+    }
     const onScene = (value: SceneState) => setScene(value)
     const expired = () => {
-      gameReady.current = false; userRef.current = null; enteredUser.current = null
-      setUser(null); eventBus.emit('EXIT_TO_LOGIN', {})
+      enteredUser.current = null
+      setUser(null)
+      setStage('embark')
+      eventBus.emit('EXIT_TO_LOGIN', {})
     }
+    eventBus.on('BOOT_PROGRESS', onProgress)
+    eventBus.on('GAME_READY', onReady)
     eventBus.on('SCENE_CHANGED', onScene)
     eventBus.on('SESSION_EXPIRED', expired)
     eventBus.emit('SCENE_REQUEST_STATE', {})
-    return () => { eventBus.off('SCENE_CHANGED', onScene); eventBus.off('SESSION_EXPIRED', expired) }
-  }, [])
-
-  // Phaser 场景就绪后，按登录态决定停在登录页还是直接上岛
-  useEffect(() => {
-    const onReady = () => {
-      gameReady.current = true
-      const current = userRef.current
-      if (current) eventBus.emit('ENTER_ISLAND', islandIdentity(current))
+    return () => {
+      eventBus.off('BOOT_PROGRESS', onProgress)
+      eventBus.off('GAME_READY', onReady)
+      eventBus.off('SCENE_CHANGED', onScene)
+      eventBus.off('SESSION_EXPIRED', expired)
     }
-    eventBus.on('GAME_READY', onReady)
-    return () => eventBus.off('GAME_READY', onReady)
   }, [])
 
-  // 登岛心跳（异步共岛的存在感）
+  // Presence heartbeat only while actually on the island
   useEffect(() => {
-    if (!user) return
+    if (!user || stage !== 'on-island') return
     const beat = () => api('/api/heartbeat', { method: 'POST', body: JSON.stringify({}) }).catch(() => {})
     beat()
     const timer = window.setInterval(beat, 60_000)
     return () => window.clearInterval(timer)
-  }, [user])
+  }, [user, stage])
 
-  if (user === undefined) {
-    // 登录态确认前不弹任何面板，让像素场景先亮相
-    return (
-      <div className="game-app" data-game-scene={scene.scene} {...audioState}>
-        <GameShell />
-      </div>
-    )
+  function handleEmbark() {
+    if (!user || !gameReady) return
+    // Sync user gesture unlocks WebAudio immediately on embark
+    if (wantMuted) {
+      if (audio.ready && !audio.settings.muted) audio.change({ muted: true }, true)
+    } else {
+      audio.start()
+    }
+    enteredUser.current = user.id
+    setStage('on-island')
+    eventBus.emit('ENTER_ISLAND', islandIdentity(user))
   }
 
+  function handleDepart() {
+    // Keep session alive; sail gently back to the dock farewell screen
+    enteredUser.current = null
+    setStage('farewell')
+    eventBus.emit('EXIT_TO_LOGIN', {})
+  }
+
+  function handleReturnPortal() {
+    try {
+      window.parent?.postMessage({ type: 'iland:return-portal' }, window.location.origin)
+    } catch {
+      window.location.href = '/'
+    }
+  }
+
+  function handleToggleDockMute() {
+    const next = !wantMuted
+    setWantMuted(next)
+    if (audio.ready) {
+      if (next) audio.change({ muted: true }, true)
+      else audio.start()
+    }
+  }
+
+  // Smooth combined progress (70% Phaser assets + 30% session & audio readiness)
+  const combinedProgress =
+    bootProgress * 0.72 + (user !== undefined ? 0.18 : 0) + (gameReady ? 0.1 : 0)
+  const assetsReady = gameReady && user !== undefined
+
+  const dockMode: DockMode = !assetsReady
+    ? 'loading'
+    : stage === 'farewell'
+      ? 'farewell'
+      : 'ready'
+
+  const showIslandUi = Boolean(user) && stage === 'on-island' && scene.scene !== 'login'
+
   return (
-    <div className="game-app" data-game-scene={scene.scene} {...audioState}>
+    <div
+      className="game-app"
+      data-game-scene={scene.scene}
+      data-journey-stage={stage}
+      {...audioState}
+    >
       <GameShell />
-      {user ? (
+
+      {!assetsReady ? (
+        <DockOverlay
+          mode="loading"
+          progress={combinedProgress}
+          user={user}
+          muted={wantMuted}
+          onToggleMute={handleToggleDockMute}
+          onEmbark={handleEmbark}
+          onReturnPortal={handleReturnPortal}
+          embedded={embedded}
+        />
+      ) : !user ? (
+        <LoginPanel
+          onLogin={(u) => {
+            setUser(u)
+            setStage('embark')
+          }}
+        />
+      ) : stage !== 'on-island' ? (
+        <DockOverlay
+          mode={dockMode}
+          progress={1}
+          user={user}
+          muted={wantMuted}
+          onToggleMute={handleToggleDockMute}
+          onEmbark={handleEmbark}
+          onReturnPortal={handleReturnPortal}
+          embedded={embedded}
+        />
+      ) : (
         <>
-          <Hud
-            user={user}
-            quiet={scene.scene === 'seaside' || scene.scene === 'interior'}
-            onLogout={() => {
-              gameReady.current = false
-              userRef.current = null
-              enteredUser.current = null
-              setUser(null)
-              eventBus.emit('EXIT_TO_LOGIN', {})
-            }}
-          />
+          {showIslandUi && (
+            <Hud
+              user={user}
+              quiet={scene.scene === 'seaside' || scene.scene === 'interior'}
+              audio={audio}
+              onDepart={handleDepart}
+            />
+          )}
           {scene.scene === 'island' && !scene.transitioning && <IslandControls />}
           {scene.scene === 'seaside' && <SeasideControls transitioning={scene.transitioning} />}
           {scene.scene === 'interior' && <InteriorControls transitioning={scene.transitioning} />}
@@ -117,14 +212,9 @@ export default function App() {
             user={user}
             onUserChange={setUser}
             audio={audio}
+            embedded={embedded}
           />
         </>
-      ) : (
-        <LoginPanel
-          onLogin={(u) => {
-            setUser(u)
-          }}
-        />
       )}
     </div>
   )

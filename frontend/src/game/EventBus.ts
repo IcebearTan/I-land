@@ -47,6 +47,8 @@ export interface DayTick {
 export type GameEvents = {
   /** 游戏每秒发出：现实时间与岛上时段（昼夜 tint 依据） */
   DAY_TICK: DayTick
+  /** Phaser 资源加载进度（0..1），供码头加载进度条实时显示 */
+  BOOT_PROGRESS: { progress: number }
   /** Phaser 场景就绪（App 收到后按登录态决定停在哪） */
   GAME_READY: Record<string, never>
   /** React → 游戏：登录成功/已登录，上岛 */

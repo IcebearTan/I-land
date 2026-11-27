@@ -1,74 +1,125 @@
-/* 客厅 DOM：同一套纸张与字号；姿势/电视仍只读 EventBus。 */
-.game-app[data-game-scene="interior"] .calendar-shortcut { display: none; }
-.interior-ui { position: absolute; inset: 0; pointer-events: none; color: var(--ui-ink); }
-.room-button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; min-width: 44px; padding: 10px 12px; border: 1px solid transparent; border-radius: var(--ui-radius); background: transparent; color: var(--ui-ink); font-size: var(--ui-text-control); line-height: 1.4; cursor: pointer; touch-action: manipulation; pointer-events: auto; overflow-wrap: anywhere; }
-.room-button svg { width: 20px; height: 20px; flex: 0 0 20px; color: var(--ui-accent); }
-.room-button:hover:not(:disabled), .room-button.is-on { background: var(--ui-accent-soft); border-color: var(--ui-border); }
-.room-button:disabled { opacity: .7; cursor: default; }
-.room-back { position: absolute; top: max(16px, env(safe-area-inset-top)); left: max(16px, env(safe-area-inset-left)); background: var(--ui-paper); border-color: var(--ui-border); box-shadow: var(--ui-shadow-control); }
-.room-label-short { display: none; }
-.room-welcome { position: absolute; top: max(84px, calc(env(safe-area-inset-top) + 72px)); left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 32px); margin: 0; padding: 8px 12px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); background: var(--ui-paper); font-size: var(--ui-text-control); line-height: 1.5; animation: room-welcome-in 180ms ease-out; }
-.room-bottom { position: absolute; left: 50%; bottom: max(20px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(360px, calc(100% - 32px)); text-align: center; }
-.room-bottom.is-near-tv { width: min(280px, calc(100% - 32px)); }
-.room-status { width: max-content; max-width: 100%; max-height: 100px; overflow-y: auto; pointer-events: auto; margin: 0 auto 8px; padding: 8px 12px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); background: var(--ui-paper); color: var(--ui-ink); font-size: var(--ui-text-control); line-height: 1.5; overflow-wrap: anywhere; }
-.room-bottom:not(.is-seated):not(.is-near-tv) .room-status { margin-bottom: 0; }
-.room-actions { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 4px; padding: 6px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius-panel); background: var(--ui-paper); box-shadow: var(--ui-shadow-control); pointer-events: auto; }
-.room-actions-tv { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-@keyframes room-welcome-in { from { opacity: .7; transform: translate(-50%, 4px); } to { opacity: 1; transform: translate(-50%, 0); } }
-@media (max-width: 600px) {
-  .room-back { top: max(var(--ui-room-mobile-back-top), calc(env(safe-area-inset-top) + 68px)); left: var(--ui-inset-left); padding: 10px 12px; }
-  .room-label-wide { display: none; }
-  .room-label-short { display: inline; }
-  .room-welcome { top: max(136px, calc(env(safe-area-inset-top) + 124px)); font-size: var(--ui-text-control); }
-  .room-bottom { bottom: var(--ui-inset-bottom); width: min(360px, calc(100% - 24px)); }
-  .room-actions { padding: 4px; gap: 2px; }
-  .room-actions .room-button { min-height: 52px; padding: 8px 4px; gap: 4px; }
-  .room-actions .room-button svg { width: 18px; height: 18px; flex-basis: 18px; }
-  .interior-ui .joystick-wrap { left: var(--ui-inset-left); bottom: var(--ui-inset-bottom); }
-  .interior-ui .island-interact { right: var(--ui-inset-right); bottom: max(32px, env(safe-area-inset-bottom)); }
-  .interior-ui[data-interior-pose="walking"] .room-bottom { bottom: max(var(--ui-room-mobile-walk-bottom), calc(env(safe-area-inset-bottom) + 144px)); }
-  /* 近电视操作替代重复的互动按钮，右下两列与左侧摇杆并排。 */
-  .interior-ui[data-interior-pose="walking"] .room-bottom.is-near-tv { bottom: var(--ui-inset-bottom); left: auto; right: var(--ui-inset-right); transform: none; width: calc(100% - 124px); max-width: 280px; }
-  .interior-ui[data-interior-pose="walking"][data-interior-near-tv="true"] .island-interact { display: none; }
-}
-@media (max-height: 500px) and (min-width: 601px) {
-  .room-welcome { top: 80px; }
-  .room-bottom { bottom: 12px; }
-  .interior-ui .joystick-wrap { bottom: 12px; }
-  .interior-ui .island-interact { bottom: 24px; }
-}
-@media (prefers-reduced-motion: reduce) { .room-welcome { animation: none; } }
+/* Cozy cabin pixel overlay — compact, unobstructed on desktop & mobile */
 
-/* HOME-02：座位与连接状态沿用同一套控件材质。 */
-.room-reconnect { margin: 0 auto; background: var(--ui-paper); border-color: var(--ui-border); }
-.room-bottom.is-near-sofa .room-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-@media (max-width: 600px) {
-  .interior-ui[data-interior-pose="walking"] .room-bottom.is-near-sofa { bottom: var(--ui-inset-bottom); left: auto; right: var(--ui-inset-right); transform: none; width: calc(100% - 124px); max-width: 280px; }
-  .interior-ui:has(.room-bottom.is-near-sofa) .island-interact { display: none; }
+.interior-ui {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
 }
-/* 实际横屏验收：操作放到沙发右侧，给中央人物保留完整高度。 */
-@media (max-height: 500px) and (orientation: landscape) {
-  .room-back { top: max(12px, env(safe-area-inset-top)); left: 12px; }
-  .room-welcome { display: none; }
-  .room-bottom,
-  .interior-ui[data-interior-pose="walking"] .room-bottom,
-  .interior-ui[data-interior-pose="walking"] .room-bottom.is-near-tv,
-  .interior-ui[data-interior-pose="walking"] .room-bottom.is-near-sofa {
-    left: auto; right: 12px; bottom: 12px; width: 280px; transform: none;
+
+.room-back {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  pointer-events: auto;
+}
+
+.room-label-short {
+  display: none;
+}
+
+.room-welcome {
+  position: absolute;
+  top: max(68px, calc(env(safe-area-inset-top) + 56px));
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0 8px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.room-bottom {
+  position: absolute;
+  left: 50%;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: min(390px, calc(100% - 24px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.room-status {
+  margin: 0;
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  max-width: 100%;
+  text-align: center;
+}
+
+.room-reconnect {
+  pointer-events: auto;
+}
+
+.room-actions {
+  width: 100%;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.room-actions-pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.room-actions .px-btn {
+  width: 100%;
+  padding: 0 4px;
+  font-size: 13px;
+  gap: 5px;
+}
+
+@media (max-width: 680px) {
+  .room-back {
+    top: max(8px, env(safe-area-inset-top));
+    left: max(8px, env(safe-area-inset-left));
+    min-height: 40px;
+    border-width: 8px;
+    padding: 0 6px;
+    font-size: 13px;
   }
-  .room-status { max-height: 90px; }
-}
-@media (max-height: 500px) and (orientation: landscape) and (max-width: 700px) {
-  .room-bottom,
-  .interior-ui[data-interior-pose="walking"] .room-bottom,
-  .interior-ui[data-interior-pose="walking"] .room-bottom.is-near-tv,
-  .interior-ui[data-interior-pose="walking"] .room-bottom.is-near-sofa { width: 200px; }
-  .room-actions .room-button { flex-direction: column; padding: 6px 2px; min-height: 60px; gap: 2px; }
+  .room-label-wide {
+    display: none;
+  }
+  .room-label-short {
+    display: inline;
+  }
+  .room-welcome {
+    top: max(60px, calc(env(safe-area-inset-top) + 52px));
+    font-size: 12px;
+  }
+  .interior-ui[data-interior-pose='walking'] .room-bottom {
+    left: auto;
+    right: max(10px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    transform: none;
+    width: min(230px, calc(100% - 124px));
+  }
+  .interior-ui[data-interior-pose='walking'][data-interior-near-tv='true'] .island-interact-bubble,
+  .interior-ui:has(.room-bottom.is-near-sofa) .island-interact-bubble {
+    display: none;
+  }
+  .room-actions .px-btn {
+    min-height: 44px;
+    font-size: 12px;
+  }
 }
 
-@media (max-height: 500px) and (orientation: landscape) and (max-width: 700px) {
-  .game-app[data-game-scene="interior"] .hud-quiet .hud-user { left: auto; right: 12px; max-width: calc(100% - 124px); }
-}
 @media (max-height: 500px) and (orientation: landscape) {
-  .room-actions .room-button { flex-direction: column; padding: 6px 2px; min-height: 60px; gap: 2px; }
+  .room-welcome {
+    display: none;
+  }
+  .room-bottom,
+  .interior-ui[data-interior-pose='walking'] .room-bottom {
+    left: auto;
+    right: 12px;
+    bottom: 12px;
+    transform: none;
+    width: 248px;
+  }
 }

@@ -1,0 +1,153 @@
+/* Embark / Loading / Farewell dock overlay on top of LoginScene pixel sea */
+
+.dock-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  padding: max(20px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right))
+    max(20px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+  pointer-events: none;
+}
+
+.dock-center {
+  width: min(100%, 428px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  pointer-events: auto;
+}
+
+.dock-plaque {
+  display: block;
+  width: min(272px, 76vw);
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 5px 0 rgba(43, 24, 18, 0.42));
+}
+
+.dock-card {
+  width: 100%;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dock-loading {
+  width: min(100%, 356px);
+  gap: 8px;
+}
+
+.dock-progress-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--px-ink);
+}
+
+.dock-pct {
+  color: var(--px-ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.dock-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dock-boat-track {
+  position: relative;
+  height: 22px;
+  margin: 0 10px;
+}
+
+.dock-boat-runner {
+  position: absolute;
+  bottom: 0;
+  transition: left 140ms steps(8);
+  animation: px-bob 900ms steps(2) infinite;
+}
+
+.dock-dialog-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dock-avatar {
+  width: 68px;
+  height: 68px;
+}
+
+.dock-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dock-phase-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--px-ink-soft);
+}
+
+.dock-days {
+  color: var(--px-accent);
+}
+
+.dock-heading {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--px-ink);
+}
+
+.dock-sub {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--px-ink-soft);
+  line-height: 1.45;
+}
+
+.dock-farewell-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--px-ink);
+}
+
+.dock-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dock-main-btn {
+  flex: 1;
+  font-size: 15px;
+}
+
+@media (max-width: 480px) {
+  .dock-center { gap: 12px; }
+  .dock-card { padding: 2px 4px; gap: 12px; }
+  .dock-dialog-row { gap: 10px; }
+  .dock-avatar { width: 58px; height: 58px; }
+  .dock-heading { font-size: 16px; }
+  .dock-farewell-text { font-size: 13px; }
+  .dock-actions { flex-wrap: wrap; }
+}

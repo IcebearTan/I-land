@@ -1,0 +1,222 @@
+/* Stardew-inspired unified HUD & mobile compact strip */
+
+.hud {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.hud-cluster {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.hud-board {
+  min-width: 176px;
+  padding: 2px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hud-board:hover {
+  filter: brightness(1.04) drop-shadow(0 2px 0 rgba(59, 33, 23, 0.34));
+}
+
+.hud-board-top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.hud-time {
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: var(--px-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-phase-tag {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--px-ink-soft);
+}
+
+.hud-board-divider {
+  height: 2px;
+  background: #cfa76e;
+  box-shadow: 0 1px 0 #fff2d4;
+}
+
+.hud-board-bot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hud-days-label {
+  font-size: 12px;
+  color: var(--px-accent);
+}
+
+.hud-companion-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.hud-companion-dot {
+  position: absolute;
+  right: -2px;
+  bottom: -1px;
+  width: 6px;
+  height: 6px;
+  background: #539046;
+  border: 1px solid #3b2117;
+}
+
+.hud-slots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hud-presence-pop {
+  position: absolute;
+  top: max(136px, calc(env(safe-area-inset-top) + 124px));
+  right: max(12px, env(safe-area-inset-right));
+  width: min(260px, calc(100% - 24px));
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.hud-presence-avatar {
+  width: 44px;
+  height: 44px;
+}
+
+.hud-presence-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hud-presence-copy strong {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--px-ink);
+}
+
+.hud-presence-copy span {
+  font-size: 12px;
+  color: var(--px-ink-soft);
+  line-height: 1.4;
+}
+
+.hud-pop-close {
+  align-self: flex-start;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 2px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.hud-tip {
+  position: absolute;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Mobile portrait & narrow screens: collapse into a single ultra-clean 44px top bar */
+@media (max-width: 680px) {
+  .hud-tip {
+    display: none;
+  }
+  .hud-cluster {
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
+    top: max(8px, env(safe-area-inset-top));
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .hud-quiet .hud-cluster {
+    left: auto;
+    justify-content: flex-end;
+  }
+  .hud-board {
+    min-width: 0;
+    border-width: 10px;
+    padding: 0 4px;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    height: 44px;
+  }
+  .hud-board-divider,
+  .hud-phase-tag {
+    display: none;
+  }
+  .hud-board-top {
+    gap: 5px;
+  }
+  .hud-time {
+    font-size: 13px;
+  }
+  .hud-board-bot {
+    gap: 5px;
+  }
+  .hud-days-label {
+    font-size: 11px;
+  }
+  .hud-slots {
+    gap: 4px;
+  }
+  .hud-slots .px-slot {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    border-width: 6px;
+  }
+  .hud-slots .px-slot .px-icon {
+    width: 18px;
+    height: 18px;
+  }
+  .hud-presence-pop {
+    top: max(60px, calc(env(safe-area-inset-top) + 52px));
+    left: max(8px, env(safe-area-inset-left));
+    right: auto;
+  }
+}
+
+/* Short landscape phones: stay whisper-compact in top-right */
+@media (max-height: 500px) and (min-width: 681px) {
+  .hud-tip { display: none; }
+  .hud-cluster { flex-direction: row; align-items: center; gap: 6px; }
+  .hud-board { flex-direction: row; align-items: center; min-width: 0; gap: 8px; }
+  .hud-board-divider { display: none; }
+}
