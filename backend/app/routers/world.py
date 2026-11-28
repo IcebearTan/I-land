@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from sqlmodel import Session
 
 from ..db import get_db
-from ..deps import get_current_user
+from ..deps import get_current_user, require_human_session
 from ..models import WorldState, jdump, jload
 
 router = APIRouter(prefix="/api/world", tags=["world"], dependencies=[Depends(get_current_user)])
@@ -23,7 +23,11 @@ class WorldPut(BaseModel):
 
 
 @router.put("")
-def put_world(body: WorldPut, db: Session = Depends(get_db)):
+def put_world(
+    body: WorldPut,
+    db: Session = Depends(get_db),
+    _: object = Depends(require_human_session),
+):
     world = db.get(WorldState, 1)
     if world is None:
         world = WorldState(id=1)

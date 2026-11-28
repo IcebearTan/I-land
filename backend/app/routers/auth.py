@@ -13,7 +13,7 @@ from sqlmodel import Session, select
 
 from ..config import COOKIE_SECURE, SESSION_COOKIE, SESSION_DAYS, SSO_SECRET
 from ..db import get_db
-from ..deps import create_session, get_current_user
+from ..deps import create_session, get_current_user, require_human_session
 from ..models import AuthSession, User
 from ..security import hash_password, verify_password
 from ..room_runtime import room_runtimes
@@ -102,7 +102,7 @@ def me(user: User = Depends(get_current_user)):
 def change_password(
     body: PasswordChangeIn,
     response: Response,
-    user: User = Depends(get_current_user),
+    user: User = Depends(require_human_session),
     db: Session = Depends(get_db),
     iland_session: Optional[str] = Cookie(default=None),
 ):
@@ -127,7 +127,7 @@ def change_password(
 @router.post("/logout")
 def logout(
     response: Response,
-    user: User = Depends(get_current_user),
+    user: User = Depends(require_human_session),
     db: Session = Depends(get_db),
 ):
     db.exec(sa_delete(AuthSession).where(AuthSession.user_id == user.id))  # type: ignore[arg-type]

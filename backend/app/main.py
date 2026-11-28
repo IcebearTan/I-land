@@ -8,6 +8,7 @@ from sqlmodel import Session
 from .config import FRONTEND_DIST, UPLOADS_DIR
 from .db import engine, init_db
 from .routers import (
+    agent_router,
     anniversaries_router,
     auth_router,
     letters_router,
@@ -55,6 +56,7 @@ app.include_router(memories_router)
 app.include_router(uploads_router)
 app.include_router(settings_router)
 app.include_router(rooms_router)
+app.include_router(agent_router)
 
 # 照片、信纸等私人内容一律走登录校验的 /api 接口（见 routers/uploads.py），
 # uploads 目录不做公开静态挂载。

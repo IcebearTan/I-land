@@ -8,7 +8,7 @@ from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 
 from ..db import get_db
-from ..deps import get_current_user
+from ..deps import get_current_user, require_human_session
 from ..models import User, UserPreference
 from .auth import user_public
 
@@ -95,7 +95,7 @@ def update_audio(body: AudioIn, db: Session = Depends(get_db), user: User = Depe
 
 
 @router.put("/names")
-def update_names(body: NamesIn, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+def update_names(body: NamesIn, db: Session = Depends(get_db), user: User = Depends(require_human_session)):
     if body.bear == body.her:
         raise HTTPException(409, "两个人需要不同的名字，才能分清登录账号")
     rows = db.exec(select(User).where(User.name.in_(["bear", "her"]))).all()

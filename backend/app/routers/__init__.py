@@ -1,3 +1,4 @@
+from .agent import router as agent_router
 from .anniversaries import router as anniversaries_router
 from .auth import router as auth_router
 from .letters import router as letters_router
@@ -10,6 +11,7 @@ from .world import router as world_router
 from .rooms import router as rooms_router
 
 __all__ = [
+    "agent_router",
     "anniversaries_router",
     "auth_router",
     "letters_router",

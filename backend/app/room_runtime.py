@@ -251,6 +251,39 @@ class RoomRuntime:
             self._auth(db, token)
             return self._snapshot(db)
 
+    def read_summary(self, db: Session | None = None) -> dict:
+        """无副作用只读摘要（供 /api/agent/digest 使用，不要求房间租约或 Cookie）。"""
+        with self.lock:
+            if db is None:
+                with Session(self.engine) as own_db:
+                    return self._read_summary_locked(own_db)
+            return self._read_summary_locked(db)
+
+    def _read_summary_locked(self, db: Session) -> dict:
+        self._clean(db)
+        members = [
+            {
+                "account": member.account,
+                "display": member.display,
+                "seat": member.seat,
+                "pose": member.pose,
+            }
+            for member in sorted(
+                self.members.values(),
+                key=lambda item: (item.seat if item.seat is not None else 2, item.user_id),
+            )
+        ]
+        summary: dict = {"online_count": len(members), "members": members}
+        if self.room == "seaside":
+            clock = self._clock(db)
+            summary["clock_rate"] = clock.rate
+            summary["following_real"] = clock.following_real
+        else:
+            tv = self._television(db)
+            summary["tv_powered"] = tv.powered
+            summary["tv_channel"] = tv.channel
+        return summary
+
     def join(self, token: str | None, client_id: str, connection_generation: int | None = None,
              expected_account: str | None = None, page_id: str | None = None,
              entry_generation: int | None = None) -> dict:

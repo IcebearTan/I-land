@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlmodel import Session
 
 from ..db import get_db
-from ..deps import get_current_user
+from ..deps import get_current_user, require_human_session
 from ..models import User, Visit, jdump, jload
 
 router = APIRouter(prefix="/api", tags=["misc"])
@@ -40,7 +40,7 @@ class HeartbeatIn(BaseModel):
 def heartbeat(
     body: HeartbeatIn,
     db: Session = Depends(get_db),
-    user: User = Depends(get_current_user),
+    user: User = Depends(require_human_session),
 ):
     from datetime import datetime
 
