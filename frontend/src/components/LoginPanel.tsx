@@ -35,7 +35,7 @@ export function LoginPanel({ onLogin }: { onLogin: (user: User) => void }) {
   }
 
   return (
-    <div className="login-wrap px-font">
+    <div className="login-wrap">
       <div className="login-float px-pop">
         <img
           src="/art-v2/ui/title-plaque.png"
@@ -63,7 +63,7 @@ export function LoginPanel({ onLogin }: { onLogin: (user: User) => void }) {
               >
                 <CharacterPortrait character={id} size={56} />
                 <span>{islanders[id]}</span>
-                <small style={{ color: 'var(--px-ink-soft)', fontSize: 11 }}>
+                <small className="islander-desc">
                   {CHARACTERS[id].description}
                 </small>
               </button>

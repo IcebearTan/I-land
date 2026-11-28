@@ -108,19 +108,19 @@ export function LighthousePanel() {
     <div className="modal-mask" onClick={close}>
       <div
         ref={dialog}
-        className="wood-panel modal-panel lighthouse-panel px-font"
+        className="wood-panel modal-panel lighthouse-panel px-pop"
         role="dialog"
         aria-modal="true"
         aria-labelledby="lighthouse-title"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-head">
-          <h2 id="lighthouse-title" className="lh-heading">
+          <div className="px-ribbon" id="lighthouse-title">
             <PixelIcon name="spark" size={18} />
             <span>灯语信号塔</span>
-          </h2>
-          <button type="button" className="btn btn-mini" onClick={close} aria-label="关上灯塔面板">
-            <PixelIcon name="close" size={14} />
+          </div>
+          <button type="button" className="px-slot" onClick={close} aria-label="关上灯塔面板">
+            <PixelIcon name="close" size={18} />
           </button>
         </div>
 
@@ -162,6 +162,7 @@ export function LighthousePanel() {
           <label className="lh-field">
             <span>留一句灯语（选填，最多 48 字）</span>
             <input
+              className="px-input"
               type="text"
               maxLength={48}
               value={message}
@@ -170,13 +171,13 @@ export function LighthousePanel() {
             />
           </label>
 
-          {error && <p className="lh-error">{error}</p>}
+          {error && <p className="form-error" role="alert">{error}</p>}
 
           <div className="lh-actions">
-            <button type="button" className="btn btn-mini" onClick={close}>
+            <button type="button" className="px-btn px-btn-sm" onClick={close}>
               先不改
             </button>
-            <button type="submit" className="btn btn-primary" disabled={saving}>
+            <button type="submit" className="px-btn px-btn-accent px-btn-sm" disabled={saving}>
               {saving ? '点亮中…' : '点亮灯塔'}
             </button>
           </div>

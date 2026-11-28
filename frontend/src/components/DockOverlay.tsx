@@ -102,7 +102,7 @@ export function DockOverlay({
     pct < 45 ? '正在展开小岛画卷…' : pct < 85 ? '正在同步海风与足迹…' : '海风已经准备好了'
 
   return (
-    <div className="dock-stage px-font" data-dock-mode={mode}>
+    <div className="dock-stage" data-dock-mode={mode}>
       <div className="dock-center px-pop">
         <img
           src="/art-v2/ui/title-plaque.png"

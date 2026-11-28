@@ -121,12 +121,12 @@ body {
 .login-float { width: min(100%, 420px); display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .login-panel { width: 100%; padding: 6px 8px; text-align: center; }
 .login-panel form { display: flex; flex-direction: column; gap: 12px; }
-.login-panel label { display: flex; flex-direction: column; gap: 6px; text-align: left; font-size: 13px; font-family: var(--px-font); }
+.login-panel label { display: flex; flex-direction: column; gap: 6px; text-align: left; font-size: 13px; font-weight: 600; font-family: var(--ui-font); }
 .login-panel input, .settings-section input:not([type="checkbox"]):not([type="range"]) {
-  width: 100%; min-height: 44px; padding: 8px 10px;
-  border: 2px solid #68371d; border-radius: 0;
-  background: #fff4da; box-shadow: inset 2px 2px 0 #dfbe87;
-  font: 15px/1.4 var(--ui-font); color: var(--px-ink); caret-color: var(--px-accent);
+  width: 100%; min-height: 42px; padding: 8px 10px;
+  border: 2px solid var(--px-wood-dark); border-radius: 0;
+  background: var(--px-cream-input); box-shadow: inset 2px 2px 0 #e2c593;
+  font: 15px/1.5 var(--ui-font); font-weight: 400; color: var(--px-ink); caret-color: var(--px-accent);
 }
 .btn.btn-login { width: 100%; min-height: 48px; margin-top: 4px; }
 .islander-select { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 14px; }
@@ -136,6 +136,7 @@ body {
   border-image-slice: 5 fill; background: transparent; color: var(--px-ink);
   font-family: var(--px-font); font-size: 13px; cursor: pointer; image-rendering: pixelated;
 }
+.islander-desc { font-family: var(--ui-font); font-size: 12px; color: var(--px-ink-soft); line-height: 1.4; }
 .islander-option[aria-pressed="true"] { border-image-source: url('/art-v2/ui/slot-active.png'); }
 
 /* Mobile pixel D-Pad & contextual Stardew interact bubble */

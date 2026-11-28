@@ -1,15 +1,8 @@
+/* 灯语信号塔 · 统一零圆角像素羊皮纸规范（与信箱、日历、设置同源） */
 .lighthouse-panel {
-  width: min(440px, 92vw);
-  max-height: 88vh;
+  width: min(460px, 94vw);
+  max-height: calc(100dvh - 28px);
   overflow-y: auto;
-}
-
-.lh-heading {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font-size: 16px;
 }
 
 .lh-current {
@@ -18,18 +11,17 @@
   gap: 12px;
   padding: 12px 14px;
   margin-bottom: 14px;
-  background: rgba(255, 250, 236, 0.72);
-  border: 2px solid #b88450;
-  border-radius: 6px;
+  background: var(--px-cream-hi);
+  border: 2px solid var(--px-border);
+  box-shadow: var(--ui-shadow-control);
 }
 
 .lh-beacon-dot {
   flex: 0 0 18px;
   width: 18px;
   height: 18px;
-  margin-top: 3px;
-  border-radius: 999px;
-  border: 2px solid #59301b;
+  margin-top: 2px;
+  border: 2px solid var(--px-wood-dark);
 }
 
 .lh-current-copy {
@@ -41,20 +33,21 @@
 
 .lh-current-copy strong {
   font-size: 14px;
-  color: #4a3228;
+  font-weight: 600;
+  color: var(--px-ink);
 }
 
 .lh-current-copy p {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.5;
-  color: #5c4338;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--px-ink);
   word-break: break-word;
 }
 
 .lh-meta {
   font-size: 12px;
-  color: #8a6a52;
+  color: var(--px-ink-soft);
 }
 
 .lh-form {
@@ -65,7 +58,7 @@
 
 .lh-presets {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(156px, 1fr));
   gap: 8px;
 }
 
@@ -73,34 +66,35 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 9px 10px;
-  border: 2px solid #b88450;
-  border-radius: 6px;
-  background: #f8e7c4;
-  color: #4a3228;
-  font-family: inherit;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 2px solid var(--px-border);
+  background: var(--px-cream-hi);
+  box-shadow: var(--ui-shadow-control);
+  color: var(--px-ink);
+  font-family: var(--ui-font);
   font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   text-align: left;
-  transition: transform 0.08s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .lh-preset:hover {
-  background: #fff2d6;
+  background: #fae8be;
+  border-color: var(--px-wood-dark);
 }
 
 .lh-preset.is-active {
-  background: #fff6df;
-  border-color: #59301b;
-  box-shadow: inset 0 0 0 2px #d9a05b;
+  background: var(--ui-accent-soft);
+  border-color: #1c383e;
+  box-shadow: inset 0 0 0 2px var(--px-accent);
 }
 
 .lh-swatch {
   flex: 0 0 12px;
   width: 12px;
   height: 12px;
-  border-radius: 999px;
-  border: 1.5px solid #59301b;
+  border: 2px solid var(--px-wood-dark);
 }
 
 .lh-field {
@@ -108,35 +102,14 @@
   flex-direction: column;
   gap: 6px;
   font-size: 13px;
-  color: #59301b;
-}
-
-.lh-field input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 9px 11px;
-  border: 2px solid #b88450;
-  border-radius: 6px;
-  background: #fff9eb;
-  color: #3d281f;
-  font-family: inherit;
-  font-size: 13px;
-}
-
-.lh-field input:focus {
-  outline: none;
-  border-color: #59301b;
-}
-
-.lh-error {
-  margin: 0;
-  font-size: 12px;
-  color: #b43c4d;
+  font-weight: 600;
+  color: var(--px-ink);
 }
 
 .lh-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 2px;
+  padding-top: 6px;
+  border-top: 2px solid var(--px-divider);
 }
