@@ -1,8 +1,8 @@
 import Phaser from 'phaser'
 import { hash2 } from '../art'
 import { makeTexture } from '../pixels'
-import { HOME_ATLAS } from '../../visual/artV2'
 import { buildIslandSceneryArt } from './scenery'
+import { buildCottageArt } from './cottage'
 
 export const WORLD = { width: 640, height: 480, cx: 320, cy: 236, rx: 252, ry: 167 }
 export const HOME = { x: 266, y: 230 }
@@ -250,56 +250,6 @@ function shoreWaves(scene: Phaser.Scene): void {
   }
 }
 
-function cottage(scene: Phaser.Scene): void {
-  const p = new PixelArt(120, 112)
-  // 侧墙与正墙：屋顶占建筑的大半，统一左上光源。
-  p.rect(16, 57, 88, 42, C.woodDark)
-  p.rect(18, 58, 70, 37, '#ead2a0'); p.rect(88, 60, 14, 35, '#bc986d')
-  for (let y = 62; y < 94; y += 7) { p.rect(19, y, 67, 1, '#cfb082'); p.rect(89, y, 12, 1, '#a88260') }
-  p.rect(18, 94, 86, 6, '#85877a'); p.rect(19, 94, 83, 2, '#b6b69a')
-  for (let x = 20; x < 104; x += 12) p.rect(x, 96, 1, 4, '#6f746b')
-  // 门廊、实木门、檐柱。
-  p.rect(49, 70, 20, 28, C.woodDark); p.rect(52, 72, 14, 24, '#a97853')
-  p.rect(54, 74, 10, 8, '#7caaaa'); p.rect(58, 74, 1, 8, C.cream)
-  p.rect(54, 85, 10, 1, C.wood); p.rect(62, 86, 2, 2, C.warm)
-  p.rect(44, 99, 32, 4, '#b9ae91'); p.rect(42, 103, 36, 4, '#d9c7a0')
-  for (const x of [25, 74]) {
-    p.rect(x, 69, 15, 18, C.wood); p.rect(x + 2, 71, 11, 12, '#7fb6c5')
-    p.rect(x + 3, 71, 3, 10, '#c1d9d1'); p.rect(x + 7, 71, 1, 12, C.cream); p.rect(x + 2, 76, 11, 1, C.cream)
-    p.rect(x - 2, 86, 19, 5, '#a97853'); p.rect(x - 2, 86, 19, 1, '#d3aa78')
-    flower(p, x + 2, 84, C.rose); flower(p, x + 8, 83, C.cream); flower(p, x + 13, 84, C.rose)
-  }
-  // 烟囱先画，屋瓦盖住它的下缘。
-  p.rect(80, 13, 11, 29, '#846f66'); p.rect(80, 13, 4, 29, '#bdab91')
-  for (let y = 15; y < 37; y += 5) p.rect(81, y, 9, 1, '#655b57')
-  p.rect(78, 11, 15, 4, '#d1c1a1')
-  p.polygon([[8, 59], [30, 22], [91, 22], [113, 59], [113, 65], [8, 65]], '#694b47')
-  p.polygon([[10, 57], [31, 23], [87, 23], [100, 58]], '#ad5e51')
-  p.polygon([[87, 23], [91, 23], [111, 59], [100, 59]], '#884d48')
-  for (let row = 0; row < 6; row++) {
-    const y = 28 + row * 6, left = 30 - row * 3
-    p.rect(left, y, 60 + row * 5, 1, '#df9671')
-    p.rect(left - 1, y + 4, 63 + row * 5, 1, '#904f49')
-    for (let x = left + (row % 2) * 5; x < 91 + row * 2; x += 10) p.rect(x, y, 1, 4, '#bf715c')
-  }
-  p.rect(30, 21, 61, 2, '#edb582'); p.rect(8, 61, 106, 3, '#c58e65')
-  // 小阁楼窗打破大屋顶的平面（默认静谧蓝灰玻璃，自习专注或夜晚由 IslandScene 动态点亮暖光）。
-  p.polygon([[43, 51], [58, 34], [73, 51]], C.woodDark)
-  p.polygon([[46, 50], [58, 37], [70, 50]], '#edcca0')
-  p.rect(48, 50, 20, 13, '#edcca0'); p.rect(53, 47, 10, 12, C.wood)
-  p.rect(55, 49, 6, 8, '#7fb6c5'); p.rect(55, 49, 2, 6, '#c1d9d1'); p.rect(57, 49, 1, 8, C.cream)
-  // 门前盆栽。
-  for (const x of [31, 83]) { p.rect(x, 97, 8, 7, '#ae7056'); p.rect(x - 1, 96, 10, 2, '#d49870'); flower(p, x + 4, 93, C.cream) }
-  p.texture(scene, 'cottage-v3')
-  // 扩大门洞为 ART-02 的 22×32，保留屋檐和原入口坐标。
-  const frame = scene.textures.getFrame(HOME_ATLAS, 'door-day')
-  const texture = scene.textures.get('cottage-v3') as Phaser.Textures.CanvasTexture
-  const context = texture.getContext()
-  context.save(); context.beginPath(); context.rect(44, 65, 30, 36); context.clip()
-  context.drawImage(frame.source.image as HTMLImageElement, frame.cutX, frame.cutY, frame.width, frame.height, 44, 61, frame.width, frame.height)
-  context.restore(); texture.refresh()
-}
-
 function props(scene: Phaser.Scene): void {
   const p = new PixelArt(22, 30)
   p.rect(9, 14, 4, 16, C.wood); p.rect(10, 15, 1, 13, C.board)
@@ -325,13 +275,13 @@ export const TREES = [
 ]
 export const LAMPS = [[343, 354], [307, 269], [443, 281]]
 export const OBSTACLES: Obstacle[] = [
-  { x: HOME.x - 44, y: HOME.y - 38, w: 88, h: 38 },
+  { x: HOME.x - 48, y: HOME.y - 38, w: 96, h: 38 },
   { x: TOWER.x - 15, y: TOWER.y - 25, w: 30, h: 25 },
   { x: MAIL.x - 8, y: MAIL.y - 8, w: 16, h: 8 },
   ...TREES.map(([x, y]) => ({ x: x - 5, y: y - 5, w: 10, h: 7 })),
 ]
 export function createIslandArt(scene: Phaser.Scene): void {
-  terrain(scene); shoreWaves(scene); cottage(scene); buildIslandSceneryArt(scene); props(scene)
+  terrain(scene); shoreWaves(scene); buildCottageArt(scene); buildIslandSceneryArt(scene); props(scene)
   // 海边入口独立于漂流瓶：小木牌、青绿坐垫和奶油色贝壳。
   makeTexture(scene, 'seaside-waymark', [
     '..................',

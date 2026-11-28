@@ -6,6 +6,7 @@ import { eventBus, type Phase, type IslandIdentity, type IslandEntry, type Scene
 import { makeTexture } from '../pixels'
 import { hash2 } from '../art'
 import { createIslandArt, ISLAND_WAVE_FRAMES, WORLD, HOME, TOWER, MAIL, DOCK, SPAWN, BOTTLE, SEASIDE_ENTRY, SEASIDE_RETURN, TREES, LAMPS, OBSTACLES, landDistance } from '../art/island'
+import { COTTAGE_KEY, COTTAGE_META } from '../art/cottage'
 import { nightWeight } from '../../audio/types'
 
 const TINT_KEYS: Array<{ h: number; c: number }> = [
@@ -57,6 +58,7 @@ function phaseAtHour(h: number): Phase {
 interface Interactable { x: number; y: number; label: string; event: 'mailbox' | 'lighthouse' | 'bottle' | 'seaside' | 'interior' }
 interface SwayingCanopy { img: Phaser.GameObjects.Image; baseX: number; phase: number; amp: number }
 interface WindLeaf { img: Phaser.GameObjects.Image; originX: number; originY: number; life: number; maxLife: number; drift: number }
+interface SmokePuff { img: Phaser.GameObjects.Rectangle; phase: number }
 interface WaveRipple { img: Phaser.GameObjects.Image; baseX: number; phase: number; drift: number }
 
 export class IslandScene extends Phaser.Scene {
@@ -98,6 +100,7 @@ export class IslandScene extends Phaser.Scene {
   private studyCompanionNote: string | null = null
   private canopies: SwayingCanopy[] = []
   private windLeaves: WindLeaf[] = []
+  private chimneySmoke: SmokePuff[] = []
   private interactables: Interactable[] = [
     { ...MAIL, label: '小屋信箱', event: 'mailbox' },
     { x: TOWER.x, y: TOWER.y + 8, label: '灯塔 · 灯语信号', event: 'lighthouse' },
@@ -122,7 +125,7 @@ export class IslandScene extends Phaser.Scene {
   create(): void {
     this.sceneLabels = []
     this.panelOpen = false; this.tapTarget = null; this.secondTimer = 0; this.audioTimer = 0
-    this.ripples = []; this.canopies = []; this.windLeaves = []; this.towerGlowLayers = []; this.waveFrame = 0
+    this.ripples = []; this.canopies = []; this.windLeaves = []; this.chimneySmoke = []; this.towerGlowLayers = []; this.waveFrame = 0
     this.cameras.main.setBounds(0, 0, WORLD.width, WORLD.height)
     this.physics.world.setBounds(0, 0, WORLD.width, WORLD.height)
     createIslandArt(this)
@@ -256,7 +259,18 @@ export class IslandScene extends Phaser.Scene {
       this.add.ellipse(x + 5, y + 1, width, 9, 0x345b40, .20).setDepth(1)
       return this.add.image(x, y, key).setOrigin(ox, oy).setDepth(y)
     }
-    object(HOME.x, HOME.y, 'cottage-v3', 106, .5, 100 / 112)
+    object(HOME.x, HOME.y, COTTAGE_KEY, 114, .5, COTTAGE_META.anchorY / COTTAGE_META.height)
+    for (let i = 0; i < 3; i++) {
+      const puff = this.add.rectangle(
+        HOME.x + COTTAGE_META.chimneyTop.dx,
+        HOME.y + COTTAGE_META.chimneyTop.dy,
+        3,
+        3,
+        0xfdf6e9,
+        0,
+      ).setDepth(HOME.y + 1)
+      this.chimneySmoke.push({ img: puff, phase: i / 3 })
+    }
     object(TOWER.x, TOWER.y, 'lighthouse-v3', 48, .5, 108 / 116)
     // Daytime subtle beacon tint inside lighthouse lantern glass
     this.towerDayBeacon = this.add.rectangle(TOWER.x, TOWER.y - 84, 12, 13, this.towerColor, .28).setDepth(TOWER.y + 0.5)
@@ -334,19 +348,43 @@ export class IslandScene extends Phaser.Scene {
       glow(x, y - 27, 20)
       this.nightLights.add(this.add.rectangle(x + .5, y - 30.5, 5, 7, 0xffd98a))
     }
-    for (const x of [HOME.x - 33, HOME.x + 16]) {
-      glow(x + 5, HOME.y - 21, 19)
-      this.nightLights.add(this.add.rectangle(x + 5.5, HOME.y - 23, 11, 12, 0xffd98a))
-      this.nightLights.add(this.add.rectangle(x + 5.5, HOME.y - 23, 1, 12, 0x8a5a38))
-      this.nightLights.add(this.add.rectangle(x + 5.5, HOME.y - 23, 11, 1, 0x8a5a38))
+    for (const win of COTTAGE_META.floorWindows) {
+      const wx = HOME.x + win.dx, wy = HOME.y + win.dy
+      glow(wx, wy + 2, 19)
+      this.nightLights.add(this.add.rectangle(wx, wy, win.w, win.h, 0xffd98a))
+      this.nightLights.add(this.add.rectangle(wx, wy, 2, win.h, 0x8a5a38))
+      this.nightLights.add(this.add.rectangle(wx, wy, win.w, 2, 0x8a5a38))
     }
-    // 二楼星光阁楼老虎窗暖灯（任意一方在书房或专注时全天候透出琥珀暖光）
+    for (const pane of COTTAGE_META.doorPanes) {
+      const px = HOME.x + pane.dx, py = HOME.y + pane.dy
+      this.nightLights.add(this.add.rectangle(px, py, pane.w, pane.h, 0xffd98a, 0.85))
+    }
+    const sconceX = HOME.x + COTTAGE_META.porchLamp.dx
+    const sconceY = HOME.y + COTTAGE_META.porchLamp.dy
+    glow(sconceX, sconceY, 13)
+    this.nightLights.add(this.add.rectangle(sconceX, sconceY, 2, 3, 0xfff2c2))
+    // 夜晚一楼休息时，二楼阁楼全景窗也保留柔和微光；任一方在自习室则由 studyDormer 全天候明亮照亮
+    const aw = COTTAGE_META.atticWindow
+    const awX = HOME.x + aw.dx, awY = HOME.y + aw.dy
+    glow(awX, awY + 1, 20)
+    this.nightLights.add(this.add.rectangle(awX, awY, aw.w, aw.h, 0xffd98a, 0.55))
+    for (const mx of aw.mullionsX) this.nightLights.add(this.add.rectangle(awX + mx, awY, 1, aw.h, 0x6e4529))
+    this.nightLights.add(this.add.rectangle(awX, HOME.y + aw.transomY, aw.w, 1, 0x6e4529))
+    // 二楼星光阁楼全景书房窗 + 圆天窗暖灯（任意一方在书房或专注时全天候透出琥珀暖光与绿罩台灯微光）
     this.studyDormer = this.add.container(0, 0).setDepth(5105).setVisible(this.studyRoofLit)
-    for (let r = 18; r > 4; r -= 4) {
-      this.studyDormer.add(this.add.ellipse(HOME.x - 2, HOME.y - 47, r * 2, r * 1.2, 0xffd98a, 0.065))
+    for (let r = 28; r > 6; r -= 5) {
+      this.studyDormer.add(this.add.ellipse(awX, awY + 2, r * 2.2, r * 1.15, 0xffd98a, 0.06))
     }
-    this.studyDormer.add(this.add.rectangle(HOME.x - 2, HOME.y - 47, 6, 8, 0xffd98a))
-    this.studyDormer.add(this.add.rectangle(HOME.x - 2.5, HOME.y - 47, 1, 8, 0x8a5a38))
+    this.studyDormer.add(this.add.rectangle(awX, awY, aw.w, aw.h, 0xffd98a))
+    this.studyDormer.add(this.add.rectangle(awX - 7, awY + 3, 5, 4, 0x73c9a2, 0.72))
+    this.studyDormer.add(this.add.rectangle(awX + 7, awY + 3, 5, 4, 0x73c9a2, 0.72))
+    for (const mx of aw.mullionsX) this.studyDormer.add(this.add.rectangle(awX + mx, awY, 1, aw.h, 0x6e4529))
+    this.studyDormer.add(this.add.rectangle(awX, HOME.y + aw.transomY, aw.w, 1, 0x6e4529))
+    const skX = HOME.x + COTTAGE_META.skylight.dx, skY = HOME.y + COTTAGE_META.skylight.dy
+    this.studyDormer.add(this.add.ellipse(skX, skY, 14, 14, 0xffd98a, 0.14))
+    this.studyDormer.add(this.add.ellipse(skX, skY, 6, 6, 0xffd98a))
+    this.studyDormer.add(this.add.rectangle(skX, skY, 1, 6, 0x6e4529))
+    this.studyDormer.add(this.add.rectangle(skX, skY, 6, 1, 0x6e4529))
     const beamY = TOWER.y - 84
     this.towerBeam = this.add.graphics({ x: TOWER.x, y: beamY })
     this.nightLights.add(this.towerBeam)
@@ -467,6 +505,18 @@ export class IslandScene extends Phaser.Scene {
         }
       }
       if (this.nightLights?.visible) this.redrawTowerBeam(Math.sin(time * 0.00055) * 0.95 + 0.35)
+      const cx0 = HOME.x + COTTAGE_META.chimneyTop.dx
+      const cy0 = HOME.y + COTTAGE_META.chimneyTop.dy
+      for (const puff of this.chimneySmoke) {
+        const t = ((time * 0.00016 + puff.phase) % 1 + 1) % 1
+        const size = t < 0.45 ? 3 : 4
+        puff.img
+          .setPosition(Math.round(cx0 + t * 9 + Math.sin(t * 6) * 1.5), Math.round(cy0 - t * 18))
+          .setSize(size, size)
+          .setAlpha(Math.sin(t * Math.PI) * 0.48)
+      }
+    } else {
+      for (const puff of this.chimneySmoke) puff.img.setAlpha(0)
     }
     this.updatePrompt()
     if (Phaser.Input.Keyboard.JustDown(this.keys.E) || Phaser.Input.Keyboard.JustDown(this.keys.SPACE)) this.tryInteract()
