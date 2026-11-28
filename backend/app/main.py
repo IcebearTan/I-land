@@ -19,6 +19,7 @@ from .routers import (
     uploads_router,
     world_router,
     rooms_router,
+    study_router,
 )
 from .room_runtime import room_runtimes
 from .seed import seed
@@ -56,6 +57,7 @@ app.include_router(memories_router)
 app.include_router(uploads_router)
 app.include_router(settings_router)
 app.include_router(rooms_router)
+app.include_router(study_router)
 app.include_router(agent_router)
 
 # 照片、信纸等私人内容一律走登录校验的 /api 接口（见 routers/uploads.py），

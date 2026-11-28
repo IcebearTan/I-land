@@ -19,6 +19,12 @@ from sqlmodel import Session
 
 from .db import engine
 from .models import AuthSession, RoomClock, RoomTelevision, User
+from .study_service import (
+    NUDGE_COOLDOWN_MS,
+    build_study_room_extra,
+    serialize_timer,
+    settle_study_timers,
+)
 
 LEASE_SECONDS = 30
 SWEEP_SECONDS = 2
@@ -79,7 +85,7 @@ class RoomCoordinator:
 class RoomRuntime:
     def __init__(self, *, target_engine=engine, utc_ms=None, monotonic_seconds=None,
                  room=ROOM, coordinator=None):
-        if room not in ("seaside", "interior"):
+        if room not in ("seaside", "interior", "study"):
             raise ValueError("未知房间")
         self.room = room
         self.coordinator = coordinator or RoomCoordinator()
@@ -94,6 +100,9 @@ class RoomRuntime:
         # 只记录接管，普通离开/后台/断线可以用相同页面 ID 重新进入。
         self.retired: deque[tuple[int, str]] = deque(maxlen=64)
         self.retired_leases: deque[tuple[int, str]] = deque(maxlen=64)
+        self.nudge_seq = 0
+        self.last_nudge: dict | None = None
+        self.nudge_cooldown_ms: dict[str, int] = {}
         self.starts = 0
 
     def start(self):
@@ -106,6 +115,9 @@ class RoomRuntime:
                 self.members.clear()
                 self.retired.clear()
                 self.retired_leases.clear()
+                self.nudge_seq = 0
+                self.last_nudge = None
+                self.nudge_cooldown_ms.clear()
             self.starts += 1
 
     def stop(self):
@@ -157,8 +169,13 @@ class RoomRuntime:
         return clock
 
     def _snapshot(self, db: Session) -> dict:
-        state = ({"clock": self._clock(db).model_dump(exclude={"room"})} if self.room == "seaside"
-                 else {"television": self._television(db).model_dump(exclude={"room"})})
+        if self.room == "seaside":
+            state = {"clock": self._clock(db).model_dump(exclude={"room"})}
+        elif self.room == "interior":
+            state = {"television": self._television(db).model_dump(exclude={"room"})}
+        else:
+            online_accounts = {member.account for member in self.members.values()}
+            state = build_study_room_extra(db, self.utc_ms(), online_accounts, self.last_nudge)
         return {
             "room": self.room, "epoch": self.epoch, "revision": self.revision,
             "server_now_ms": self.utc_ms(),
@@ -223,6 +240,11 @@ class RoomRuntime:
                 member.display, member.sprite = user.display, user.name
                 changed = True
         changed = self._end_leaning() or changed
+        if self.room == "study" and self.members:
+            _, timer_changed = settle_study_timers(
+                db, self.utc_ms(), {member.account for member in self.members.values()}
+            )
+            changed = timer_changed or changed
         if changed:
             self._publish(db)
 
@@ -278,10 +300,19 @@ class RoomRuntime:
             clock = self._clock(db)
             summary["clock_rate"] = clock.rate
             summary["following_real"] = clock.following_real
-        else:
+        elif self.room == "interior":
             tv = self._television(db)
             summary["tv_powered"] = tv.powered
             summary["tv_channel"] = tv.channel
+        else:
+            rows, _ = settle_study_timers(
+                db, self.utc_ms(), {item["account"] for item in members}
+            )
+            timers = {acc: serialize_timer(row) for acc, row in rows.items()}
+            summary["timers"] = timers
+            summary["roof_lit"] = bool(members) or any(
+                t["phase"] in ("focusing", "stopwatch") for t in timers.values()
+            )
         return summary
 
     def join(self, token: str | None, client_id: str, connection_generation: int | None = None,
@@ -324,7 +355,15 @@ class RoomRuntime:
                     other._end_leaning()
                     other._publish(db)
             occupied = {member.seat for member in self.members.values() if member.user_id != user.id}
-            seat = (current.seat if current else next(seat for seat in (0, 1) if seat not in occupied)) if self.room == "seaside" else None
+            if self.room == "seaside":
+                seat = current.seat if current else next(seat for seat in (0, 1) if seat not in occupied)
+                default_pose = "seated"
+            elif self.room == "study":
+                seat = 0 if user.name == "bear" else 1
+                default_pose = "seated"
+            else:
+                seat = None
+                default_pose = "standing"
             if current:
                 self.retired.append((current.user_id, current.client_id))
                 self.retired_leases.append((current.user_id, current.lease_id))
@@ -336,7 +375,7 @@ class RoomRuntime:
                 client_id=client_id, session_token=token, lease_id=str(uuid4()), seat=seat,
                 expires_mono=self.monotonic_seconds() + LEASE_SECONDS,
                 connection_generation=connection_generation or 1,
-                pose="seated" if self.room == "seaside" else "standing",
+                pose=default_pose,
             )
             self.members[user.id] = member
             self.coordinator.record_entry(user.id, page_id, entry_generation, self.room, client_id)
@@ -477,6 +516,37 @@ class RoomRuntime:
                 self._end_leaning()
                 self._publish(db)
 
+    def publish_external(self, db: Session) -> dict:
+        with self.lock:
+            return self._publish(db)
+
+    def emit_nudge(
+        self,
+        db: Session,
+        *,
+        from_account: str,
+        from_display: str,
+        kind: str,
+        label: str,
+    ) -> tuple[dict, dict]:
+        with self.lock:
+            now = self.utc_ms()
+            last_at = self.nudge_cooldown_ms.get(from_account, 0)
+            if last_at and now - last_at < NUDGE_COOLDOWN_MS:
+                wait_sec = max(1, (NUDGE_COOLDOWN_MS - (now - last_at) + 999) // 1000)
+                raise HTTPException(429, f"轻互动冷却中，{wait_sec} 秒后再试吧")
+            self.nudge_cooldown_ms[from_account] = now
+            self.nudge_seq += 1
+            self.last_nudge = {
+                "seq": self.nudge_seq,
+                "kind": kind,
+                "label": label,
+                "from_account": from_account,
+                "from_display": from_display,
+                "at_ms": now,
+            }
+            return self.last_nudge, self._publish(db)
+
     def sweep(self):
         with self.lock, Session(self.engine) as db:
             self._clean(db)
@@ -489,4 +559,5 @@ class RoomRuntime:
 
 room_runtime = RoomRuntime()
 home_runtime = RoomRuntime(room="interior", coordinator=room_runtime.coordinator)
-room_runtimes = {"seaside": room_runtime, "interior": home_runtime}
+study_runtime = RoomRuntime(room="study", coordinator=room_runtime.coordinator)
+room_runtimes = {"seaside": room_runtime, "interior": home_runtime, "study": study_runtime}

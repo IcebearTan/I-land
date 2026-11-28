@@ -166,3 +166,43 @@ class LighthouseSignal(SQLModel, table=True):
     updated_by: str = ""
     updated_by_display: str = ""
     updated_at: Optional[datetime] = None
+
+
+class StudyTimerState(SQLModel, table=True):
+    """双人自习室各自番茄钟锚点（按 bear/her 主键持久化，刷新与锁屏零漂移）。"""
+
+    account: str = Field(primary_key=True)  # bear | her
+    phase: str = "idle"  # idle | focusing | resting | stopwatch
+    focus_minutes: int = 25
+    break_minutes: int = 5
+    started_at_ms: int = 0
+    ends_at_ms: int = 0
+    goal_text: str = ""
+    synced_with: str = ""
+    version: int = 1
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class StudySession(SQLModel, table=True):
+    """自习室专注完成足迹（满 5 分钟温柔计入，中途停止零惩罚）。"""
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    account: str = Field(index=True)  # bear | her
+    goal_text: str = ""
+    duration_minutes: int = 25
+    together: bool = False
+    date: str = Field(index=True)  # YYYY-MM-DD（Asia/Shanghai）
+    started_at: datetime = Field(default_factory=datetime.utcnow)
+    completed_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class StudyMessage(SQLModel, table=True):
+    """阁楼书房专属轻聊消息（支持文本与题目截图附件）。"""
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    sender: str = Field(index=True)  # bear | her
+    body: str = ""
+    attachment_id: str = ""
+    client_id: str = Field(default="", index=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
