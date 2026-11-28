@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import { worldZoom } from '../../visual/layout'
 import { CHARACTER_ATLAS, CHARACTER_ORIGIN, CHARACTER_FOOT, actorFrame, pickFacing, type Facing } from '../../visual/artV2'
-import { SCREEN_BODY_PX, SCREEN_LABEL_PX, screenTextScale } from '../../visual/screenText'
+import { PIXEL_FONT_FAMILY, SCREEN_BODY_PX, SCREEN_LABEL_PX, screenTextScale } from '../../visual/screenText'
 import { eventBus, type Phase, type IslandIdentity, type IslandEntry, type SceneState, type LighthouseSignal } from '../EventBus'
 import { makeTexture } from '../pixels'
 import { hash2 } from '../art'
@@ -148,7 +148,7 @@ export class IslandScene extends Phaser.Scene {
     this.input.on('pointerdown', onPointer)
     this.promptBg = this.add.graphics()
     this.promptText = this.add.text(0, 0, '', {
-      fontFamily: 'system-ui, sans-serif', fontSize: SCREEN_BODY_PX, color: '#4a3b55', resolution: 3,
+      fontFamily: PIXEL_FONT_FAMILY, fontSize: SCREEN_BODY_PX, color: '#3b2117', resolution: 3,
     }).setOrigin(.5)
     const zone = this.add.zone(0, 0, 170, 44).setInteractive({ useHandCursor: true })
     const onPrompt = () => this.tryInteract()
@@ -288,12 +288,19 @@ export class IslandScene extends Phaser.Scene {
     this.add.image(SEASIDE_ENTRY.x + 17, SEASIDE_ENTRY.y + 2, 'seaside-cushion').setOrigin(.5, 1).setDepth(2)
     this.add.image(SEASIDE_ENTRY.x + 28, SEASIDE_ENTRY.y - 7, 'seaside-shell').setDepth(2)
     this.sceneLabels.push(this.add.text(SEASIDE_ENTRY.x, SEASIDE_ENTRY.y - 11, '看海', {
-      fontFamily: 'system-ui, sans-serif', fontSize: SCREEN_LABEL_PX, color: '#f5eee2', resolution: 3,
+      fontFamily: PIXEL_FONT_FAMILY, fontSize: SCREEN_LABEL_PX, color: '#fffaf0', resolution: 3,
     }).setOrigin(.5).setDepth(SEASIDE_ENTRY.y + 1))
-    // 位置标识在场景中使用清晰的小字，不烘焙进像素素材。
+    // 位置标识统一使用 ArkPixel 像素字，并在字体加载完成后重绘一次确保无回退。
     for (const [x, y, text] of [[HOME.x, 254, '我们的家'], [164, 324, '慢慢开花'], [TOWER.x, 277, '灯语灯塔']] as const) {
-      this.sceneLabels.push(this.add.text(x, y, text, { fontFamily: 'system-ui, sans-serif', fontSize: SCREEN_LABEL_PX, color: '#4a3b55',
-        backgroundColor: '#f0d9a8', padding: { x: 4, y: 2 }, resolution: 3 }).setOrigin(.5).setDepth(2))
+      this.sceneLabels.push(this.add.text(x, y, text, { fontFamily: PIXEL_FONT_FAMILY, fontSize: SCREEN_LABEL_PX, color: '#3b2117',
+        backgroundColor: '#f8e1b8', padding: { x: 5, y: 2 }, resolution: 3 }).setOrigin(.5).setDepth(2))
+    }
+    if (typeof document !== 'undefined' && document.fonts) {
+      document.fonts.load('16px ArkPixel').then(() => {
+        if (!this.scene.isActive()) return
+        this.sceneLabels.forEach((lbl) => lbl.setFontFamily(PIXEL_FONT_FAMILY))
+        this.promptText?.setFontFamily(PIXEL_FONT_FAMILY)
+      }).catch(() => {})
     }
     makeTexture(this, 'ripple-v4-0', ['....ww......', '..ww..ww....', 'ww......wwww'], { w: '#b4d7df' })
     makeTexture(this, 'ripple-v4-1', ['..ww....ww..', '....wwww....', '..ww........'], { w: '#d6ebf0' })

@@ -1,23 +1,22 @@
-/* I-land Design Tokens — Single source of truth for Warm Parchment & Carved Oak UI.
- * All DOM dimensions use crisp CSS px (border-radius: 0 everywhere).
+/* I-land Design Tokens — Unified 16-bit Pixel Font & Carved-Oak Parchment System.
+ * Zero web fonts, zero faux-bold, zero border-radius across all DOM panels.
  */
 :root {
   color-scheme: only light;
 
-  /* Two-tier font system:
-     1) --px-font: ONLY for short chrome (ribbon titles, buttons, tags, HUD clock, tabular numbers)
-     2) --ui-font: ALL prose, form labels/hints, inputs, textareas, calendar & letter content */
-  --ui-font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  --ui-font-number: 'ArkPixel', ui-monospace, 'SF Mono', Menlo, monospace;
+  /* 100% Unified ArkPixel font stack across the entire island (DOM + Canvas) */
+  --px-font: 'ArkPixel', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --ui-font: var(--px-font);
+  --ui-font-number: var(--px-font);
 
-  /* Unified readable type scale */
-  --ui-text-body: 15px;
-  --ui-text-control: 14px;
-  --ui-text-label: 13px;
-  --ui-text-meta: 12px;
-  --ui-text-title: 18px;
+  /* 12px-grid-friendly pixel type scale (16px = exact 2x physical grid at 150% DPR) */
+  --ui-text-title: 16px;
   --ui-text-section: 16px;
-  --ui-leading-body: 1.65;
+  --ui-text-body: 14px;
+  --ui-text-control: 14px;
+  --ui-text-label: 14px;
+  --ui-text-meta: 12px;
+  --ui-leading-body: 1.7;
   --ui-leading-control: 1.4;
   --ui-touch: 44px;
 
@@ -73,7 +72,7 @@
   --beam-dark: var(--ui-wood-dark);
   --ink: var(--ui-ink);
   --ink-soft: var(--ui-muted);
-  --heart: #e8637c;
-  --warm: #ffd98a;
-  --night: #0e1030;
+  --heart: var(--ui-danger);
+  --night: #1c1936;
+  --sea: #3f6f9e;
 }

@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import { worldZoom } from '../../visual/layout'
-import { SCREEN_BODY_PX, screenTextScale } from '../../visual/screenText'
+import { PIXEL_FONT_FAMILY, SCREEN_BODY_PX, screenTextScale } from '../../visual/screenText'
 import { HomeRoomClient, SharedProgramClock } from '../../interior/room'
 import type { HomeSnapshot, HomeMember, HomeView } from '../../interior/room'
 import type { RoomTiming } from '../../seaside/types'
@@ -102,7 +102,7 @@ export class InteriorScene extends Phaser.Scene {
     this.destination = this.add.graphics().setDepth(2).setVisible(false)
     this.destination.lineStyle(1, 0xfdf6e9).strokeEllipse(0, 0, 12, 5)
     this.promptBg = this.add.graphics()
-    this.promptText = this.add.text(0, 0, '', { fontFamily: 'system-ui, sans-serif', fontSize: SCREEN_BODY_PX, color: '#4a3b55', resolution: 3 }).setOrigin(.5)
+    this.promptText = this.add.text(0, 0, '', { fontFamily: PIXEL_FONT_FAMILY, fontSize: SCREEN_BODY_PX, color: '#3b2117', resolution: 3 }).setOrigin(.5)
     const promptZone = this.add.zone(0, 0, 170, 44).setInteractive({ useHandCursor: true })
     this.prompt = this.add.container(0, 0, [this.promptBg, this.promptText, promptZone]).setDepth(500).setVisible(false)
     this.keys = this.input.keyboard!.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT', false) as Record<string, Phaser.Input.Keyboard.Key>

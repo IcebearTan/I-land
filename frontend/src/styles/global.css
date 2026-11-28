@@ -7,14 +7,41 @@
 html, body, #root { height: 100%; }
 body {
   margin: 0;
-  font-family: var(--ui-font);
+  font-family: var(--px-font);
   font-size: var(--ui-text-body);
+  font-weight: 400;
+  font-synthesis: none;
   line-height: var(--ui-leading-body);
   color: var(--px-ink);
   background: var(--night);
-  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.02em;
 }
-:where(button, input, textarea, select) { font: inherit; color: inherit; }
+:where(h1, h2, h3, h4, h5, h6, strong, b, th, label) {
+  font-family: inherit;
+  font-weight: 400;
+  font-synthesis: none;
+}
+:where(button, input, textarea, select) { font: inherit; font-weight: 400; font-synthesis: none; color: inherit; }
+:where([role="dialog"]):focus { outline: none; }
+
+/* Unified carved-oak pixel scrollbars across all scrollable panels */
+:where(.modal-panel, .calendar-panel, .letter-paper, .lighthouse-panel) {
+  scrollbar-width: thin;
+  scrollbar-color: #8a5a38 #eed3a1;
+}
+:where(.modal-panel, .calendar-panel, .letter-paper, .lighthouse-panel)::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+:where(.modal-panel, .calendar-panel, .letter-paper, .lighthouse-panel)::-webkit-scrollbar-track {
+  background: #eed3a1;
+  border-left: 2px solid #cfa76e;
+}
+:where(.modal-panel, .calendar-panel, .letter-paper, .lighthouse-panel)::-webkit-scrollbar-thumb {
+  background: #8a5a38;
+  border: 2px solid #68371d;
+  border-radius: 0;
+}
 :where(button) { min-width: 36px; min-height: 36px; touch-action: manipulation; }
 :where(button, input, textarea, select, a, [tabindex]):focus-visible { outline: 2px solid var(--px-accent); outline-offset: 2px; }
 :where(button):disabled { opacity: 0.62; cursor: default; }
@@ -79,17 +106,18 @@ body {
 .btn-primary {
   border-image-source: url('/art-v2/ui/btn-accent.png');
   color: var(--px-accent-ink);
-  text-shadow: 0 2px 0 #1c383e;
+  text-shadow: 0 1px 0 #1c383e;
 }
 .btn-primary:hover:not(:disabled) { border-image-source: url('/art-v2/ui/btn-accent-hover.png'); }
 .btn-primary:active:not(:disabled) { border-image-source: url('/art-v2/ui/btn-accent-pressed.png'); }
-.btn-mini { padding: 0 8px; min-height: 36px; border-width: 8px; font-size: 13px; }
+.btn-mini { padding: 0 10px; min-height: 38px; border-width: 8px; font-size: 14px; }
 
-/* Tactile 2px pixel parchment chip button (replaces unframed modern text links) */
+/* Tactile 2px pixel parchment chip button */
 .text-button {
-  font-family: var(--ui-font);
-  font-size: 13px;
-  font-weight: 600;
+  font-family: var(--px-font);
+  font-size: 14px;
+  font-weight: 400;
+  font-synthesis: none;
   min-height: 36px;
   min-width: 36px;
   display: inline-flex;
@@ -112,31 +140,31 @@ body {
   transform: translateY(1px);
   box-shadow: 0 1px 0 rgba(59, 33, 23, 0.2);
 }
-.form-error { margin: 0; font-size: 13px; line-height: 1.5; color: var(--px-danger); }
+.form-error { margin: 0; font-size: 14px; line-height: 1.55; color: var(--px-danger); }
 .panel-eyebrow { display: none; }
-.loading, .empty, .coming-soon { font-size: 15px; color: var(--px-ink-soft); line-height: 1.6; margin: 12px 0; }
+.loading, .empty, .coming-soon { font-size: 14px; color: var(--px-ink-soft); line-height: 1.7; margin: 12px 0; }
 
 /* Standalone unauthenticated login fallback (only shown if accessed directly without Donut SSO) */
 .login-wrap { position: absolute; inset: 0; z-index: 6; display: grid; place-items: center; padding: 20px 14px; overflow-y: auto; }
 .login-float { width: min(100%, 420px); display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .login-panel { width: 100%; padding: 6px 8px; text-align: center; }
 .login-panel form { display: flex; flex-direction: column; gap: 12px; }
-.login-panel label { display: flex; flex-direction: column; gap: 6px; text-align: left; font-size: 13px; font-weight: 600; font-family: var(--ui-font); }
+.login-panel label { display: flex; flex-direction: column; gap: 6px; text-align: left; font-size: 14px; font-weight: 400; font-family: var(--px-font); }
 .login-panel input, .settings-section input:not([type="checkbox"]):not([type="range"]) {
   width: 100%; min-height: 42px; padding: 8px 10px;
   border: 2px solid var(--px-wood-dark); border-radius: 0;
   background: var(--px-cream-input); box-shadow: inset 2px 2px 0 #e2c593;
-  font: 15px/1.5 var(--ui-font); font-weight: 400; color: var(--px-ink); caret-color: var(--px-accent);
+  font: 400 14px/1.6 var(--px-font); font-synthesis: none; color: var(--px-ink); caret-color: var(--px-accent);
 }
-.btn.btn-login { width: 100%; min-height: 48px; margin-top: 4px; }
+.btn.btn-login { width: 100%; min-height: 48px; margin-top: 4px; font-size: 16px; }
 .islander-select { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 14px; }
 .islander-option {
   display: flex; align-items: center; flex-direction: column; gap: 6px; padding: 8px 6px;
   border-style: solid; border-width: 8px; border-color: transparent; border-image-source: url('/art-v2/ui/slot.png');
   border-image-slice: 5 fill; background: transparent; color: var(--px-ink);
-  font-family: var(--px-font); font-size: 13px; cursor: pointer; image-rendering: pixelated;
+  font-family: var(--px-font); font-size: 14px; cursor: pointer; image-rendering: pixelated;
 }
-.islander-desc { font-family: var(--ui-font); font-size: 12px; color: var(--px-ink-soft); line-height: 1.4; }
+.islander-desc { font-family: var(--px-font); font-size: 12px; color: var(--px-ink-soft); line-height: 1.45; }
 .islander-option[aria-pressed="true"] { border-image-source: url('/art-v2/ui/slot-active.png'); }
 
 /* Mobile pixel D-Pad & contextual Stardew interact bubble */
