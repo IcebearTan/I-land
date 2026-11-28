@@ -17,7 +17,10 @@
 2. **持久化一律走 API**：游戏/UI 状态要落盘就调后端 REST，不写 localStorage。
 3. **后端**：FastAPI + SQLModel + SQLite（WAL）。新表加在 `backend/app/models.py`，新路由加在 `backend/app/routers/`，`main.py` 挂载。
 4. **美术**：16px tile、像素帧动画、调色板以 DESIGN.md 锁定值为准；白嫖资产必须重着色入库。占位美术用 `makeTexture()` 字符画生成，正式资产走 Tiled + 图集（M1 起）。
-5. **中文正文不硬凹像素字体**；对比度红线：深底浅字 #f5eee2、浅底深字 #4a3b55、闪烁透明度 ≥ 0.7、所有动效尊重 `prefers-reduced-motion`。
+5. **UI 视觉与像素样式铁律（必读 `.agents/skills/iland-ui-style/SKILL.md`）**：
+   - **唯一令牌源**：全岛 DOM 面板一律复用 `frontend/src/styles/tokens.css` 与 `pixel-ui.css` 的暖羊皮纸与雕花橡木变量（`--px-ink`、`--px-cream*`、`--px-border`、`--px-wood-dark`、`--px-accent`），严禁私自发明散装色板、现代圆角卡片或大模糊阴影。
+   - **零圆角纪律**：全岛任何 CSS/TSX **严禁非零 `border-radius`**（包括 `4px`、`6px`、`50%`、`999px`）；弹窗统一使用 `.wood-panel` + `.px-ribbon` 卷轴标题 + `.px-slot` 关闭槽，表单控件统一用 `.px-input`，次级芯片按钮用 `.text-button`。
+   - **双层字体红线**：`--px-font`（`ArkPixel`）仅限短按钮、卷轴标题、HUD 时钟和 `.num` 数字，**严禁挂在弹窗外层容器上，严禁设置 `font-smoothing: none`，严禁使用 `Georgia`/`serif` 衬线体**；一切表单 `label`/副提示、输入框、信件与日历正文统一用 `--ui-font`。对比度与无障碍：所有动效尊重 `prefers-reduced-motion`。
 6. **无惩罚原则**：任何玩法（作物等）不许因玩家不登录而惩罚。
 
 ## 常用命令
