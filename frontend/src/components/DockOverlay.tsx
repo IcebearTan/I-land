@@ -3,6 +3,8 @@ import { api } from '../api/client'
 import { characterId } from '../characters'
 import { useIslanders } from '../islanders'
 import type { Phase } from '../game/EventBus'
+import { formatStudyClock } from '../study/StudyTimerReadout'
+import type { StudyOverview } from '../study/types'
 import type { Meta, User } from '../types'
 import { CharacterPortrait } from './CharacterPortrait'
 import { PixelIcon, type PixelIconName } from './PixelIcon'
@@ -67,6 +69,7 @@ export function DockOverlay({
   muted,
   onToggleMute,
   onEmbark,
+  onEmbarkStudy,
   onReturnPortal,
   embedded,
 }: {
@@ -79,19 +82,24 @@ export function DockOverlay({
   muted: boolean
   onToggleMute: () => void
   onEmbark: () => void
+  onEmbarkStudy?: () => void
   onReturnPortal: () => void
   embedded: boolean
 }) {
   const [meta, setMeta] = useState<Meta | null>(null)
   const [visit, setVisit] = useState<Visit | null>(null)
+  const [studyOv, setStudyOv] = useState<StudyOverview | null>(null)
   const islanders = useIslanders()
   const phase = currentPhase()
 
   useEffect(() => {
-    if (!user) return
+    if (!user || mode === 'loading') return
     api<Meta>('/api/meta').then(setMeta).catch(() => {})
     api<{ visit: Visit | null }>('/api/presence')
       .then((r) => setVisit(r.visit))
+      .catch(() => {})
+    api<StudyOverview>('/api/study/overview')
+      .then(setStudyOv)
       .catch(() => {})
   }, [user?.id, mode])
 
@@ -104,6 +112,18 @@ export function DockOverlay({
       : user?.display || '岛民'
   const days = daysTogether(meta?.start_date)
   const farewell = FAREWELL_COPY[phase]
+  const companionInStudy = Boolean(studyOv?.members.some((m) => m.account === companion))
+  const companionTimer = studyOv?.timers[companion]
+  const companionFocusing =
+    companionTimer?.phase === 'focusing' || companionTimer?.phase === 'stopwatch'
+  const companionRemainSec =
+    companionTimer?.phase === 'focusing' && studyOv
+      ? Math.max(0, Math.ceil((companionTimer.ends_at_ms - studyOv.server_now_ms) / 1000))
+      : null
+  const studySubCopy =
+    companionFocusing || companionInStudy
+      ? `${islanders[companion]}正在阁楼自习${companionRemainSec ? ` · 剩余 ${formatStudyClock(companionRemainSec)}` : ''}`
+      : null
   const loadLabel =
     pct < 20
       ? '正在启航连接小岛…'
@@ -178,9 +198,9 @@ export function DockOverlay({
                   {days !== null && <span className="dock-days">· 第 {days} 天</span>}
                 </div>
                 <h2 className="dock-heading">准备好了吗，{myName}？</h2>
-                <p className="dock-sub">
-                  <PixelIcon name="paw" size={16} />
-                  <span>{shortVisit(visit, islanders[companion])}</span>
+                <p className={`dock-sub${studySubCopy ? ' is-study-live' : ''}`}>
+                  <PixelIcon name={studySubCopy ? 'book' : 'paw'} size={16} />
+                  <span>{studySubCopy ?? shortVisit(visit, islanders[companion])}</span>
                 </p>
               </div>
             </div>
@@ -190,6 +210,16 @@ export function DockOverlay({
                 <PixelIcon name="boat" size={22} />
                 <span>乘船登岛</span>
               </button>
+              {onEmbarkStudy && (
+                <button
+                  type="button"
+                  className={`px-btn dock-study-btn${studySubCopy ? ' px-btn-accent' : ''}`}
+                  onClick={onEmbarkStudy}
+                >
+                  <PixelIcon name="book" size={20} />
+                  <span>{studySubCopy ? `去陪${islanders[companion]}自习` : '直达书房'}</span>
+                </button>
+              )}
               <button
                 type="button"
                 className={`px-slot${muted ? ' is-active' : ''}`}

@@ -91,6 +91,20 @@
   gap: 6px;
 }
 
+.hud-slot-rel {
+  position: relative;
+}
+
+.hud-study-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 7px;
+  height: 7px;
+  background: #ffd98a;
+  border: 1px solid #3b2117;
+}
+
 .hud-presence-pop {
   position: absolute;
   top: max(136px, calc(env(safe-area-inset-top) + 124px));

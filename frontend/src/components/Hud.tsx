@@ -51,11 +51,13 @@ export function Hud({
   audio,
   onDepart,
   quiet = false,
+  studyLit = false,
 }: {
   user: User
   audio: ReturnType<typeof useIslandAudio>
   onDepart: () => void
   quiet?: boolean
+  studyLit?: boolean
 }) {
   const [meta, setMeta] = useState<Meta | null>(null)
   const [presence, setPresence] = useState<Visit | null | undefined>(undefined)
@@ -136,6 +138,18 @@ export function Hud({
         )}
 
         <div className="hud-slots" role="toolbar" aria-label="小岛工具栏">
+          {!quiet && (
+            <button
+              type="button"
+              className="px-slot hud-slot-rel"
+              title={studyLit ? '星光阁楼书房（正在亮灯）' : '直达阁楼书房'}
+              aria-label="进入阁楼双人自习室"
+              onClick={() => eventBus.emit('TRAVEL_REQUEST', { from: 'island', to: 'study' })}
+            >
+              <PixelIcon name="book" size={22} />
+              {studyLit && <span className="hud-study-dot" aria-hidden="true" />}
+            </button>
+          )}
           {!quiet && (
             <button
               type="button"

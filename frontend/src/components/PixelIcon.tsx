@@ -18,6 +18,7 @@ export type PixelIconName =
   | 'close'
   | 'chat'
   | 'paw'
+  | 'book'
 
 /** 16x16 hand-plotted pixel icon rendered crisp at integer multiples (16 / 24 / 32px). */
 export function PixelIcon({

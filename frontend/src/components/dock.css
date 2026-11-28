@@ -255,6 +255,14 @@
   gap: 10px;
 }
 
+.dock-sub.is-study-live {
+  color: var(--px-accent);
+}
+
+.dock-study-btn {
+  font-size: 14px;
+}
+
 .dock-main-btn {
   flex: 1;
   font-size: 16px;

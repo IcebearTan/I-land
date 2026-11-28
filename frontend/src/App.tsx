@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { characterId } from './characters'
 import { api } from './api/client'
 import { eventBus, type IslandIdentity, type SceneState } from './game/EventBus'
+import type { StudyOverview } from './study/types'
 import type { User } from './types'
 import { GameShell } from './components/GameShell'
 import { DockOverlay, type DockMode } from './components/DockOverlay'
@@ -19,6 +20,9 @@ const SeasideControls = lazy(() =>
 )
 const InteriorControls = lazy(() =>
   import('./components/InteriorControls').then((m) => ({ default: m.InteriorControls })),
+)
+const StudyWorkspace = lazy(() =>
+  import('./study/StudyWorkspace').then((m) => ({ default: m.StudyWorkspace })),
 )
 const MailboxPanel = lazy(() =>
   import('./components/panels/MailboxPanel').then((m) => ({ default: m.MailboxPanel })),
@@ -66,7 +70,9 @@ export default function App() {
   const [scene, setScene] = useState<SceneState>({ scene: 'login', transitioning: false })
   const [embedded] = useState(isEmbeddedInPortal)
   const [wantMuted, setWantMuted] = useState(false)
+  const [studyLit, setStudyLit] = useState(false)
   const unreadLettersRef = useRef(0)
+  const studyRoofRef = useRef<{ lit: boolean; companionFocusing?: boolean; companionName?: string }>({ lit: false })
   const enteredUser = useRef<number | null>(null)
   const audio = useIslandAudio(user?.id ?? null)
 
@@ -133,24 +139,54 @@ export default function App() {
           eventBus.emit('MAILBOX_UNREAD_CHANGED', { count })
         })
         .catch(() => {})
+    const syncStudy = () =>
+      api<StudyOverview>('/api/study/overview')
+        .then((ov) => {
+          const me = characterId(user.sprite, user.account)
+          const comp = me === 'bear' ? 'her' : 'bear'
+          const compTimer = ov.timers[comp]
+          const compFocusing =
+            compTimer.phase === 'focusing' ||
+            compTimer.phase === 'stopwatch' ||
+            ov.members.some((m) => m.account === comp)
+          const compMember = ov.members.find((m) => m.account === comp)
+          const payload = {
+            lit: ov.roof_lit,
+            companionFocusing: compFocusing,
+            companionName: compMember?.display || (comp === 'bear' ? '小熊' : '她'),
+          }
+          studyRoofRef.current = payload
+          setStudyLit(ov.roof_lit)
+          eventBus.emit('STUDY_ROOF_STATUS', payload)
+        })
+        .catch(() => {})
     const onUnread = ({ count }: { count: number }) => {
       unreadLettersRef.current = count
+    }
+    const onRoof = (payload: { lit: boolean; companionFocusing?: boolean; companionName?: string }) => {
+      studyRoofRef.current = payload
+      setStudyLit(payload.lit)
     }
     const onSceneReady = ({ scene: readyScene }: { scene: string }) => {
       if (readyScene === 'island') {
         eventBus.emit('MAILBOX_UNREAD_CHANGED', { count: unreadLettersRef.current })
+        eventBus.emit('STUDY_ROOF_STATUS', studyRoofRef.current)
       }
     }
     eventBus.on('MAILBOX_UNREAD_CHANGED', onUnread)
+    eventBus.on('STUDY_ROOF_STATUS', onRoof)
     eventBus.on('SCENE_READY', onSceneReady)
     beat()
     syncMailbox()
+    syncStudy()
     const timer = window.setInterval(() => {
       beat()
       syncMailbox()
-    }, 60_000)
+      syncStudy()
+    }, 30_000)
     return () => {
       eventBus.off('MAILBOX_UNREAD_CHANGED', onUnread)
+      eventBus.off('STUDY_ROOF_STATUS', onRoof)
       eventBus.off('SCENE_READY', onSceneReady)
       window.clearInterval(timer)
     }
@@ -177,6 +213,18 @@ export default function App() {
     enteredUser.current = user.id
     setStage('on-island')
     eventBus.emit('ENTER_ISLAND', islandIdentity(user))
+  }
+
+  function handleEmbarkStudy() {
+    if (!user || !gameReady) return
+    if (wantMuted) {
+      if (audio.ready && !audio.settings.muted) audio.change({ muted: true }, true)
+    } else {
+      audio.start()
+    }
+    enteredUser.current = user.id
+    setStage('on-island')
+    eventBus.emit('ENTER_STUDY', islandIdentity(user))
   }
 
   function handleDepart() {
@@ -264,15 +312,17 @@ export default function App() {
           muted={wantMuted}
           onToggleMute={handleToggleDockMute}
           onEmbark={handleEmbark}
+          onEmbarkStudy={handleEmbarkStudy}
           onReturnPortal={handleReturnPortal}
           embedded={embedded}
         />
       ) : (
         <Suspense fallback={null}>
-          {showIslandUi && (
+          {showIslandUi && scene.scene !== 'study' && (
             <Hud
               user={user}
               quiet={scene.scene === 'seaside' || scene.scene === 'interior'}
+              studyLit={studyLit}
               audio={audio}
               onDepart={handleDepart}
             />
@@ -280,6 +330,9 @@ export default function App() {
           {scene.scene === 'island' && !scene.transitioning && <IslandControls />}
           {scene.scene === 'seaside' && <SeasideControls transitioning={scene.transitioning} />}
           {scene.scene === 'interior' && <InteriorControls transitioning={scene.transitioning} />}
+          {scene.scene === 'study' && (
+            <StudyWorkspace user={user} audio={audio} transitioning={scene.transitioning} />
+          )}
           <MailboxPanel user={user} />
           <LighthousePanel />
           <ComingSoonPanel />
