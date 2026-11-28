@@ -116,11 +116,12 @@ export function DockOverlay({
   return (
     <>
       <div className={`dock-backdrop${gameReady ? ' is-hidden' : ''}`} aria-hidden="true">
-        <div className="dock-backdrop-sun" />
-        <div className="dock-backdrop-cloud dock-backdrop-cloud--a" />
-        <div className="dock-backdrop-cloud dock-backdrop-cloud--b" />
-        <div className="dock-backdrop-hill dock-backdrop-hill--far" />
-        <div className="dock-backdrop-hill dock-backdrop-hill--near" />
+        <span className="dock-stars dock-stars--far" />
+        <span className="dock-stars dock-stars--mid" />
+        <span className="dock-star-cross dock-star-cross--1" />
+        <span className="dock-star-cross dock-star-cross--2" />
+        <span className="dock-star-cross dock-star-cross--3" />
+        <span className="dock-star-cross dock-star-cross--4" />
       </div>
 
       <div className="dock-stage" data-dock-mode={mode}>
