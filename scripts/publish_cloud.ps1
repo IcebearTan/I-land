@@ -51,6 +51,28 @@ tar -xzf /tmp/iland-release.tar.gz -C /opt/couple-space/iland
 rm -f /tmp/iland-release.tar.gz
 chown -R donut:donut /opt/couple-space/iland
 
+# Sync official I-land OpenClaw skills & CLI tools to both user workspaces (non-destructive; never touches .iland-agent.json)
+if [ -d /opt/couple-space/iland/openclaw-skills ]; then
+  for ws in /home/donut/.openclaw/workspace /home/donut/.openclaw/workspace-her; do
+    if [ -d "$ws" ]; then
+      mkdir -p "$ws/skills" "$ws/tools"
+      for sdir in /opt/couple-space/iland/openclaw-skills/*; do
+        [ -d "$sdir" ] || continue
+        sname="$(basename "$sdir")"
+        if [ -f "$sdir/SKILL.md" ]; then
+          mkdir -p "$ws/skills/$sname"
+          cp -f "$sdir/SKILL.md" "$ws/skills/$sname/SKILL.md"
+        fi
+        if [ -d "$sdir/tools" ]; then
+          cp -f "$sdir/tools/"*.py "$ws/tools/" 2>/dev/null || true
+        fi
+      done
+      chmod +x "$ws/tools/"*.py 2>/dev/null || true
+      chown -R donut:donut "$ws/skills" "$ws/tools"
+    fi
+  done
+fi
+
 su - donut -c '/opt/couple-space/iland-venv/bin/pip install --quiet -i https://pypi.tuna.tsinghua.edu.cn/simple -r /opt/couple-space/iland/backend/requirements.txt'
 systemctl restart couple-iland.service
 sleep 2

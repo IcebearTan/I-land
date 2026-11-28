@@ -49,6 +49,12 @@ mkdir -p "$STAGE"
 cp -r "$ILAND_DIR/backend" "$STAGE/backend"
 find "$STAGE/backend" -type d \( -name '__pycache__' -o -name '.venv' -o -name 'uploads' \) -exec rm -rf {} +
 find "$STAGE/backend" -type f \( -name '*.db' -o -name '*.db-wal' -o -name '*.db-shm' -o -name '*.pyc' \) -delete
+if [ -d "$ILAND_DIR/openclaw-skills" ]; then
+  cp -r "$ILAND_DIR/openclaw-skills" "$STAGE/openclaw-skills"
+  find "$STAGE/openclaw-skills" -type d -name '__pycache__' -exec rm -rf {} +
+  find "$STAGE/openclaw-skills" -type f -name '*.pyc' -delete
+  find "$STAGE/openclaw-skills" -type f \( -name '*.py' -o -name '*.md' \) -exec sed -i 's/\r$//' {} +
+fi
 cp -r "$BUILD_DIR/dist" "$STAGE/frontend-dist"
 
 tar -czf "$BUNDLE" -C "$STAGE" .

@@ -22,6 +22,10 @@
    - **零圆角纪律**：全岛任何 CSS/TSX **严禁非零 `border-radius`**（包括 `4px`、`6px`、`50%`、`999px`）；弹窗统一使用 `.wood-panel` + `.px-ribbon` 卷轴标题 + `.px-slot` 关闭槽，表单控件统一用 `.px-input`，次级芯片按钮用 `.text-button`。
    - **纯像素字体与零伪粗体红线**：全岛 DOM 与 Phaser 画布路牌/气泡 **100% 统一使用 `ArkPixel` 像素字体**（严禁混入 `system-ui`/`Microsoft YaHei` 网页字体或 `Georgia`/`serif`）；全局锁定 `font-weight: 400; font-synthesis: none;`（严禁 `font-weight: 600/bold` 伪粗体涂抹）；字号只准取 `12px / 14px / 16px / 24px / 48px`（严禁 `13px / 15px / 17px / 18px` 非对齐字号）。所有动效尊重 `prefers-reduced-motion`。
 6. **无惩罚原则**：任何玩法（作物等）不许因玩家不登录而惩罚。
+7. **新功能同步接入 Donut（OpenClaw Agent）三步契约**：今后小岛每新增一个持久化玩法（如漂流瓶、农场、送花、珍藏架等），必须同步完成以下三步才算验收完成（详见 `docs/planning/designs/2026-11-28-donut-agent-integration.md`）：
+   - **后端 REST 优先**：新路由统一复用 `Depends(get_current_user)`，天然支持浏览器 Cookie 与本机回环分账号 Agent Token；若涉及账号安全/真人专属动作则显式使用 `Depends(require_human_session)`。
+   - **补入聚合摘要**：将核心计数或最新状态接入 `GET /api/agent/digest`（`backend/app/routers/agent.py`）。
+   - **注册 CLI 与 Skill**：在 `openclaw-skills/iland-companion/tools/iland_cli.py` 增加对应子命令，并在 `openclaw-skills/iland-companion/SKILL.md` 补充调用示例与仪式感/权限边界。
 
 ## 常用命令
 
