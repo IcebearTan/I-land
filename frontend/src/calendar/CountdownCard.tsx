@@ -9,7 +9,7 @@ export function CountdownCard({ holiday, today, compact = false }: { holiday: Ho
     <div className="countdown-decor" aria-hidden="true"><HolidayIcon icon={holiday.icon} size={compact ? 60 : 124} /></div>
     <div className="countdown-top"><span className="holiday-stamp"><HolidayIcon icon={holiday.icon} size={compact ? 18 : 26} /></span><span>{holiday.pinned ? '特别期待' : '我们的小日子'}</span><span className="countdown-spark" aria-hidden="true">✦</span></div>
     <h3>{holiday.name || '给这一天起个名字'}</h3>
-    <div className="countdown-number">{valid && days === 0 ? <strong className="countdown-today">就是今天</strong> : <><span>{valid && days < 0 ? '已经' : '还有'}</span><strong>{valid ? Math.abs(days) : '—'}</strong><span>天</span></>}</div>
+    <div className="countdown-number">{valid && days === 0 ? <strong className="countdown-today">就是今天</strong> : <><span>{valid && days < 0 ? '已经' : '还有'}</span><strong className="num">{valid ? Math.abs(days) : '—'}</strong><span>天</span></>}</div>
     <div className="countdown-footer"><time>{(next ?? holiday.date) || '选择一个日期'}</time><span>{REPEATS[holiday.repeat]}</span></div>
     {!compact && <p className="countdown-caption">{valid && days === 0 ? '把今天，过成值得收藏的一页。' : valid && days < 0 ? '日子过去了，记忆一直在。' : '把期待，慢慢写进日子里。'}</p>}
   </div>

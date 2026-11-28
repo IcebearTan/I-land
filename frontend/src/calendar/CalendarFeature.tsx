@@ -6,6 +6,7 @@ import { useDialogFocus } from '../hooks/useDialogFocus'
 import { CountdownCard } from './CountdownCard'
 import { HolidayIcon } from './HolidayIcon'
 import { HolidayDateField } from './HolidayDateField'
+import { PixelIcon } from '../components/PixelIcon'
 import { ICONS, PRESETS, REPEATS, STYLES, THEMES, themeVars } from './design'
 import type { Holiday, HolidayDraft, IconId, StyleId, ThemeId } from './design'
 import { dateParts, daysBetween, localDateKey, monthCells, nextOccurrence, occursOn, shiftMonth, validDate } from './dates'
@@ -361,12 +362,16 @@ export function CalendarFeature() {
       {featured && !loadError ? <CountdownCard holiday={featured.item} today={today} compact /> : <><HolidayIcon icon="book" size={22} /><span>记忆日历<small>{loadError ? '轻点重试，找回小日子' : '留住日子，也收藏期待'}</small></span><span aria-hidden="true">↗</span></>}
     </button>}
     {open && <div className="modal-mask calendar-mask" onClick={close}>
-      <div ref={dialog} className="calendar-panel" role="dialog" aria-modal="true" aria-labelledby="calendar-title" onClick={event => event.stopPropagation()}>
+      <div ref={dialog} className="wood-panel calendar-panel px-pop" role="dialog" aria-modal="true" aria-labelledby="calendar-title" onClick={event => event.stopPropagation()}>
         <header className="calendar-header">
-          <span className="calendar-brand-icon"><HolidayIcon icon="book" size={26} /></span>
-          <div><p className="panel-eyebrow">OUR LITTLE ALMANAC</p><h2 id="calendar-title">{memoryEditing ? (memoryEditing.id ? '编辑这条记忆' : '记下这一天') : editor ? editId ? '编辑这个特别的日子' : '收藏一个特别的日子' : view === 'trash' ? '最近删除' : '灯塔 · 记忆日历'}</h2></div>
-          {view === 'calendar' && !editor && !memoryEditing && <button type="button" className="calendar-trash-entry text-button" onClick={() => setView('trash')}>最近删除</button>}
-          <button type="button" className="calendar-close" onClick={close} disabled={busy || memoryBusy} aria-label="关闭记忆日历">✕</button>
+          <div className="px-ribbon" id="calendar-title">
+            <PixelIcon name="calendar" size={18} />
+            <span>{memoryEditing ? (memoryEditing.id ? '编辑这条记忆' : '记下这一天') : editor ? editId ? '编辑特别的日子' : '收藏特别的日子' : view === 'trash' ? '最近删除' : '记忆日历'}</span>
+          </div>
+          <div className="calendar-head-actions">
+            {view === 'calendar' && !editor && !memoryEditing && <button type="button" className="px-btn px-btn-sm calendar-trash-entry" onClick={() => setView('trash')}><span>最近删除</span></button>}
+            <button type="button" className="px-slot calendar-close" onClick={close} disabled={busy || memoryBusy} aria-label="关闭记忆日历"><PixelIcon name="close" size={18} /></button>
+          </div>
         </header>
         {discard ? <section className="calendar-confirm" role="alert">
           <HolidayIcon icon="letter" size={42} /><h3>还有没保存的心意</h3><p>离开会放弃这次编辑，已保存的节日与记忆不受影响。</p>
@@ -474,7 +479,7 @@ export function CalendarFeature() {
               </section>
             </section>
             <aside className="calendar-countdowns"><div className="countdown-heading"><span className="panel-eyebrow">COUNTING LITTLE JOYS</span><h3>下一份小期待</h3></div>
-              {highlighted ? <CountdownCard holiday={highlighted} today={today} /> : <div className="countdown-empty"><HolidayIcon icon="sparkles" size={44} /><h4>把期待放在这里</h4><p>添一个节日，灯塔就会开始为你们倒数。</p><button className="cal-secondary" onClick={() => startEdit()}>添加第一个节日</button></div>}
+              {highlighted ? <CountdownCard holiday={highlighted} today={today} /> : <div className="countdown-empty"><HolidayIcon icon="sparkles" size={44} /><h4>把期待放在这里</h4><p>添一个节日，小岛就会开始为你们倒数。</p><button className="cal-secondary" onClick={() => startEdit()}>添加第一个节日</button></div>}
               {highlighted && <button className="text-button countdown-edit" onClick={() => startEdit(highlighted)}>调整这张倒数卡 ↗</button>}
               <div className="upcoming-heading"><h4>即将到来</h4><span>{upcoming.length} 个约定</span></div>
               <div className="upcoming-list">{upcoming.slice(0, 8).map(({ item, next }) => <button key={item.id} className="upcoming-item" style={themeVars(item.color)} onClick={() => { selectDay(next); setHighlightId(item.id) }}>

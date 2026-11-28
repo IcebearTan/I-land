@@ -1,0 +1,283 @@
+/* 记忆日历 · 日详情、记忆卡、节日/记忆编辑器、回收站与响应式（0 圆角 + 2px 像素木框） */
+
+.day-detail { padding-top: 14px; border-top: 2px solid var(--px-divider); }
+.day-detail-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.day-detail-heading h4 { margin: 0; font-family: var(--px-font); font-size: 15px; font-weight: 400; color: var(--px-ink); }
+.day-detail-entry { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.day-empty,
+.day-memory-empty {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border: 2px solid var(--px-divider);
+  background: var(--px-cream);
+  color: var(--px-ink-soft);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.day-detail-divider {
+  margin: 18px 0 6px;
+  font-family: var(--px-font);
+  font-size: 12px;
+  color: var(--px-ink-soft);
+}
+
+.day-event {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 12px;
+  border: 2px solid var(--holiday-accent);
+  border-left-width: 6px;
+  background: var(--holiday-paper);
+  box-shadow: var(--ui-shadow-control);
+}
+.event-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 2px solid var(--holiday-accent);
+  background: var(--holiday-soft);
+  color: var(--holiday-ink);
+}
+.day-event-copy { min-width: 0; flex: 1; }
+.day-event h4 { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--px-ink); overflow-wrap: anywhere; }
+.day-event-copy > span { font-size: 12px; color: var(--px-ink-soft); }
+.day-event-copy > p { font-size: 14px; line-height: 1.65; margin: 8px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--px-ink); }
+.day-event-actions, .memory-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+.delete-confirm {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 2px solid var(--px-danger);
+  background: var(--ui-danger-soft);
+}
+.delete-confirm p { margin: 0 0 8px; font-size: 13px; line-height: 1.6; color: var(--px-ink); }
+.delete-confirm button { margin-right: 8px; }
+
+/* 每日记忆卡与大图浏览 */
+.memory-cards { display: grid; gap: 12px; margin-top: 12px; }
+.memory-card {
+  border: 2px solid var(--px-border);
+  background: var(--px-cream-input);
+  box-shadow: var(--ui-shadow-control);
+}
+.memory-card-photos { position: relative; display: flex; gap: 8px; padding: 10px 10px 4px; overflow-x: auto; scrollbar-width: thin; }
+.memory-card-photo {
+  flex-shrink: 0;
+  width: 76px;
+  height: 76px;
+  padding: 0;
+  border: 2px solid var(--px-wood-dark);
+  background: var(--px-cream-deep);
+  box-shadow: var(--ui-shadow-control);
+  overflow: hidden;
+}
+.memory-card-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.memory-card-photo-count {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  padding: 2px 6px;
+  border: 2px solid #1c383e;
+  background: var(--px-ink);
+  color: var(--px-accent-ink);
+  font-size: 12px;
+}
+.memory-card-copy { padding: 10px 14px 12px; }
+.memory-card-copy h4 { margin: 0; font-size: 15px; font-weight: 600; color: var(--px-ink); overflow-wrap: anywhere; }
+.memory-card-copy > p { margin: 6px 0 0; font-size: 14px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--px-ink); }
+.memory-card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; font-size: 12px; color: var(--px-ink-soft); }
+.memory-card-author { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--px-ink); }
+.memory-card-time { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; font-size: 12px; color: var(--px-ink-soft); }
+
+.memory-viewer { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 16px; background: rgba(20, 16, 31, 0.88); }
+.memory-viewer-stage { display: grid; gap: 10px; justify-items: center; width: min(1060px, 100%); max-height: 100%; }
+.memory-viewer img { max-width: 100%; max-height: calc(100dvh - 132px); object-fit: contain; border: 2px solid var(--px-border); background: #14101f; }
+.memory-viewer-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; width: 100%; color: var(--px-accent-ink); }
+.memory-viewer-bar > span:last-child { display: inline-flex; gap: 6px; margin-left: auto; }
+
+/* 节日编辑器与记忆编辑器统一表单 */
+.holiday-editor { display: grid; grid-template-columns: minmax(0, 1fr) 296px; gap: 22px; padding: 20px 20px 0; }
+.memory-editor { padding: 20px 20px 0; }
+.memory-editor .editor-fields { max-width: 720px; }
+.editor-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+
+.editor-section-title { display: flex; align-items: center; gap: 10px; margin: 4px 0 14px; }
+.editor-section-title > span {
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--px-wood-dark);
+  background: var(--px-cream-deep);
+  font-family: var(--px-font);
+  font-size: 12px;
+  color: var(--px-ink);
+}
+.editor-section-title h3 { margin: 0; font-size: 15px; font-weight: 600; color: var(--px-ink); }
+
+.holiday-presets { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 8px; margin-bottom: 18px; }
+.holiday-presets button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 6px 8px;
+  border: 2px solid var(--px-border);
+  background: var(--px-cream-hi);
+  box-shadow: var(--ui-shadow-control);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--px-ink);
+}
+.holiday-presets button:hover { background: #fae8be; border-color: var(--px-wood-dark); }
+
+.cal-field { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; margin-bottom: 14px; font-size: 13px; font-weight: 600; color: var(--px-ink); }
+.cal-field input,
+.cal-field select,
+.cal-field textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 2px solid var(--px-wood-dark);
+  border-radius: 0;
+  background: var(--px-cream-input);
+  box-shadow: inset 2px 2px 0 #e2c593;
+  font: 15px/1.55 var(--ui-font);
+  font-weight: 400;
+  color: var(--px-ink);
+}
+.cal-field textarea { resize: vertical; min-height: 124px; line-height: 1.7; }
+.cal-field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.field-optional { color: var(--px-ink-soft); font-size: 12px; font-weight: 400; }
+.cal-field-hint, .preview-note { font-size: 13px; line-height: 1.6; color: var(--px-ink-soft); margin: -2px 0 16px; }
+
+.picker-label { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0 10px; font-size: 13px; font-weight: 600; color: var(--px-ink); }
+.picker-label > span { font-size: 12px; font-weight: 400; color: var(--px-ink-soft); }
+
+.theme-picker, .icon-picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(68px, 1fr)); gap: 8px; }
+.theme-picker button, .icon-picker button {
+  min-height: 68px;
+  padding: 8px 4px;
+  border: 2px solid var(--px-border);
+  background: var(--px-cream-hi);
+  color: var(--px-ink);
+  box-shadow: var(--ui-shadow-control);
+}
+.theme-picker button > span { display: grid; place-items: center; width: 28px; height: 28px; margin: auto; border: 2px solid var(--holiday-accent); background: var(--holiday-soft); color: var(--holiday-ink); font-size: 14px; }
+.theme-picker small, .icon-picker small { display: block; margin-top: 5px; font-size: 12px; line-height: 1.35; }
+.theme-picker button[aria-pressed="true"] { border-color: var(--holiday-accent); background: var(--holiday-paper); box-shadow: inset 0 0 0 2px var(--holiday-accent); }
+.icon-picker button[aria-pressed="true"] { border-color: var(--px-accent); background: var(--ui-accent-soft); color: var(--px-accent); box-shadow: inset 0 0 0 2px var(--px-accent); }
+
+.style-picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(108px, 1fr)); gap: 8px; }
+.style-picker button { padding: 8px; border: 2px solid var(--px-border); background: var(--px-cream-hi); box-shadow: var(--ui-shadow-control); color: var(--px-ink); font-size: 13px; font-weight: 600; }
+.style-picker button[aria-pressed="true"] { background: var(--ui-accent-soft); border-color: var(--px-accent); box-shadow: inset 0 0 0 2px var(--px-accent); }
+.style-swatch { display: block; height: 34px; margin-bottom: 6px; border: 2px solid var(--px-border); background: linear-gradient(145deg, #fff5f2 60%, #f7dce0 60%); }
+.style-swatch--ticket { background: #d9eaf1; border-style: dashed; border-color: var(--px-accent); }
+.style-swatch--garden { background: repeating-linear-gradient(0deg, transparent 0 7px, #c8d5af 7px 8px), repeating-linear-gradient(90deg, #f5f8ec 0 7px, #c8d5af 7px 8px); }
+.style-swatch--starry { background: #26203b; }
+.style-swatch--starry::after { content: '✦ · ✧'; color: #ffd98a; line-height: 30px; }
+
+.cal-pin { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0 8px; padding: 10px 12px; border: 2px solid var(--px-border); background: var(--px-cream-hi); font-size: 13px; font-weight: 600; }
+.cal-pin input { flex: 0 0 20px; width: 20px; height: 20px; margin-top: 2px; accent-color: var(--px-accent); }
+.cal-pin small { display: block; margin-top: 4px; font-size: 12px; font-weight: 400; color: var(--px-ink-soft); }
+
+.editor-preview { align-self: start; position: sticky; top: 76px; padding: 16px; border: 2px solid var(--px-border); background: var(--px-cream-deep); }
+.editor-preview h3 { margin: 0 0 12px; font-family: var(--px-font); font-size: 15px; font-weight: 400; color: var(--px-ink); }
+
+.editor-footer { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; padding: 14px 0; border-top: 2px solid var(--px-divider); }
+.editor-footer .form-error { width: 100%; }
+
+.calendar-confirm { text-align: center; padding: 44px 20px; color: var(--px-ink); }
+.calendar-confirm h3 { margin: 10px 0 6px; font-family: var(--px-font); font-size: 18px; font-weight: 400; }
+.calendar-confirm p { margin: 0 0 16px; font-size: 14px; color: var(--px-ink-soft); }
+.calendar-confirm button { margin: 4px 6px; }
+
+/* 日期小挂历 */
+.holiday-date-field { min-width: 0; }
+.holiday-date-input { position: relative; width: 100%; }
+.holiday-date-input input { padding-right: 50px; }
+.holiday-date-input > button { position: absolute; top: 2px; bottom: 2px; right: 2px; width: 42px; display: grid; place-items: center; border: 0; border-left: 2px solid var(--px-border); background: var(--px-cream-deep); color: var(--px-ink); }
+.date-mini { margin: -6px 0 14px; padding: 10px; border: 2px solid var(--px-wood-dark); background: var(--px-cream-hi); box-shadow: var(--ui-shadow-control); }
+.date-mini-heading { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; }
+.date-mini-heading strong { font-family: var(--px-font); font-size: 14px; font-weight: 400; }
+.date-mini-heading button { width: 36px; height: 36px; border: 2px solid var(--px-border); background: var(--px-cream); font-family: var(--px-font); }
+.date-mini-scroll { overflow-x: auto; }
+.date-mini-week, .date-mini-grid { display: grid; min-width: 280px; grid-template-columns: repeat(7, minmax(38px, 1fr)); text-align: center; }
+.date-mini-week { padding: 2px 0 6px; font-family: var(--px-font); font-size: 12px; color: var(--px-ink-soft); }
+.date-mini-grid { gap: 2px; margin-bottom: 8px; }
+.date-mini-grid button { min-height: 36px; padding: 0; border: 1px solid #dfc18a; background: var(--px-cream-input); font-family: var(--px-font); font-size: 12px; color: var(--px-ink); }
+.date-mini-grid button.date-mini-outside { background: transparent; color: var(--px-ink-soft); }
+.date-mini-grid button[aria-pressed="true"] { background: var(--px-accent); border-color: #1c383e; color: var(--px-accent-ink); }
+.date-mini > small { display: block; margin-top: 6px; font-size: 12px; color: var(--px-ink-soft); }
+
+/* 心情、天气与照片上传 */
+.mood-picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(46px, 1fr)); gap: 8px; }
+.mood-picker button { min-height: 44px; border: 2px solid var(--px-border); background: var(--px-cream-hi); font-size: 20px; box-shadow: var(--ui-shadow-control); }
+.mood-picker button[aria-pressed="true"] { border-color: var(--px-danger); background: var(--ui-danger-soft); box-shadow: inset 0 0 0 2px var(--px-danger); }
+.weather-picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.weather-picker button { display: grid; gap: 4px; justify-items: center; min-height: 62px; padding: 8px; border: 2px solid var(--px-border); background: var(--px-cream-hi); box-shadow: var(--ui-shadow-control); font-size: 12px; color: var(--px-ink); }
+.weather-picker button > span { font-size: 20px; }
+.weather-picker button[aria-pressed="true"] { border-color: var(--px-accent); background: var(--ui-accent-soft); box-shadow: inset 0 0 0 2px var(--px-accent); }
+
+.memory-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; list-style: none; margin: 0 0 10px; padding: 0; }
+.memory-photo { position: relative; min-width: 0; display: flex; flex-direction: column; border: 2px solid var(--px-wood-dark); background: var(--px-cream-hi); box-shadow: var(--ui-shadow-control); }
+.memory-photo > img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.memory-photo-progress { display: block; background: var(--px-accent); color: var(--px-accent-ink); font-size: 12px; }
+.memory-photo-progress i { display: block; height: 4px; background: #8ed16f; }
+.memory-photo-progress small { display: block; padding: 3px 6px; text-align: right; }
+.memory-photo-error { display: block; padding: 8px; font-size: 12px; background: var(--ui-danger-soft); color: var(--px-danger); }
+.memory-photo-ready { position: absolute; right: 5px; top: 5px; display: grid; place-items: center; width: 22px; height: 22px; border: 2px solid #1c383e; background: var(--px-accent); color: var(--px-accent-ink); font-size: 12px; }
+.memory-photo-actions { display: grid; grid-template-columns: repeat(4, minmax(34px, 1fr)); margin-top: auto; border-top: 2px solid var(--px-wood-dark); }
+.memory-photo-actions > * { min-height: 36px; border: 0; border-right: 1px solid var(--px-divider); background: var(--px-cream-deep); color: var(--px-ink); font-weight: 600; }
+.memory-photo-actions > *:last-child { border-right: 0; }
+.memory-photo--uploading .memory-photo-actions { display: none; }
+.memory-photo--add { display: grid; min-height: 148px; border-style: dashed; border-color: var(--px-border); background: var(--px-cream); }
+.memory-photo--add button { display: grid; place-items: center; gap: 4px; width: 100%; min-height: 148px; border: 0; background: none; color: var(--px-ink-soft); font-size: 22px; }
+.memory-photo--add button small { font-size: 13px; font-weight: 600; }
+
+.memory-conflict { width: 100%; padding: 12px; border: 2px solid var(--px-danger); background: var(--ui-danger-soft); }
+.memory-conflict p { margin: 0 0 8px; font-size: 13px; color: var(--px-danger); }
+.memory-conflict div { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* 回收站 */
+.memory-trash { padding: 20px; }
+.memory-trash-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.memory-trash-heading h3 { margin: 0; font-family: var(--px-font); font-size: 16px; font-weight: 400; }
+.memory-trash-heading h3 small { font: 12px/1.4 var(--ui-font); color: var(--px-ink-soft); margin-left: 8px; }
+.memory-trash-actions { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.memory-trash-empty { margin-top: 16px; }
+.memory-trash-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+.memory-trash-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; border: 2px solid var(--px-border); background: var(--px-cream-hi); box-shadow: var(--ui-shadow-control); }
+.memory-trash-item img { flex-shrink: 0; width: 56px; height: 56px; object-fit: cover; border: 2px solid var(--px-wood-dark); }
+.memory-trash-item > div { flex: 1; min-width: 0; }
+.memory-trash-item h4 { margin: 0; font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+.memory-trash-item h4 small { font-size: 12px; font-weight: 400; color: var(--px-ink-soft); margin-left: 6px; }
+.memory-trash-item p { margin: 4px 0 0; font-size: 14px; color: var(--px-ink-soft); overflow-wrap: anywhere; }
+.memory-trash-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; font-size: 12px; color: var(--px-ink-soft); }
+
+@media (max-width: 960px) {
+  .calendar-layout, .holiday-editor { grid-template-columns: minmax(0, 1fr) 256px; gap: 16px; }
+}
+@media (max-width: 760px) {
+  .calendar-mask { padding: 8px; }
+  .calendar-panel { width: 100%; max-height: calc(100dvh - 16px); }
+  .calendar-header { padding: 8px 12px 10px; }
+  .calendar-intro { padding: 14px 12px 12px; }
+  .calendar-layout, .holiday-editor { grid-template-columns: minmax(0, 1fr); padding: 0 12px 16px; gap: 16px; }
+  .holiday-editor, .memory-editor, .memory-trash { padding-inline: 12px; }
+  .calendar-notice, .calendar-error, .calendar-loading { margin-inline: 12px; }
+  .calendar-month { padding: 10px; }
+  .cal-field-row { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .cal-field input, .cal-field select, .cal-field textarea { font-size: 16px; }
+  .editor-preview { position: static; }
+  .memory-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .memory-trash-item { flex-wrap: wrap; }
+  .memory-trash-item > button { margin-left: auto; }
+}
