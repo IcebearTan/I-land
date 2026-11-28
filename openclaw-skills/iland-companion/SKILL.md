@@ -1,6 +1,6 @@
 ---
 name: iland-companion
-description: I-land 双人像素小岛官方技能。当用户想查看小岛动态、有没有新信或快到的纪念日、切换灯语信号塔、给另一半写信、把照片或日常记到小岛记忆日历、查看对方足迹或海边/客厅在场状态时使用。严格通过本工作区独立凭证调用本机 I-land API，绝不直写数据库。
+description: I-land 双人像素小岛官方技能。当用户想查看小岛动态、有没有新信或快到的纪念日、切换灯语信号塔、给另一半写信、把照片或日常记到小岛记忆日历、查看双人自习室（星光阁楼书房）专注状态与共学时长、或查看对方足迹与海边/客厅在场状态时使用。严格通过本工作区独立凭证调用本机 I-land API，绝不直写数据库。
 ---
 
 # I-land 小岛伴侣操作规范（Official I-land Companion）
@@ -68,7 +68,19 @@ description: I-land 双人像素小岛官方技能。当用户想查看小岛动
 /home/donut/.openclaw/tools-venv/bin/python tools/iland_cli.py memories restore 8
 ```
 
-## 5. 仪式感与安全红线
+## 5. 星光阁楼书房（双人自习室）
+
+```bash
+# 查看当前谁在阁楼书房、是否点亮老虎窗、各自番茄钟阶段/小目标与今日/近7天共学时长
+/home/donut/.openclaw/tools-venv/bin/python tools/iland_cli.py study status
+
+# 查看近 N 天双方专注总时长、同席轮数与最近完成的专注足迹列表
+/home/donut/.openclaw/tools-venv/bin/python tools/iland_cli.py study stats --days 7 --limit 20
+```
+
+> 隐私边界：书房内的实时双人私聊消息正文不会进入 `digest` 或 `study status`，保护两人安静伴读的私密感。
+
+## 6. 仪式感与安全红线
 
 1. **保护未拆封火漆**：查到对方发来的未读信时，只告知**标题与信封寄语**并邀请用户亲自上岛拆信；**绝不静默调用 `letters mark-read` 或擅自加 `--reveal` 剧透正文**，除非用户明确说“帮我直接读内容 / 标为已读”。
 2. **写信先展示草稿**：执行 `letters send` 前，必须先向用户展示标题、日期、寄语和正文草稿，获得确认后再投递。

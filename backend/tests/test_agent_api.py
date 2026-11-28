@@ -175,7 +175,22 @@ def test_agent_end_to_end_business_flow_and_digest(monkeypatch):
             assert joined.status_code == 200
             lease_id = joined.json()["lease_id"]
 
-            # 6. her 通过 Agent 拉取 digest：应看到 bear 的未读信元数据（且不含 body）、灯语、即将到来的纪念日与自己在客厅
+            # 5.5 bear 开启一轮阁楼番茄钟并发送一条书房私聊，验证 digest 含自习摘要且绝不泄露私聊正文
+            st_timer = agent.post(
+                "/api/study/timer",
+                json={"action": "start_focus", "focus_minutes": 25, "break_minutes": 5, "goal_text": "准备开题报告"},
+                headers=_auth(BEAR_TOKEN),
+            )
+            assert st_timer.status_code == 200
+            st_msg = agent.post(
+                "/api/study/messages",
+                json={"body": "书房私密悄悄话正文不进digest", "client_id": "agent-study-priv-001"},
+                headers=_auth(BEAR_TOKEN),
+            )
+            assert st_msg.status_code == 201
+            study_msg_id = st_msg.json()["message"]["id"]
+
+            # 6. her 通过 Agent 拉取 digest：应看到 bear 的未读信元数据（且不含 body）、灯语、自习室状态（不含私聊正文）与自己在客厅
             digest_res = agent.get("/api/agent/digest", headers=_auth(HER_TOKEN))
             assert digest_res.status_code == 200
             digest = digest_res.json()
@@ -190,6 +205,13 @@ def test_agent_end_to_end_business_flow_and_digest(monkeypatch):
             assert digest["recent_memories_count_7d"] >= 1
             assert digest["rooms"]["interior"]["online_count"] == 1
             assert digest["rooms"]["interior"]["members"][0]["account"] == "her"
+            assert digest["study"]["roof_lit"] is True
+            assert digest["study"]["timers"]["bear"]["phase"] == "focusing"
+            assert digest["study"]["timers"]["bear"]["goal_text"] == "准备开题报告"
+            assert "书房私密悄悄话正文不进digest" not in digest_res.text
+
+            agent.post("/api/study/timer", json={"action": "stop"}, headers=_auth(BEAR_TOKEN))
+            agent.delete(f"/api/study/messages/{study_msg_id}", headers=_auth(BEAR_TOKEN))
 
             # 7. her 无法删 bear 的信（403）；bear 自己能删（200）
             assert agent.delete(f"/api/letters/{letter_id}", headers=_auth(HER_TOKEN)).status_code == 403

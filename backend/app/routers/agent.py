@@ -11,6 +11,7 @@ from ..db import get_db
 from ..deps import get_current_user
 from ..models import Anniversary, Letter, Memory, User, Visit, WorldState, jload
 from ..room_runtime import room_runtimes
+from ..study_service import summarize_sessions_range
 from .lighthouse import _get_or_init as get_lighthouse_row
 from .lighthouse import _serialize as serialize_lighthouse
 
@@ -150,6 +151,16 @@ def get_agent_digest(
         else None
     )
 
+    study_room = room_runtimes["study"].read_summary(db)
+    study_summary = {
+        "roof_lit": study_room["roof_lit"],
+        "online_count": study_room["online_count"],
+        "members": study_room["members"],
+        "timers": study_room["timers"],
+        "today": {"date": today_iso, **summarize_sessions_range(db, today_iso, today_iso)},
+        "week": summarize_sessions_range(db, week_start, today_iso),
+    }
+
     return {
         "actor": {"account": user.name, "display": user.display or user.name},
         "companion": (
@@ -163,8 +174,10 @@ def get_agent_digest(
         "upcoming_anniversaries": _upcoming_anniversaries(db, today, upcoming_days),
         "recent_memories_count_7d": len(recent_memories),
         "presence": presence,
+        "study": study_summary,
         "rooms": {
             "seaside": room_runtimes["seaside"].read_summary(db),
             "interior": room_runtimes["interior"].read_summary(db),
+            "study": study_room,
         },
     }

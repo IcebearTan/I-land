@@ -45,6 +45,17 @@ def _cmd_rooms(cfg: dict[str, str], args: argparse.Namespace) -> dict[str, Any]:
     return {"ok": True, "actor": data.get("actor"), "rooms": data.get("rooms")}
 
 
+def _cmd_study(cfg: dict[str, str], args: argparse.Namespace) -> dict[str, Any]:
+    if args.action == "status":
+        res = api_request(cfg, "GET", "/api/study/overview")
+        return {"ok": True, **res}
+    if args.action == "stats":
+        query = {"days": args.days, "limit": args.limit}
+        res = api_request(cfg, "GET", "/api/study/sessions", query=query)
+        return {"ok": True, **res}
+    raise IlandCliError(f"未知 study 操作：{args.action}")
+
+
 def _cmd_lighthouse(cfg: dict[str, str], args: argparse.Namespace) -> dict[str, Any]:
     if args.action == "get":
         return {"ok": True, **api_request(cfg, "GET", "/api/lighthouse")}
@@ -178,8 +189,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_digest = sub.add_parser("digest", help="拉取全岛状态速览")
     p_digest.add_argument("--upcoming-days", type=int, default=14)
 
-    p_rooms = sub.add_parser("rooms", help="只读查看海边与客厅状态")
+    p_rooms = sub.add_parser("rooms", help="只读查看海边、客厅与阁楼书房状态")
     p_rooms.add_subparsers(dest="action", required=True).add_parser("status")
+
+    p_study = sub.add_parser("study", help="星光阁楼书房（双人自习室）状态与共学统计")
+    study_sub = p_study.add_subparsers(dest="action", required=True)
+    study_sub.add_parser("status", help="查看当前书房在场、双方番茄钟与今日概览")
+    study_stats = study_sub.add_parser("stats", help="查看近期共学时长与专注足迹记录")
+    study_stats.add_argument("--days", type=int, default=7)
+    study_stats.add_argument("--limit", type=int, default=20)
 
     p_lh = sub.add_parser("lighthouse", help="灯语信号塔")
     lh_sub = p_lh.add_subparsers(dest="action", required=True)
@@ -268,6 +286,7 @@ def main(argv: list[str] | None = None) -> int:
     handlers = {
         "digest": _cmd_digest,
         "rooms": _cmd_rooms,
+        "study": _cmd_study,
         "lighthouse": _cmd_lighthouse,
         "letters": _cmd_letters,
         "anniversaries": _cmd_anniversaries,
