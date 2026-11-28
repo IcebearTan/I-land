@@ -283,11 +283,11 @@ function cottage(scene: Phaser.Scene): void {
     for (let x = left + (row % 2) * 5; x < 91 + row * 2; x += 10) p.rect(x, y, 1, 4, '#bf715c')
   }
   p.rect(30, 21, 61, 2, '#edb582'); p.rect(8, 61, 106, 3, '#c58e65')
-  // 小阁楼窗打破大屋顶的平面。
+  // 小阁楼窗打破大屋顶的平面（默认静谧蓝灰玻璃，自习专注或夜晚由 IslandScene 动态点亮暖光）。
   p.polygon([[43, 51], [58, 34], [73, 51]], C.woodDark)
   p.polygon([[46, 50], [58, 37], [70, 50]], '#edcca0')
   p.rect(48, 50, 20, 13, '#edcca0'); p.rect(53, 47, 10, 12, C.wood)
-  p.rect(55, 49, 6, 8, C.warm); p.rect(57, 49, 1, 8, C.cream)
+  p.rect(55, 49, 6, 8, '#7fb6c5'); p.rect(55, 49, 2, 6, '#c1d9d1'); p.rect(57, 49, 1, 8, C.cream)
   // 门前盆栽。
   for (const x of [31, 83]) { p.rect(x, 97, 8, 7, '#ae7056'); p.rect(x - 1, 96, 10, 2, '#d49870'); flower(p, x + 4, 93, C.cream) }
   p.texture(scene, 'cottage-v3')

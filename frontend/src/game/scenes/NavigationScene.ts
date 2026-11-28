@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import { eventBus, type GameEvents, type IslandEntry, type IslandIdentity, type SceneId } from '../EventBus'
 
-const SCENE_KEYS: Record<SceneId, string> = { login: 'Login', island: 'Island', seaside: 'Seaside', interior: 'Interior' }
+const SCENE_KEYS: Record<SceneId, string> = { login: 'Login', island: 'Island', seaside: 'Seaside', interior: 'Interior', study: 'Study' }
 const SAFE_RETURN = { x: 360, y: 338 }
 const HOME_RETURN = { x: 266, y: 246 }
 
@@ -29,6 +29,12 @@ export class NavigationScene extends Phaser.Scene {
       this.identity = { ...identity }
       this.begin('island')
     }
+    const enterStudy = (identity: IslandIdentity) => {
+      if (this.exitRequested || this.current !== 'login' || this.transitioning) return
+      this.identity = { ...identity }
+      this.returnPoint = { ...HOME_RETURN }
+      this.begin('study')
+    }
     const identity = (value: IslandIdentity) => {
       if (!this.exitRequested) this.identity = { ...value }
     }
@@ -44,10 +50,12 @@ export class NavigationScene extends Phaser.Scene {
     }
     const travel = ({ from, to, returnPoint }: GameEvents['TRAVEL_REQUEST']) => {
       if (this.exitRequested || this.transitioning || !this.identity || from !== this.current || from === to) return
-      if (from === 'island' && (to === 'seaside' || to === 'interior')) {
+      if (from === 'island' && (to === 'seaside' || to === 'interior' || to === 'study')) {
         this.returnPoint = returnPoint && Number.isFinite(returnPoint.x) && Number.isFinite(returnPoint.y)
-          ? { ...returnPoint } : { ...(to === 'interior' ? HOME_RETURN : SAFE_RETURN) }
-      } else if ((from !== 'seaside' && from !== 'interior') || to !== 'island') return
+          ? { ...returnPoint } : { ...(to === 'seaside' ? SAFE_RETURN : HOME_RETURN) }
+      } else if ((from === 'interior' && to === 'study') || (from === 'study' && to === 'interior')) {
+        // 小屋一楼客厅与二楼阁楼书房上下互通，保留回岛落点
+      } else if ((from !== 'seaside' && from !== 'interior' && from !== 'study') || to !== 'island') return
       this.begin(to)
     }
     const exit = () => {
@@ -56,14 +64,14 @@ export class NavigationScene extends Phaser.Scene {
       this.begin('login')
     }
     const state = () => this.publish()
-    eventBus.on('ENTER_ISLAND', enter); eventBus.on('IDENTITY_CHANGED', identity)
+    eventBus.on('ENTER_ISLAND', enter); eventBus.on('ENTER_STUDY', enterStudy); eventBus.on('IDENTITY_CHANGED', identity)
     eventBus.on('SCENE_READY', ready); eventBus.on('TRAVEL_REQUEST', travel)
     eventBus.on('EXIT_TO_LOGIN', exit); eventBus.on('SCENE_REQUEST_STATE', state)
     const cleanup = () => {
       if (this.disposed) return
       this.disposed = true; this.epoch++
       this.cancelPending()
-      eventBus.off('ENTER_ISLAND', enter); eventBus.off('IDENTITY_CHANGED', identity)
+      eventBus.off('ENTER_ISLAND', enter); eventBus.off('ENTER_STUDY', enterStudy); eventBus.off('IDENTITY_CHANGED', identity)
       eventBus.off('SCENE_READY', ready); eventBus.off('TRAVEL_REQUEST', travel)
       eventBus.off('EXIT_TO_LOGIN', exit); eventBus.off('SCENE_REQUEST_STATE', state)
       this.events.off(Phaser.Scenes.Events.SHUTDOWN, cleanup)
@@ -105,7 +113,7 @@ export class NavigationScene extends Phaser.Scene {
           : Object.values(SCENE_KEYS).map(key => this.scene.get(key)).find(scene => scene.scene.isActive())
         let data: IslandEntry | undefined
         if (this.identity) data = target === 'island'
-          ? { ...this.identity, ...(this.current === 'seaside' || this.current === 'interior' ? { returnPoint: { ...this.returnPoint } } : {}) }
+          ? { ...this.identity, ...(this.current === 'seaside' || this.current === 'interior' || this.current === 'study' ? { returnPoint: { ...this.returnPoint } } : {}) }
           : { ...this.identity }
         if (active) active.scene.start(SCENE_KEYS[target], data)
         else this.scene.launch(SCENE_KEYS[target], data)

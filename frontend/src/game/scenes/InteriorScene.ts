@@ -8,10 +8,10 @@ import { CHARACTER_ATLAS, CHARACTER_ORIGIN, HOME_ATLAS, actorFrame, pickFacing, 
 import { nightWeight } from '../../audio/types'
 import { homeRoute, homeSegmentClear, homeWalkable, type Point, type Rect } from '../../interior/navigation'
 import { eventBus, type GameEvents, type InteriorState, type IslandIdentity, type Phase, type SceneState } from '../EventBus'
-import { createInteriorArt, HOME_LAYOUT, paintInteriorBackdrop, paintInteriorTV } from '../art/interior'
+import { ATTIC_LADDER, createInteriorArt, HOME_LAYOUT, paintInteriorBackdrop, paintInteriorTV } from '../art/interior'
 
 const WALL_CALENDAR = { visual: { x: 200, y: 41, w: 26, h: 30 }, stand: { x: 213, y: 122 } } as const
-type Interaction = { point: Point; label: string; kind: 'fireplace' | 'tv' | 'sofa' | 'door' | 'calendar'; seat?: 0 | 1 }
+type Interaction = { point: Point; label: string; kind: 'fireplace' | 'tv' | 'sofa' | 'door' | 'calendar' | 'study'; seat?: 0 | 1 }
 const contains = (rect: Rect, p: Point) => p.x >= rect.x && p.x <= rect.x + rect.w && p.y >= rect.y && p.y <= rect.y + rect.h
 const distance = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.y - b.y)
 const inUI = (target: EventTarget | null) => target instanceof HTMLElement && !!target.closest('button, input, textarea, select, a, [contenteditable="true"], [role="button"]')
@@ -264,6 +264,7 @@ export class InteriorScene extends Phaser.Scene {
       return { kind: 'sofa', seat, point: HOME_LAYOUT.standPoints[seat], label: '坐一会儿' }
     }
     if (contains(HOME_LAYOUT.televisionVisual, point)) return { kind: 'tv', point: HOME_LAYOUT.tv, label: '电视 · 开关' }
+    if (contains(ATTIC_LADDER.visual, point)) return { kind: 'study', point: ATTIC_LADDER.stand, label: '上阁楼 · 双人自习室' }
     if (contains(WALL_CALENDAR.visual, point)) return { kind: 'calendar', point: WALL_CALENDAR.stand, label: '挂历 · 记忆日历' }
     if (contains(HOME_LAYOUT.fireplaceVisual, point)) return { kind: 'fireplace', point: HOME_LAYOUT.fireplace, label: '拨一拨炉火' }
     if (contains({ x: 252, y: 214, w: 40, h: 20 }, point)) return { kind: 'door', point: HOME_LAYOUT.door, label: '回到小岛' }
@@ -282,6 +283,7 @@ export class InteriorScene extends Phaser.Scene {
     if (this.blocked() || distance(this.player, value.point) > 29) return
     this.path = []; this.arrival = undefined; this.destination.setVisible(false)
     if (value.kind === 'door') this.returnToIsland()
+    else if (value.kind === 'study') eventBus.emit('TRAVEL_REQUEST', { from: 'interior', to: 'study' })
     else if (value.kind === 'calendar') eventBus.emit('OPEN_CALENDAR', {})
     else if (value.kind === 'fireplace') { this.fireBoostUntil = this.elapsed + 1600; this.say('炉火暖了一些，慢慢待着就好。') }
     else if (value.kind === 'tv') this.changeTV('tv-toggle')
@@ -388,6 +390,7 @@ export class InteriorScene extends Phaser.Scene {
   private updatePrompt(force = false): void {
     const options: Interaction[] = [
       { kind: 'fireplace', point: HOME_LAYOUT.fireplace, label: '拨一拨炉火' },
+      { kind: 'study', point: ATTIC_LADDER.stand, label: '上阁楼 · 双人自习室' },
       { kind: 'tv', point: HOME_LAYOUT.tv, label: this.television ? '电视 · 关掉' : '电视 · 打开' },
       { kind: 'calendar', point: WALL_CALENDAR.stand, label: '挂历 · 记忆日历' },
       { kind: 'sofa', seat: 0, point: HOME_LAYOUT.standPoints[0], label: '沙发 · 坐一会儿' },
@@ -395,7 +398,7 @@ export class InteriorScene extends Phaser.Scene {
       { kind: 'door', point: HOME_LAYOUT.door, label: '回到小岛' },
     ]
     this.interaction = !this.blocked() && this.pose === 'walking'
-      ? options.filter(item => distance(this.player, item.point) < (item.kind === 'calendar' ? 24 : 28)).sort((a, b) => distance(this.player, a.point) - distance(this.player, b.point))[0] ?? null : null
+      ? options.filter(item => distance(this.player, item.point) < (item.kind === 'calendar' || item.kind === 'study' ? 24 : 28)).sort((a, b) => distance(this.player, a.point) - distance(this.player, b.point))[0] ?? null : null
     const label = this.interaction?.label ?? null
     if (force || label !== this.lastLabel) { this.lastLabel = label; eventBus.emit('INTERACTION_CHANGED', { label }) }
     this.prompt.setVisible(!!this.interaction)
@@ -404,7 +407,7 @@ export class InteriorScene extends Phaser.Scene {
       const width = this.promptText.width + 20
       this.promptBg.clear().fillStyle(0x8a5a38).fillRoundedRect(-width / 2 - 1, -19, width + 2, 38, 3)
         .fillStyle(0xfdf6e9).fillRoundedRect(-width / 2, -18, width, 36, 3).fillTriangle(-4, 18, 4, 18, 0, 23)
-      const y = this.interaction.kind === 'fireplace' ? 45 : this.interaction.kind === 'tv' ? 35 : this.interaction.kind === 'calendar' ? 32 : this.interaction.kind === 'sofa' ? 140 : this.interaction.point.y - 34
+      const y = this.interaction.kind === 'fireplace' ? 45 : this.interaction.kind === 'tv' ? 35 : this.interaction.kind === 'calendar' || this.interaction.kind === 'study' ? 32 : this.interaction.kind === 'sofa' ? 140 : this.interaction.point.y - 34
       // 短竖屏的回岛按钮占据顶部 70–114px；提示底板须完整留在它下方。
       const { width: viewWidth, height: viewHeight } = this.scale.gameSize
       const safeY = viewWidth <= 600 ? this.cameraCenter.y + (166 - viewHeight / 2) / this.cameras.main.zoom : -Infinity

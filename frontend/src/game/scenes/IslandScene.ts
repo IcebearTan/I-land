@@ -93,6 +93,9 @@ export class IslandScene extends Phaser.Scene {
   private ripples: WaveRipple[] = []
   private mailboxBadge!: Phaser.GameObjects.Image
   private unreadLetters = 0
+  private studyDormer!: Phaser.GameObjects.Container
+  private studyRoofLit = false
+  private studyCompanionNote: string | null = null
   private canopies: SwayingCanopy[] = []
   private windLeaves: WindLeaf[] = []
   private interactables: Interactable[] = [
@@ -180,6 +183,12 @@ export class IslandScene extends Phaser.Scene {
       this.mailboxBadge?.setVisible(this.unreadLetters > 0)
       this.updatePrompt(true)
     }
+    const onStudyRoof = ({ lit, companionFocusing, companionName }: { lit: boolean; companionFocusing?: boolean; companionName?: string }) => {
+      this.studyRoofLit = lit
+      this.studyCompanionNote = companionFocusing && companionName ? `${companionName}正在阁楼自习` : null
+      this.studyDormer?.setVisible(this.studyRoofLit)
+      this.updatePrompt(true)
+    }
     const onScene = (state: SceneState) => {
       if (state.scene !== 'island' || !state.transitioning) return
       this.leaving = true; this.clearInput(); this.promptTarget = null; this.prompt.setVisible(false)
@@ -193,6 +202,7 @@ export class IslandScene extends Phaser.Scene {
     eventBus.on('IDENTITY_CHANGED', onIdentity); eventBus.on('SCENE_CHANGED', onScene)
     eventBus.on('LIGHTHOUSE_UPDATED', onLighthouse)
     eventBus.on('MAILBOX_UNREAD_CHANGED', onMailboxUnread)
+    eventBus.on('STUDY_ROOF_STATUS', onStudyRoof)
     this.scale.on('resize', this.fitZoom, this)
     let disposed = false
     const cleanup = () => {
@@ -202,6 +212,7 @@ export class IslandScene extends Phaser.Scene {
       eventBus.off('IDENTITY_CHANGED', onIdentity); eventBus.off('SCENE_CHANGED', onScene)
       eventBus.off('LIGHTHOUSE_UPDATED', onLighthouse)
       eventBus.off('MAILBOX_UNREAD_CHANGED', onMailboxUnread)
+      eventBus.off('STUDY_ROOF_STATUS', onStudyRoof)
       this.scale.off('resize', this.fitZoom, this)
       this.game.events.off('blur', onBlur)
       document.removeEventListener('visibilitychange', onVisibility)
@@ -329,6 +340,13 @@ export class IslandScene extends Phaser.Scene {
       this.nightLights.add(this.add.rectangle(x + 5.5, HOME.y - 23, 1, 12, 0x8a5a38))
       this.nightLights.add(this.add.rectangle(x + 5.5, HOME.y - 23, 11, 1, 0x8a5a38))
     }
+    // 二楼星光阁楼老虎窗暖灯（任意一方在书房或专注时全天候透出琥珀暖光）
+    this.studyDormer = this.add.container(0, 0).setDepth(5105).setVisible(this.studyRoofLit)
+    for (let r = 18; r > 4; r -= 4) {
+      this.studyDormer.add(this.add.ellipse(HOME.x - 2, HOME.y - 47, r * 2, r * 1.2, 0xffd98a, 0.065))
+    }
+    this.studyDormer.add(this.add.rectangle(HOME.x - 2, HOME.y - 47, 6, 8, 0xffd98a))
+    this.studyDormer.add(this.add.rectangle(HOME.x - 2.5, HOME.y - 47, 1, 8, 0x8a5a38))
     const beamY = TOWER.y - 84
     this.towerBeam = this.add.graphics({ x: TOWER.x, y: beamY })
     this.nightLights.add(this.towerBeam)
@@ -482,7 +500,9 @@ export class IslandScene extends Phaser.Scene {
       : this.promptTarget
         ? this.promptTarget.event === 'mailbox' && this.unreadLetters > 0
           ? `${this.promptTarget.label} · ${this.unreadLetters} 封未拆`
-          : this.promptTarget.label
+          : this.promptTarget.event === 'interior' && this.studyCompanionNote
+            ? `回家 · ${this.studyCompanionNote}`
+            : this.promptTarget.label
         : null
     if (label !== this.interactionLabel || force) {
       this.interactionLabel = label

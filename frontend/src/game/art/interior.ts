@@ -69,6 +69,39 @@ export const WALL_CALENDAR = {
   stand: { x: 213, y: 122 },
 } as const
 
+export const ATTIC_LADDER = {
+  x: 114,
+  y: 15,
+  visual: { x: 111, y: 14, w: 22, h: 90 },
+  stand: { x: 122, y: 122 },
+} as const
+
+function buildAtticLadder(scene: Phaser.Scene, key: string, night: boolean): void {
+  const p = new PixelArt(18, 88)
+  const railDark = night ? '#3c3142' : '#6e4529'
+  const railMid = night ? '#5d4b5e' : '#9c6940'
+  const railHi = night ? '#7b687d' : '#cfa06e'
+  // 顶部二楼阁楼木质天窗盖板与透出的一线暖光
+  p.rect(0, 0, 18, 9, railDark)
+  p.rect(1, 1, 16, 7, night ? '#272238' : '#4f311e')
+  p.rect(2, 2, 14, 2, '#ffd98a')
+  // 墙面投影与双侧橡木立柱
+  p.rect(4, 9, 2, 79, night ? '#1b1d30' : '#b7a181')
+  p.rect(14, 9, 2, 79, night ? '#1b1d30' : '#b7a181')
+  for (const lx of [2, 12]) {
+    p.rect(lx, 7, 4, 81, railDark)
+    p.rect(lx + 1, 7, 2, 80, railMid)
+    p.rect(lx + 1, 7, 1, 79, railHi)
+  }
+  // 7 级踏步横档
+  for (let y = 16; y <= 76; y += 10) {
+    p.rect(5, y, 8, 3, railDark)
+    p.rect(5, y, 8, 2, railMid)
+    p.rect(5, y, 8, 1, railHi)
+  }
+  p.texture(scene, key)
+}
+
 function buildWallCalendar(scene: Phaser.Scene, key: string, night: boolean): void {
   const p = new PixelArt(20, 24)
   // Soft wall drop shadow
@@ -111,4 +144,8 @@ export function createInteriorArt(scene: Phaser.Scene): void {
   }
   scene.add.image(WALL_CALENDAR.x, WALL_CALENDAR.y, 'home-calendar-day').setOrigin(0).setDepth(3.5)
   scene.add.image(WALL_CALENDAR.x, WALL_CALENDAR.y, 'home-calendar-night').setOrigin(0).setDepth(3.51).setData('home-night-layer', true)
+  buildAtticLadder(scene, 'home-ladder-day', false)
+  buildAtticLadder(scene, 'home-ladder-night', true)
+  scene.add.image(ATTIC_LADDER.x, ATTIC_LADDER.y, 'home-ladder-day').setOrigin(0).setDepth(3.5)
+  scene.add.image(ATTIC_LADDER.x, ATTIC_LADDER.y, 'home-ladder-night').setOrigin(0).setDepth(3.51).setData('home-night-layer', true)
 }

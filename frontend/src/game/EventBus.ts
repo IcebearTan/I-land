@@ -4,9 +4,10 @@ import type { AudioContextInfo, AudioSettings, AudioStatus } from '../audio/type
 import type { SceneryRate, SceneryTime } from '../seaside/clock'
 import type { RoomMember, RoomPose, RoomView } from '../seaside/types'
 import type { HomeMember, HomeView } from '../interior/room'
+import type { StudyAudioMode, StudySceneState, StudySnapshot } from '../study/types'
 
 export interface IslandIdentity { character: CharacterId; display: string; account?: 'bear' | 'her' }
-export type SceneId = 'login' | 'island' | 'seaside' | 'interior'
+export type SceneId = 'login' | 'island' | 'seaside' | 'interior' | 'study'
 export interface IslandEntry extends IslandIdentity { returnPoint?: { x: number; y: number } }
 export interface SceneState { scene: SceneId; transitioning: boolean }
 export interface SeasideState {
@@ -63,6 +64,8 @@ export type GameEvents = {
   GAME_READY: Record<string, never>
   /** React → 游戏：登录成功/已登录，上岛 */
   ENTER_ISLAND: IslandIdentity
+  /** React → 游戏：从码头准备页一键直达阁楼书房 */
+  ENTER_STUDY: IslandIdentity
   /** 登录之后的改名/形象更新不承担导航。 */
   IDENTITY_CHANGED: IslandIdentity
   /** 场景就绪独立于登录 GAME_READY；常驻导航场景持有可重取快照。 */
@@ -77,6 +80,12 @@ export type GameEvents = {
   SEASIDE_REQUEST_STATE: Record<string, never>
   SEASIDE_ACTION: { action: 'sit' | 'stand' | 'lean' | 'unlean' }
   SEASIDE_RECONNECT: Record<string, never>
+  STUDY_STATE: StudySceneState
+  STUDY_REQUEST_STATE: Record<string, never>
+  STUDY_RECONNECT: Record<string, never>
+  STUDY_AUDIO_MODE: { mode: StudyAudioMode }
+  STUDY_SYNC_SNAPSHOT: StudySnapshot
+  STUDY_ROOF_STATUS: { lit: boolean; companionFocusing?: boolean; companionName?: string }
   SESSION_EXPIRED: Record<string, never>
   SEASIDE_CLOCK_REQUEST: { action: 'rate'; rate: SceneryRate } | { action: 'reset' }
   /** React → 游戏：下岛回登录 */

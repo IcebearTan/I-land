@@ -14,12 +14,14 @@ export const DEFAULT_AUDIO: AudioSettings = {
 
 export interface AudioMix { dayMusic: number; nightMusic: number; birds: number; crickets: number; waves: number; fireplace: number }
 export interface AudioContextInfo {
-  scene: 'login' | 'island' | 'seaside' | 'interior'
+  scene: 'login' | 'island' | 'seaside' | 'interior' | 'study'
   shore?: number
   grove?: number
   phase?: 'dawn' | 'day' | 'dusk' | 'night'
   /** 连续的夜色权重，与鸟鸣/虫鸣及音乐编配共用，0 = 白天，1 = 深夜。 */
   night?: number
+  /** 阁楼书房快捷音景：纯白噪音（壁炉+海浪+虫鸣） / 轻音乐伴读 / 书房静音 */
+  studyAudioMode?: 'whitenoise' | 'melody' | 'mute'
 }
 export type PlaybackStatus = 'off' | 'locked' | 'loading' | 'playing' | 'paused' | 'blocked' | 'error'
 export interface AudioStatus {
@@ -42,6 +44,23 @@ export function audioMix(settings: AudioSettings, context: AudioContextInfo): Au
   const music = settings.music_enabled ? settings.music_volume : 0
   const ambience = settings.ambience_enabled ? settings.ambience_volume : 0
   const night = unit(context.night ?? (context.phase === 'night' ? 1 : context.phase === 'dusk' ? .4 : context.phase === 'dawn' ? .5 : 0))
+  if (context.scene === 'study') {
+    const mode = context.studyAudioMode ?? 'whitenoise'
+    if (mode === 'mute') return { dayMusic: 0, nightMusic: 0, birds: 0, crickets: 0, waves: 0, fireplace: 0 }
+    if (mode === 'whitenoise') {
+      const base = settings.ambience_enabled ? Math.max(ambience, .42) : .42
+      return { dayMusic: 0, nightMusic: 0, birds: 0, crickets: base * night * .18, waves: base * .32, fireplace: base * .40 }
+    }
+    const studyMusic = (settings.music_enabled ? Math.max(music, .28) : .28) * .52
+    return {
+      dayMusic: studyMusic * Math.cos(night * Math.PI / 2),
+      nightMusic: studyMusic * Math.sin(night * Math.PI / 2),
+      birds: 0,
+      crickets: ambience * night * .10,
+      waves: ambience * .16,
+      fireplace: ambience * .28,
+    }
+  }
   const musicGain = context.scene === 'login' ? .48 : context.scene === 'interior' ? .65 : context.scene === 'seaside' ? .48 : 1 - .4 * unit(context.shore ?? 0)
   // 两种编配同调同节拍，等功率交接，避免到整点时硬切曲目。
   const melody = { dayMusic: music * musicGain * Math.cos(night * Math.PI / 2), nightMusic: music * musicGain * Math.sin(night * Math.PI / 2) }

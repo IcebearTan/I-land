@@ -125,7 +125,11 @@ export class AudioScene extends Phaser.Scene {
   private loadLoops(): void {
     // 炉火首次进屋才加载；户外不因室内素材增加首屏负担。已加载的循环一直复用。
     const tracks = (Object.keys(FILES) as Track[]).filter(track => isMusic(track)
-      || (this.contextInfo.scene === 'interior' ? track === 'fireplace' : this.contextInfo.scene !== 'login' && track !== 'fireplace'))
+      || (this.contextInfo.scene === 'interior'
+        ? track === 'fireplace'
+        : this.contextInfo.scene === 'study'
+          ? track === 'fireplace' || track === 'waves' || track === 'crickets'
+          : this.contextInfo.scene !== 'login' && track !== 'fireplace'))
     if (this.loading || tracks.every(track => this.loops.has(track))) return
     this.loading = true
     let failed = false
@@ -164,7 +168,8 @@ export class AudioScene extends Phaser.Scene {
     } else {
       const mix = audioMix(this.settings, this.contextInfo)
       for (const [track, loop] of this.loops) {
-        const keepMusicPhase = isMusic(track) && this.settings.music_enabled && this.settings.music_volume > 0
+        const studyMelodyBlocked = this.contextInfo.scene === 'study' && (this.contextInfo.studyAudioMode ?? 'whitenoise') !== 'melody'
+        const keepMusicPhase = isMusic(track) && !studyMelodyBlocked && this.settings.music_enabled && this.settings.music_volume > 0
         if ((mix[track] > 0 || keepMusicPhase) && !loop.isPlaying) {
           loop.setVolume(0)
           const started = loop.isPaused ? loop.resume() : loop.play()
@@ -187,9 +192,10 @@ export class AudioScene extends Phaser.Scene {
       loop.setVolume(Math.abs(volume - mix[track]) < .001 ? mix[track] : volume)
       if (!isMusic(track) && mix[track] < .001 && loop.volume === 0 && loop.isPlaying) loop.pause()
     }
-    // 音乐开关关闭时，两种编配须一起暂停；逐条停会使无声编配提前停拍。
+    // 音乐开关关闭或书房切入纯白噪音/静音时，两种编配须一起暂停；逐条停会使无声编配提前停拍。
     const musicLoops = [...this.loops].filter(([track]) => isMusic(track)).map(([, loop]) => loop)
-    if ((!this.settings.music_enabled || this.settings.music_volume === 0) && musicLoops.every(loop => loop.volume < .001)) {
+    const studyNoMelody = this.contextInfo.scene === 'study' && (this.contextInfo.studyAudioMode ?? 'whitenoise') !== 'melody'
+    if ((!this.settings.music_enabled || this.settings.music_volume === 0 || studyNoMelody) && musicLoops.every(loop => loop.volume < .001)) {
       for (const loop of musicLoops) { loop.setVolume(0); if (loop.isPlaying) loop.pause() }
     }
   }
