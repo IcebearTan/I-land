@@ -47,7 +47,7 @@ export function ComingSoonPanel() {
       >
         <div className="modal-head">
           <div className="px-ribbon" id="place-title">
-            <PixelIcon name="bottle" size={18} />
+            <PixelIcon name="boat" size={18} />
             <span>{copy.title}</span>
           </div>
           <button type="button" className="px-slot" onClick={close} aria-label="关上漂流瓶面板">
