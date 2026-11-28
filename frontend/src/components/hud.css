@@ -117,7 +117,7 @@
 }
 
 .hud-presence-copy strong {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--px-ink);
 }
@@ -184,13 +184,13 @@
     gap: 5px;
   }
   .hud-time {
-    font-size: 13px;
+    font-size: 14px;
   }
   .hud-board-bot {
     gap: 5px;
   }
   .hud-days-label {
-    font-size: 11px;
+    font-size: 12px;
   }
   .hud-slots {
     gap: 4px;

@@ -20,7 +20,7 @@
 5. **UI 视觉与像素样式铁律（必读 `.agents/skills/iland-ui-style/SKILL.md`）**：
    - **唯一令牌源**：全岛 DOM 面板一律复用 `frontend/src/styles/tokens.css` 与 `pixel-ui.css` 的暖羊皮纸与雕花橡木变量（`--px-ink`、`--px-cream*`、`--px-border`、`--px-wood-dark`、`--px-accent`），严禁私自发明散装色板、现代圆角卡片或大模糊阴影。
    - **零圆角纪律**：全岛任何 CSS/TSX **严禁非零 `border-radius`**（包括 `4px`、`6px`、`50%`、`999px`）；弹窗统一使用 `.wood-panel` + `.px-ribbon` 卷轴标题 + `.px-slot` 关闭槽，表单控件统一用 `.px-input`，次级芯片按钮用 `.text-button`。
-   - **双层字体红线**：`--px-font`（`ArkPixel`）仅限短按钮、卷轴标题、HUD 时钟和 `.num` 数字，**严禁挂在弹窗外层容器上，严禁设置 `font-smoothing: none`，严禁使用 `Georgia`/`serif` 衬线体**；一切表单 `label`/副提示、输入框、信件与日历正文统一用 `--ui-font`。对比度与无障碍：所有动效尊重 `prefers-reduced-motion`。
+   - **纯像素字体与零伪粗体红线**：全岛 DOM 与 Phaser 画布路牌/气泡 **100% 统一使用 `ArkPixel` 像素字体**（严禁混入 `system-ui`/`Microsoft YaHei` 网页字体或 `Georgia`/`serif`）；全局锁定 `font-weight: 400; font-synthesis: none;`（严禁 `font-weight: 600/bold` 伪粗体涂抹）；字号只准取 `12px / 14px / 16px / 24px / 48px`（严禁 `13px / 15px / 17px / 18px` 非对齐字号）。所有动效尊重 `prefers-reduced-motion`。
 6. **无惩罚原则**：任何玩法（作物等）不许因玩家不登录而惩罚。
 
 ## 常用命令

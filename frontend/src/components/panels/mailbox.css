@@ -22,8 +22,8 @@
   border: 2px solid var(--px-accent);
   background: var(--ui-accent-soft);
   color: var(--px-ink);
-  font-size: 13px;
-  line-height: 1.55;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .letter-unread-pill {
@@ -141,8 +141,8 @@
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
-  font-family: var(--ui-font);
-  font-size: 15px;
+  font-family: var(--px-font);
+  font-size: 14px;
   line-height: 1.9;
   color: var(--px-ink);
 }
@@ -156,7 +156,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--px-ink-soft);
 }
 
@@ -191,26 +191,26 @@
   border: 2px solid var(--px-border);
   background: var(--px-cream-hi);
   box-shadow: var(--ui-shadow-control);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .letter-composer-who {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--px-ink);
 }
 
 .letter-draft-tag {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--px-accent);
 }
 
 .letter-field-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 156px;
+  grid-template-columns: minmax(0, 1fr) 160px;
   gap: 12px;
 }
 
@@ -227,15 +227,15 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 4px 8px;
-  font-family: var(--ui-font);
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.4;
+  font-family: var(--px-font);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
   color: var(--px-ink);
 }
 
 .letter-field-head small {
-  font-family: var(--ui-font);
+  font-family: var(--px-font);
   font-size: 12px;
   font-weight: 400;
   color: var(--px-ink-soft);
@@ -244,7 +244,7 @@
 .letter-field textarea.px-input {
   resize: vertical;
   min-height: 144px;
-  line-height: 1.75;
+  line-height: 1.8;
 }
 
 .letter-theme-grid {
@@ -265,9 +265,9 @@
   background: var(--px-cream-hi);
   box-shadow: var(--ui-shadow-control);
   color: var(--px-ink);
-  font-family: var(--ui-font);
-  font-size: 13px;
-  font-weight: 600;
+  font-family: var(--px-font);
+  font-size: 14px;
+  font-weight: 400;
   cursor: pointer;
 }
 
@@ -305,8 +305,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 400;
   color: var(--px-ink);
 }
 
@@ -368,9 +368,9 @@
   background: var(--px-cream-hi);
   color: var(--px-ink);
   cursor: pointer;
-  font-family: var(--ui-font);
+  font-family: var(--px-font);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1;
 }
 

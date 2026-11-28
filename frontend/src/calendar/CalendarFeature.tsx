@@ -148,7 +148,6 @@ export function CalendarFeature() {
     if (discard) dialog.current.querySelector<HTMLButtonElement>('.calendar-confirm button')?.focus()
     else if (memoryEditing) dialog.current.querySelector<HTMLTextAreaElement>('[name="memory-description"]')?.focus()
     else if (editor) dialog.current.querySelector<HTMLInputElement>('[name="holiday-name"]')?.focus()
-    else dialog.current.querySelector<HTMLButtonElement>('.calendar-close')?.focus()
   }, [editor, open, discard, dialog, memoryEditing])
 
   const upcoming = items.map(item => ({ item, next: nextOccurrence(item, today) }))

@@ -86,7 +86,7 @@
 .shore-btn {
   width: 100%;
   padding: 0 4px;
-  font-size: 13px;
+  font-size: 14px;
   gap: 5px;
 }
 
@@ -114,7 +114,7 @@
     gap: 2px;
     min-height: 48px;
     border-width: 8px;
-    font-size: 11px;
+    font-size: 12px;
   }
   .shore-btn .px-icon {
     width: 16px;

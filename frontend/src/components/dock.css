@@ -48,7 +48,7 @@
   justify-content: space-between;
   gap: 8px;
   font-family: var(--px-font);
-  font-size: 13px;
+  font-size: 14px;
   color: var(--px-ink);
 }
 
@@ -111,9 +111,9 @@
 .dock-heading {
   margin: 0;
   font-family: var(--px-font);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
-  line-height: 1.35;
+  line-height: 1.4;
   color: var(--px-ink);
 }
 
@@ -122,15 +122,15 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--px-ink-soft);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .dock-farewell-text {
   margin: 0;
   font-size: 14px;
-  line-height: 1.65;
+  line-height: 1.7;
   color: var(--px-ink);
 }
 
@@ -142,7 +142,7 @@
 
 .dock-main-btn {
   flex: 1;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 @media (max-width: 480px) {
@@ -151,6 +151,6 @@
   .dock-dialog-row { gap: 10px; }
   .dock-avatar { width: 58px; height: 58px; }
   .dock-heading { font-size: 16px; }
-  .dock-farewell-text { font-size: 13px; }
+  .dock-farewell-text { font-size: 14px; }
   .dock-actions { flex-wrap: wrap; }
 }

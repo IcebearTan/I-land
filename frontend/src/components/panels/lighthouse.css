@@ -32,15 +32,15 @@
 }
 
 .lh-current-copy strong {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 400;
   color: var(--px-ink);
 }
 
 .lh-current-copy p {
   margin: 0;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.65;
   color: var(--px-ink);
   word-break: break-word;
 }
@@ -72,9 +72,9 @@
   background: var(--px-cream-hi);
   box-shadow: var(--ui-shadow-control);
   color: var(--px-ink);
-  font-family: var(--ui-font);
-  font-size: 13px;
-  font-weight: 600;
+  font-family: var(--px-font);
+  font-size: 14px;
+  font-weight: 400;
   cursor: pointer;
   text-align: left;
 }
@@ -101,8 +101,8 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 400;
   color: var(--px-ink);
 }
 
