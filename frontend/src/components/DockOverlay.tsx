@@ -60,6 +60,9 @@ function daysTogether(startDate?: string): number | null {
 export function DockOverlay({
   mode,
   progress,
+  gameReady = true,
+  loadError = null,
+  onRetryLoad,
   user,
   muted,
   onToggleMute,
@@ -69,6 +72,9 @@ export function DockOverlay({
 }: {
   mode: DockMode
   progress: number
+  gameReady?: boolean
+  loadError?: string | null
+  onRetryLoad?: () => void
   user: User | null | undefined
   muted: boolean
   onToggleMute: () => void
@@ -99,38 +105,66 @@ export function DockOverlay({
   const days = daysTogether(meta?.start_date)
   const farewell = FAREWELL_COPY[phase]
   const loadLabel =
-    pct < 45 ? '正在展开小岛画卷…' : pct < 85 ? '正在同步海风与足迹…' : '海风已经准备好了'
+    pct < 20
+      ? '正在启航连接小岛…'
+      : pct < 68
+        ? '正在载入小岛引擎与画卷…'
+        : pct < 95
+          ? '正在铺开海风与像素图集…'
+          : '海风已经准备好了'
 
   return (
-    <div className="dock-stage" data-dock-mode={mode}>
-      <div className="dock-center px-pop">
-        <img
-          src="/art-v2/ui/title-plaque.png"
-          alt="I-land"
-          width={272}
-          height={84}
-          draggable={false}
-          className="dock-plaque"
-        />
+    <>
+      <div className={`dock-backdrop${gameReady ? ' is-hidden' : ''}`} aria-hidden="true">
+        <div className="dock-backdrop-sun" />
+        <div className="dock-backdrop-cloud dock-backdrop-cloud--a" />
+        <div className="dock-backdrop-cloud dock-backdrop-cloud--b" />
+        <div className="dock-backdrop-hill dock-backdrop-hill--far" />
+        <div className="dock-backdrop-hill dock-backdrop-hill--near" />
+      </div>
 
-        {mode === 'loading' ? (
-          <div className="dock-card dock-loading px-panel-compact" role="status" aria-live="polite">
-            <div className="dock-progress-head">
-              <span>{loadLabel}</span>
-              <span className="dock-pct">{pct}%</span>
+      <div className="dock-stage" data-dock-mode={mode}>
+        <div className="dock-center px-pop">
+          <img
+            src="/art-v2/ui/title-plaque.png"
+            alt="I-land"
+            width={272}
+            height={84}
+            draggable={false}
+            className="dock-plaque"
+          />
+
+          {mode === 'loading' ? (
+            <div className="dock-card dock-loading px-panel-compact" role="status" aria-live="polite">
+              {loadError ? (
+                <div className="dock-load-error">
+                  <p className="dock-error-text">海风连接中断了，请重试登岛。</p>
+                  {onRetryLoad && (
+                    <button type="button" className="px-btn px-btn-accent" onClick={onRetryLoad}>
+                      重新载入
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <div className="dock-progress-head">
+                    <span>{loadLabel}</span>
+                    <span className="dock-pct">{pct}%</span>
+                  </div>
+                  <div className="dock-progress-wrap">
+                    <div className="dock-boat-track" aria-hidden="true">
+                      <span className="dock-boat-runner" style={{ left: `calc(${pct}% - 12px)` }}>
+                        <PixelIcon name="boat" size={24} />
+                      </span>
+                    </div>
+                    <div className="px-progress">
+                      <div className="px-progress-fill" style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
-            <div className="dock-progress-wrap">
-              <div className="dock-boat-track" aria-hidden="true">
-                <span className="dock-boat-runner" style={{ left: `calc(${pct}% - 12px)` }}>
-                  <PixelIcon name="boat" size={24} />
-                </span>
-              </div>
-              <div className="px-progress">
-                <div className="px-progress-fill" style={{ width: `${pct}%` }} />
-              </div>
-            </div>
-          </div>
-        ) : mode === 'ready' ? (
+          ) : mode === 'ready' ? (
           <div className="dock-card px-panel" role="region" aria-label="登岛准备">
             <div className="dock-dialog-row">
               <div className="px-portrait-box dock-avatar">
@@ -207,7 +241,8 @@ export function DockOverlay({
             </div>
           </div>
         )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }

@@ -1,5 +1,106 @@
 /* Embark / Loading / Farewell dock overlay on top of LoginScene pixel sea */
 
+/* Lightweight pure-CSS pixel sky & twin hills shown immediately while Phaser loads */
+.dock-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    #7fb6d9 0%,
+    #7fb6d9 18%,
+    #a1cbde 18%,
+    #a1cbde 38%,
+    #c3dde1 38%,
+    #c3dde1 60%,
+    #e2e8d8 60%,
+    #e2e8d8 80%,
+    #fdf6e9 80%,
+    #fdf6e9 100%
+  );
+  opacity: 1;
+  transition: opacity 280ms steps(4);
+}
+
+.dock-backdrop.is-hidden {
+  opacity: 0;
+}
+
+.dock-backdrop-sun {
+  position: absolute;
+  top: 12%;
+  right: 14%;
+  width: 32px;
+  height: 32px;
+  background: #fff4b8;
+  border: 4px solid #ffd98a;
+  box-shadow: 0 0 0 4px rgba(255, 244, 184, 0.35);
+}
+
+.dock-backdrop-cloud {
+  position: absolute;
+  height: 14px;
+  background: #fdf9f0;
+  box-shadow: 0 4px 0 #dce9ec;
+}
+
+.dock-backdrop-cloud--a {
+  top: 16%;
+  left: 12%;
+  width: 76px;
+}
+
+.dock-backdrop-cloud--b {
+  top: 26%;
+  right: 24%;
+  width: 56px;
+  opacity: 0.85;
+}
+
+.dock-backdrop-hill {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  bottom: 0;
+}
+
+.dock-backdrop-hill--far {
+  height: 46%;
+  background: linear-gradient(180deg, #d3deb9 0 6px, #adc594 6px 46%, #8ead7d 46% 100%);
+  clip-path: polygon(
+    0 34%, 14% 22%, 28% 28%, 44% 12%, 60% 24%, 76% 14%, 90% 26%, 100% 18%,
+    100% 100%, 0 100%
+  );
+}
+
+.dock-backdrop-hill--near {
+  height: 32%;
+  background: linear-gradient(180deg, #adcb83 0 6px, #7cb860 6px 48%, #5a944a 48% 100%);
+  clip-path: polygon(
+    0 24%, 18% 10%, 36% 22%, 54% 14%, 72% 28%, 88% 12%, 100% 22%,
+    100% 100%, 0 100%
+  );
+}
+
+.dock-load-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+  text-align: center;
+}
+
+.dock-error-text {
+  margin: 0;
+  font-family: var(--px-font);
+  font-size: 14px;
+  color: var(--px-danger);
+  line-height: 1.5;
+}
+
 .dock-stage {
   position: absolute;
   inset: 0;

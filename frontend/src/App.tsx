@@ -1,21 +1,40 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { characterId } from './characters'
-import { CalendarFeature } from './calendar/CalendarFeature'
-import { IslandControls } from './components/IslandControls'
 import { api } from './api/client'
 import { eventBus, type IslandIdentity, type SceneState } from './game/EventBus'
 import type { User } from './types'
 import { GameShell } from './components/GameShell'
-import { Hud } from './components/Hud'
-import { LoginPanel } from './components/LoginPanel'
 import { DockOverlay, type DockMode } from './components/DockOverlay'
-import { MailboxPanel } from './components/panels/MailboxPanel'
-import { LighthousePanel } from './components/panels/LighthousePanel'
-import { ComingSoonPanel } from './components/panels/ComingSoonPanel'
-import { SettingsPanel } from './components/SettingsPanel'
 import { useIslandAudio } from './audio/useIslandAudio'
-import { SeasideControls } from './components/SeasideControls'
-import { InteriorControls } from './components/InteriorControls'
+
+const LoginPanel = lazy(() =>
+  import('./components/LoginPanel').then((m) => ({ default: m.LoginPanel })),
+)
+const Hud = lazy(() => import('./components/Hud').then((m) => ({ default: m.Hud })))
+const IslandControls = lazy(() =>
+  import('./components/IslandControls').then((m) => ({ default: m.IslandControls })),
+)
+const SeasideControls = lazy(() =>
+  import('./components/SeasideControls').then((m) => ({ default: m.SeasideControls })),
+)
+const InteriorControls = lazy(() =>
+  import('./components/InteriorControls').then((m) => ({ default: m.InteriorControls })),
+)
+const MailboxPanel = lazy(() =>
+  import('./components/panels/MailboxPanel').then((m) => ({ default: m.MailboxPanel })),
+)
+const LighthousePanel = lazy(() =>
+  import('./components/panels/LighthousePanel').then((m) => ({ default: m.LighthousePanel })),
+)
+const ComingSoonPanel = lazy(() =>
+  import('./components/panels/ComingSoonPanel').then((m) => ({ default: m.ComingSoonPanel })),
+)
+const CalendarFeature = lazy(() =>
+  import('./calendar/CalendarFeature').then((m) => ({ default: m.CalendarFeature })),
+)
+const SettingsPanel = lazy(() =>
+  import('./components/SettingsPanel').then((m) => ({ default: m.SettingsPanel })),
+)
 
 function islandIdentity(user: User): IslandIdentity {
   return {
@@ -38,7 +57,10 @@ type JourneyStage = 'embark' | 'on-island' | 'farewell'
 export default function App() {
   // undefined = checking session; null = unauthenticated standalone visit
   const [user, setUser] = useState<User | null | undefined>(undefined)
-  const [bootProgress, setBootProgress] = useState(0.15)
+  const [engineProgress, setEngineProgress] = useState(0)
+  const [engineError, setEngineError] = useState<string | null>(null)
+  const [bootRetryKey, setBootRetryKey] = useState(0)
+  const [bootProgress, setBootProgress] = useState(0)
   const [gameReady, setGameReady] = useState(false)
   const [stage, setStage] = useState<JourneyStage>('embark')
   const [scene, setScene] = useState<SceneState>({ scene: 'login', transitioning: false })
@@ -72,8 +94,10 @@ export default function App() {
   }, [user, stage])
 
   useEffect(() => {
-    const onProgress = ({ progress }: { progress: number }) => setBootProgress((p) => Math.max(p, progress))
+    const onProgress = ({ progress }: { progress: number }) =>
+      setBootProgress((p) => Math.max(p, progress))
     const onReady = () => {
+      setEngineProgress(1)
       setBootProgress(1)
       setGameReady(true)
     }
@@ -132,9 +156,19 @@ export default function App() {
     }
   }, [user, stage])
 
+  const handleEngineProgress = useCallback((value: number) => {
+    setEngineProgress((prev) => Math.max(prev, value))
+  }, [])
+
+  const handleRetryBoot = useCallback(() => {
+    setEngineError(null)
+    setEngineProgress(0)
+    setBootProgress(0)
+    setBootRetryKey((k) => k + 1)
+  }, [])
+
   function handleEmbark() {
     if (!user || !gameReady) return
-    // Sync user gesture unlocks WebAudio immediately on embark
     if (wantMuted) {
       if (audio.ready && !audio.settings.muted) audio.change({ muted: true }, true)
     } else {
@@ -146,7 +180,6 @@ export default function App() {
   }
 
   function handleDepart() {
-    // Keep session alive; sail gently back to the dock farewell screen
     enteredUser.current = null
     setStage('farewell')
     eventBus.emit('EXIT_TO_LOGIN', {})
@@ -154,7 +187,6 @@ export default function App() {
 
   function handleReturnPortal() {
     try {
-      // Safe non-sensitive navigation signal; parent validates origin
       window.parent?.postMessage({ type: 'iland:return-portal' }, '*')
     } catch {
       window.location.href = '/'
@@ -170,9 +202,13 @@ export default function App() {
     }
   }
 
-  // Smooth combined progress (70% Phaser assets + 30% session & audio readiness)
+  // Real staged boot progress:
+  // 10% auth check + 55% Phaser engine chunk + 30% pixel atlases + 5% LoginScene ready
   const combinedProgress =
-    bootProgress * 0.72 + (user !== undefined ? 0.18 : 0) + (gameReady ? 0.1 : 0)
+    (user !== undefined ? 0.1 : 0.04) +
+    engineProgress * 0.55 +
+    bootProgress * 0.3 +
+    (gameReady ? 0.05 : 0)
   const assetsReady = gameReady && user !== undefined
 
   const dockMode: DockMode = !assetsReady
@@ -190,12 +226,19 @@ export default function App() {
       data-journey-stage={stage}
       {...audioState}
     >
-      <GameShell />
+      <GameShell
+        retryKey={bootRetryKey}
+        onEngineProgress={handleEngineProgress}
+        onEngineError={setEngineError}
+      />
 
       {!assetsReady ? (
         <DockOverlay
           mode="loading"
           progress={combinedProgress}
+          gameReady={gameReady}
+          loadError={engineError}
+          onRetryLoad={handleRetryBoot}
           user={user}
           muted={wantMuted}
           onToggleMute={handleToggleDockMute}
@@ -204,16 +247,19 @@ export default function App() {
           embedded={embedded}
         />
       ) : !user ? (
-        <LoginPanel
-          onLogin={(u) => {
-            setUser(u)
-            setStage('embark')
-          }}
-        />
+        <Suspense fallback={null}>
+          <LoginPanel
+            onLogin={(u) => {
+              setUser(u)
+              setStage('embark')
+            }}
+          />
+        </Suspense>
       ) : stage !== 'on-island' ? (
         <DockOverlay
           mode={dockMode}
           progress={1}
+          gameReady={gameReady}
           user={user}
           muted={wantMuted}
           onToggleMute={handleToggleDockMute}
@@ -222,7 +268,7 @@ export default function App() {
           embedded={embedded}
         />
       ) : (
-        <>
+        <Suspense fallback={null}>
           {showIslandUi && (
             <Hud
               user={user}
@@ -244,7 +290,7 @@ export default function App() {
             audio={audio}
             embedded={embedded}
           />
-        </>
+        </Suspense>
       )}
     </div>
   )

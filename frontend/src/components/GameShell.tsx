@@ -1,23 +1,38 @@
 import { useEffect, useRef } from 'react'
-import { createGame } from '../game/game'
+import type Phaser from 'phaser'
 
-/** Phaser 容器：挂载即创建，卸载即销毁 */
-export function GameShell() {
+interface GameShellProps {
+  retryKey?: number
+  onEngineProgress?: (progress: number) => void
+  onEngineError?: (message: string | null) => void
+}
+
+/** Phaser 容器：异步懒加载引擎 chunk，避免首屏阻塞码头进度条渲染。 */
+export function GameShell({ retryKey = 0, onEngineProgress, onEngineError }: GameShellProps) {
   const ref = useRef<HTMLDivElement>(null)
+  const progressRef = useRef(onEngineProgress)
+  const errorRef = useRef(onEngineError)
+  progressRef.current = onEngineProgress
+  errorRef.current = onEngineError
 
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const game = createGame(el)
-    // 调试口：浏览器 console 里可用 __ilandGame 检查场景/纹理
-    ;(window as unknown as Record<string, unknown>).__ilandGame = game
 
-    // WebGL 上下文丢失/恢复完全交给 Phaser 自己的生命周期管理：
-    // 不 preventDefault（会打断 Phaser 的恢复流程，主循环永久暂停=画面冻结），
-    // 不 destroy 重建（会制造僵尸实例）。只在恢复后补一刀：
-    // 把所有画布纹理 refresh 重传（Phaser 恢复时对动态 CanvasTexture 的重传
-    // 不完整，只画一次的纹理如登录页山体会永久透明）。
+    let disposed = false
+    let game: Phaser.Game | null = null
+    let simulated = 0.08
+    errorRef.current?.(null)
+    progressRef.current?.(simulated)
+
+    // 异步拉取 Phaser + 场景 chunk 期间平滑推进进度，避免进度条停滞
+    const tick = window.setInterval(() => {
+      simulated = Math.min(0.88, simulated + (0.9 - simulated) * 0.12)
+      progressRef.current?.(simulated)
+    }, 180)
+
     const onRestored = () => {
+      if (!game) return
       for (const key of game.textures.getTextureKeys()) {
         const tex = game.textures.get(key) as unknown as {
           canvas?: HTMLCanvasElement
@@ -28,11 +43,29 @@ export function GameShell() {
     }
     el.addEventListener('webglcontextrestored', onRestored, true)
 
+    import('../game/game')
+      .then(({ createGame }) => {
+        window.clearInterval(tick)
+        if (disposed) return
+        progressRef.current?.(1)
+        game = createGame(el)
+        ;(window as unknown as Record<string, unknown>).__ilandGame = game
+      })
+      .catch((err) => {
+        window.clearInterval(tick)
+        if (disposed) return
+        const msg = err instanceof Error ? err.message : '小岛引擎加载失败，请检查网络后重试'
+        errorRef.current?.(msg)
+      })
+
     return () => {
+      disposed = true
+      window.clearInterval(tick)
       el.removeEventListener('webglcontextrestored', onRestored, true)
-      game.destroy(true)
+      game?.destroy(true)
+      game = null
     }
-  }, [])
+  }, [retryKey])
 
   return <div className="game-shell" ref={ref} />
 }
